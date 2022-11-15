@@ -1,0 +1,19 @@
+@import "@src/global";
+.main-page{
+    @include page;
+}
+.main-header{
+    @include header;
+}
+.feed-image{
+    @include circle(72px, true, $grey);
+    background-color: $grey;
+}
+.edit-button{
+    @include circle(20px, true, $white);
+    background-color: $primary-3;
+}
+
+.feed-share-button{
+    @include button-large;
+}

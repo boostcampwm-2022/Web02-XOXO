@@ -58,13 +58,13 @@ $error: #FD4747;
 }
 
 @mixin header {
-    @include ccenter;
+    @include vcenter;
+    @include bold(18px);
     // @include shadow-bottom;
     width: calc(100% - 16px);
     height: 40px;
     margin: 0;
     padding: 0px 8px;
-    border-bottom: 1px solid $grey-3;
     .side {
         width: 24px;
         img {
@@ -74,7 +74,7 @@ $error: #FD4747;
     }
     .center {
         flex: 1;
-        @include rccenter;
+        @include vhcenter;
     }
 }
 
@@ -105,12 +105,12 @@ a {
 
 @mixin button-large($bg-color:$primary-3,$font-color:$white) {
     width: 100%;
-    background-color: $color;
+    background-color: $bg-color;
     padding: 12px 0;
     border-radius: 6px;
-    .div {
+    div {
         @include vhcenter;
-        .span {
+        span {
             @include bold(12px,$font-color);
         }
     }
@@ -148,7 +148,7 @@ a {
     @if $has-border {
         border: 1px solid $border-color;
     }
-    .img {
+    img {
         width: 100%;
         height: 100%;
         object-fit: cover;
