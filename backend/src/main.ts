@@ -4,7 +4,8 @@ declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
+  console.log(`Running on ${process.env.PORT}`);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
