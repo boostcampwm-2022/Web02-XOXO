@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import UsersModule from './users/users.module';
 import AppController from './app.controller';
 import AppService from './app.service';
 import configuration from '../configuration';
@@ -24,6 +25,7 @@ import configuration from '../configuration';
       keepConnectionAlive: true,
       entities: ['entities/*.ts'],
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
