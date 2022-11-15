@@ -7,6 +7,8 @@ module.exports = {
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
+    'airbnb-base',
+    'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
@@ -28,5 +30,12 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-var-requires': 0,
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: true,
+      },
+    ],
+    'import/no-import-module-exports': 0,
   },
 };

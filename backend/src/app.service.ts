@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Get, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class AppService {
+export default class AppService {
   constructor(private readonly configService: ConfigService) {}
+
+  @Get()
   getHello(): string {
     return this.configService.get('PORT');
   }
