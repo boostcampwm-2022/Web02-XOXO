@@ -24,11 +24,7 @@
     "db:drop": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d ./dataSource.ts",
     "seed": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -d ./dataSource.ts",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
-    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
-    "db:migrate": "npm run typeorm migration:run -- -d ./dataSource.ts",
-    "db:migrate:revert": "npm run typeorm migration:revert -- -d ./dataSource.ts",
-    "db:create-migration": "npm run typeorm migration:create -- ./src/migrations/",
-    "db:generate-migration": "npm run typeorm migration:generate -- ./src/migrations -d ./dataSource.ts"
+    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
