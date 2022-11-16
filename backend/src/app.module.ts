@@ -5,6 +5,7 @@ import UsersModule from './users/users.module';
 import AppController from './app.controller';
 import AppService from './app.service';
 import configuration from '../configuration';
+import Users from './entities/Users';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import configuration from '../configuration';
       synchronize: false,
       logging: true,
       keepConnectionAlive: true,
-      entities: ['entities/*.ts'],
+      entities: [Users],
     }),
     UsersModule,
   ],
