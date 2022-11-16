@@ -13,8 +13,12 @@ export default class Users {
   @Column('varchar', { name: 'nickname', length: 15 })
   nickname: string;
 
+  // to-do: url 판단 validatation annotation 추가
   @Column('varchar', { name: 'profile' })
   profile: string;
+
+  @Column('varchar', { name: 'kakaoId', length: 20 })
+  kakaoId: string;
 
   @DeleteDateColumn()
   deletedAt: Date | null;
