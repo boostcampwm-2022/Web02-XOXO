@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Query, Res, Body } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Get, Post, Query, Req, Body } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { OauthService } from 'src/oauth/oauth.service';
-import { Code } from 'typeorm';
 import JoinRequestDto from './dto/join.request.dto';
 import UsersService from './users.service';
 
@@ -49,9 +48,10 @@ export default class UsersController {
 
   @Post('join')
   // TODO : 중복검사를 가드로 할지 아니면 그냥 이 컨트롤러 안에서 코드로 할지 결정해야함.
-  async joinUser(@Body('nickname') nickname: string, @Res() res: Response) {
+  async joinUser(@Body('nickname') nickname: string, @Req() req: Request) {
+    const { kakaoId, profilePicture } = req.cookies;
     const userId = await this.userService.joinUser(
-      new JoinRequestDto(nickname, 'ddd', 'imgurlㅇㅇㅇㅇ'),
+      new JoinRequestDto(nickname, kakaoId, profilePicture),
     );
     return userId;
   }
