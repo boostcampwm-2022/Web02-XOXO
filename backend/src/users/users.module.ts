@@ -5,5 +5,6 @@ import UsersController from './users.controller';
 @Module({
   imports: [OauthModule],
   controllers: [UsersController],
+  providers: [UsersService],
 })
 export default class UsersModule {}

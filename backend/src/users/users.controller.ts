@@ -5,6 +5,7 @@ import { OauthService } from 'src/oauth/oauth.service';
 // todo: api controller 전역에 /api 추가해주는 것
 @Controller('users')
 export default class UsersController {
+
   constructor(private readonly oauthService: OauthService) {}
 
   // eslint-disable-next-line class-methods-use-this
@@ -28,5 +29,6 @@ export default class UsersController {
     const openID = await this.oauthService.getAccessToken(code);
     const validate = await this.oauthService.validateToken(openID);
     return openID;
+
   }
 }
