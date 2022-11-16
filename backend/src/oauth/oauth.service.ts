@@ -24,8 +24,8 @@ export class OauthService {
     )
       throw new Error('openID가 유효하지 않습니다.');
 
-    const profilePicture = payload.picture;
-    return profilePicture;
+    // to-do : 서명 알고리즘 추가
+    return { kakaoId: payload.sub, profilePicture: payload.picture };
   }
 
   async getAccessToken(code: string): Promise<any> {
