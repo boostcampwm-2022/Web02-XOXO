@@ -11,9 +11,10 @@ module.exports = {
   overrides: [
   ],
   parserOptions: {
+    tsconfigRootDir: __dirname,
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['tsconfig.json']
+    project: ['./tsconfig.json']
   },
   plugins: [
     'react'
