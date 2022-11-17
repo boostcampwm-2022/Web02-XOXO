@@ -3,5 +3,13 @@ import Users from '../../entities/Users';
 
 export default class JoinRequestDto extends PickType(Users, [
   'profile',
+  'kakaoId',
   'nickname',
-] as const) {}
+] as const) {
+  constructor(nickname: string, kakaoId: string, profile: string) {
+    super();
+    this.nickname = nickname;
+    this.kakaoId = kakaoId;
+    this.profile = profile;
+  }
+}

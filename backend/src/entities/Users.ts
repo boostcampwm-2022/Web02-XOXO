@@ -1,3 +1,4 @@
+import { IsNotEmpty, IsString } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,15 +9,22 @@ import {
 @Entity({ schema: 'xoxo', name: 'users' })
 export default class Users {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
+  @IsNotEmpty()
   id: number;
 
+  @IsString()
+  @IsNotEmpty()
   @Column('varchar', { name: 'nickname', length: 15 })
   nickname: string;
 
   // to-do: url 판단 validatation annotation 추가
+  @IsString()
+  @IsNotEmpty()
   @Column('varchar', { name: 'profile' })
   profile: string;
 
+  @IsNotEmpty()
+  @IsString()
   @Column('varchar', { name: 'kakaoId', length: 20 })
   kakaoId: string;
 
