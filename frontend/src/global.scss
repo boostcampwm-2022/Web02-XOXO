@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700;500;400&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
 $primary-1: #FFEFED;
 $primary-2: #EDB0A8;
@@ -61,10 +61,9 @@ $error: #FD4747;
     @include vcenter;
     @include bold(18px);
     // @include shadow-bottom;
-    width: calc(100% - 16px);
-    height: 40px;
+    width: calc(100% - 32px);
     margin: 0;
-    padding: 0px 8px;
+    padding: 20px 16px 0 16px;
     .side {
         width: 24px;
         img {
@@ -144,13 +143,20 @@ a {
         height: $size;
         border-radius: 50%;
         overflow: hidden;
+        @if $has-border {
+            border: 1px solid $border-color;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     }
-    @if $has-border {
-        border: 1px solid $border-color;
-    }
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
