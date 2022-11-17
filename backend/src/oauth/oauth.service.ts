@@ -1,28 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { AxiosRequestConfig } from 'axios';
-import { JwtService } from '@nestjs/jwt';
-import { json } from 'stream/consumers';
 import PostFormDto from './dto/oauth.postform.dto';
 import { makeFormData, parseToken } from './oauth.utils';
 
 @Injectable()
 export class OauthService {
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   // eslint-disable-next-line class-methods-use-this
   validateToken(openId: string) {
     const { header, payload, signature } = parseToken(openId);
+    //
     if (
       payload.iss !== 'https://kauth.kakao.com' ||
       payload.aud !== process.env.KAKAO_CLIENT_ID ||
       payload.exp < new Date().getTime() / 1000
     )
-      throw new Error('openID가 유효하지 않습니다.');
+      throw new ForbiddenException('openID가 유효하지 않습니다.');
 
     // to-do : 서명 알고리즘 추가
     return { kakaoId: payload.sub, profilePicture: payload.picture };
@@ -55,6 +51,7 @@ export class OauthService {
           }),
         ),
     );
+    if (!openId) throw new ForbiddenException('openID가 유효하지 않습니다.');
 
     return openId;
   }
