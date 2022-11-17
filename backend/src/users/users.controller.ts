@@ -9,8 +9,11 @@ import {
   HttpException,
   BadRequestException,
 } from '@nestjs/common';
+import { profile } from 'console';
 import { Response, Request } from 'express';
+import { join } from 'path';
 import { OauthService } from 'src/oauth/oauth.service';
+import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
 import UsersService from './users.service';
 
@@ -64,14 +67,20 @@ export default class UsersController {
 
   @Post('join')
   // TODO : 중복검사를 가드로 할지 아니면 그냥 이 컨트롤러 안에서 코드로 할지 결정해야함.
-  async joinUser(@Body('nickname') nickname: string, @Req() req: Request) {
+  async joinUser(
+    @Body() joinNicknameDto: JoinNicknameDto,
+    @Req() req: Request,
+  ) {
     const { kakaoId, profilePicture } = req.cookies;
-    if (!kakaoId) throw new BadRequestException('kakaoId가 없습니다.');
+    if (!kakaoId) throw new BadRequestException('kakaoId가 존재하지 않습니다.');
     if (!profilePicture)
-      throw new BadRequestException('profilePicture가 없습니다.');
-    const userId = await this.userService.joinUser(
-      new JoinRequestDto(nickname, kakaoId, profilePicture),
+      throw new BadRequestException('profile 이미지가 존재하지 않습니다.');
+    const joinMember = new JoinRequestDto(
+      joinNicknameDto.nickname,
+      kakaoId,
+      profilePicture,
     );
+    const userId = await this.userService.joinUser(joinMember);
     return userId;
   }
 }
