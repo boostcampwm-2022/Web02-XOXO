@@ -15,6 +15,7 @@ import { join } from 'path';
 import { OauthService } from 'src/oauth/oauth.service';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
+import UserFacade from './users.facade';
 import UsersService from './users.service';
 
 // todo: api controller 전역에 /api 추가해주는 것
@@ -23,6 +24,7 @@ export default class UsersController {
   constructor(
     private readonly oauthService: OauthService,
     private readonly userService: UsersService,
+    private readonly facade: UserFacade,
   ) {}
 
   // eslint-disable-next-line class-methods-use-this
@@ -47,10 +49,9 @@ export default class UsersController {
   // eslint-disable-next-line class-methods-use-this
 
   @Get('kakao/callback')
-  async getCode(@Query('code') code, @Res() res: Response) {
-    const openID = await this.oauthService.getAccessToken(code);
-    const { kakaoId, profilePicture } = this.oauthService.validateToken(openID);
-    const user = await this.userService.getUserByKakaoId(kakaoId);
+  async loginUser(@Query('code') code, @Res() res: Response) {
+    const { user, profilePicture, kakaoId } =
+      await this.facade.getUserInfoFromKakao(code);
     if (!user) {
       res.cookie('kakaoId', kakaoId, {
         httpOnly: true,
@@ -62,7 +63,7 @@ export default class UsersController {
       });
       res.redirect('http://localhost:3001');
     }
-    // 이미 가입한 유저니깐 로그인 처리
+    // 이미 가입한 유저니깐 로그인 처리 -> 토큰 발행
   }
 
   @Post('join')
