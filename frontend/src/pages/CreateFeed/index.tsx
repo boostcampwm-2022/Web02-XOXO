@@ -2,10 +2,11 @@ import React from 'react'
 import './styles.scss'
 import { ReactComponent as WarningIcon } from '@assets/warningIcon.svg'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
+import Header from '@src/components/Header'
 const CreateFeed = () => {
   return (
     <div className="createfeed-page">
-      <div className="createfeed-header">피드 생성</div>
+      <Header text="피드 생성"/>
       <div className="createfeed-body">
         <div className="form-wrapper">
           <label className="form-label" htmlFor="feedName">
