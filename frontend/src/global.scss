@@ -120,15 +120,15 @@ a {
 }
 
 @mixin input-common {
-  @include regular(12px);
+  @include regular(3.75vw);
   width: 100%;
-  height: 20px;
+  height: 6.6vw;
   background-color: $white;
   border: none;
   border-bottom: 1px solid $grey;
-  padding: 16px 16px 8px;
+  margin: 2.5vw 0;
   &::placeholder {
-    @include regular(12px, $grey-font);
+    @include regular(3.75vw, $grey-font);
   }
   &:focus {
     outline: none;
