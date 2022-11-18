@@ -1,4 +1,4 @@
-import { forwardRef, Inject } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -9,11 +9,9 @@ import {
 import UsersService from 'src/users/users.service';
 
 @ValidatorConstraint({ name: 'DuplicatNickname', async: true })
+@Injectable()
 export class DuplicatNickname implements ValidatorConstraintInterface {
-  constructor(
-    @Inject(forwardRef(() => UsersService))
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly userService: UsersService) {}
 
   async validate(nickname: string, args: ValidationArguments) {
     const user = await this.userService.getuserByNickname(nickname);
@@ -27,6 +25,7 @@ export class DuplicatNickname implements ValidatorConstraintInterface {
 }
 
 @ValidatorConstraint({ name: 'InvalideNickname', async: true })
+@Injectable()
 export class InvalidNickname implements ValidatorConstraintInterface {
   async validate(nickname: string, args: ValidationArguments) {
     return nickname.length < 10;

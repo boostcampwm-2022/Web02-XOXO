@@ -13,9 +13,8 @@ interface JoinUserInterface {
 
 export default class UserFacade {
   constructor(
-    @Inject(forwardRef(() => UsersService))
+    @Inject(forwardRef(() => UsersService)) // 여기 순환참조...
     private readonly userService: UsersService,
-    @Inject(forwardRef(() => OauthService))
     private readonly oauthService: OauthService,
   ) {}
 
@@ -33,6 +32,7 @@ export default class UserFacade {
   }: JoinUserInterface) {
     if (!kakaoId) throw new InvalidLoginDtoException('kakaoId');
     if (!profilePicture) throw new InvalidLoginDtoException('profilePicture');
+
     const joinMember = new JoinRequestDto(
       joinNicknameDto.nickname,
       kakaoId,

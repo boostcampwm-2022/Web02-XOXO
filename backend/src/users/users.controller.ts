@@ -22,9 +22,7 @@ import UserFacade from './users.facade';
 // todo: api controller 전역에 /api 추가해주는 것
 @Controller('users')
 export default class UsersController {
-  constructor(
-    @Inject(forwardRef(() => UserFacade)) readonly facade: UserFacade,
-  ) {}
+  constructor(private readonly facade: UserFacade) {}
 
   @Get('kakao')
   redirectToKakao(@Res() res: Response) {
