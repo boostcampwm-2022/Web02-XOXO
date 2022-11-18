@@ -1,7 +1,10 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDuplicateNickname,
+  IsValidNickname,
+} from 'src/customValidator/nicknameValidate';
 
 export default class JoinNicknameDto {
-  @IsString()
-  @IsNotEmpty()
+  @IsValidNickname()
+  @IsDuplicateNickname()
   nickname: string;
 }

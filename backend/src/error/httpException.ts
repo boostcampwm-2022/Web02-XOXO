@@ -1,7 +1,6 @@
-// eslint-disable-next-line max-classes-per-file
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class FailedToRedirectKakao extends HttpException {
+export class FailedToRedirectKakaoException extends HttpException {
   constructor() {
     super(
       {
@@ -13,7 +12,7 @@ export class FailedToRedirectKakao extends HttpException {
   }
 }
 
-export class FailedToLoginKakao extends HttpException {
+export class FailedToLoginKakaoException extends HttpException {
   constructor() {
     super(
       {
@@ -25,7 +24,7 @@ export class FailedToLoginKakao extends HttpException {
   }
 }
 
-export class InvalidLoginDto extends HttpException {
+export class InvalidLoginDtoException extends HttpException {
   constructor(invalidRow: string) {
     super(
       {
@@ -33,6 +32,30 @@ export class InvalidLoginDto extends HttpException {
         message: `${invalidRow}가 필요합니다.`,
       },
       HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
+
+export class DuplicateNicknameException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'DuplicateNickname',
+        message: '이미 존재하는 닉네임 입니다.',
+      },
+      HttpStatus.CONFLICT,
+    );
+  }
+}
+
+export class InvalidNicknameException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InvalidNickname',
+        message: '유효하지 않은 닉네임입니다.',
+      },
+      HttpStatus.CONFLICT,
     );
   }
 }

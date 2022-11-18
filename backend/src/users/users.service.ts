@@ -21,4 +21,11 @@ export default class UsersService {
     const userId = await this.userRepository.save(user);
     return userId;
   }
+
+  async getuserByNickname(nickname: string) {
+    const user = await this.userRepository.findOne({
+      where: { nickname },
+    });
+    return user;
+  }
 }
