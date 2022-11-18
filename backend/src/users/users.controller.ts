@@ -1,41 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Query,
-  Req,
-  Body,
-  Res,
-  HttpException,
-  BadRequestException,
-} from '@nestjs/common';
-import { profile } from 'console';
+import { Controller, Get, Post, Query, Req, Body, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { join } from 'path';
-import { OauthService } from 'src/oauth/oauth.service';
+import { FailedToRedirectKakao } from 'src/error/httpException';
 import JoinNicknameDto from './dto/join.nickname.dto';
-import JoinRequestDto from './dto/join.request.dto';
 import UserFacade from './users.facade';
-import UsersService from './users.service';
 
 // todo: api controller 전역에 /api 추가해주는 것
 @Controller('users')
 export default class UsersController {
-  constructor(
-    private readonly oauthService: OauthService,
-    private readonly userService: UsersService,
-    private readonly facade: UserFacade,
-  ) {}
+  constructor(private readonly facade: UserFacade) {}
 
   // eslint-disable-next-line class-methods-use-this
   @Get('kakao')
   redirectToKakao(@Res() res: Response) {
     if (!process.env.KAKAO_CLIENT_ID || !process.env.KAKAO_REDIRECT_URL)
-      // 상태코드를 뭐로 해야할지 모르겠음. 리다이렉션 실패는 어떻게 해야할까
-      throw new HttpException(
-        '카카오톡 로그인으로 리다이렉트를 실패했습니다.',
-        500,
-      );
+      throw new FailedToRedirectKakao();
 
     res.redirect(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.KAKAO_REDIRECT_URL}&response_type=code`,
@@ -63,6 +41,7 @@ export default class UsersController {
       });
       res.redirect('http://localhost:3001');
     }
+
     // 이미 가입한 유저니깐 로그인 처리 -> 토큰 발행
   }
 
@@ -73,15 +52,6 @@ export default class UsersController {
     @Req() req: Request,
   ) {
     const { kakaoId, profilePicture } = req.cookies;
-    if (!kakaoId) throw new BadRequestException('kakaoId가 존재하지 않습니다.');
-    if (!profilePicture)
-      throw new BadRequestException('profile 이미지가 존재하지 않습니다.');
-    const joinMember = new JoinRequestDto(
-      joinNicknameDto.nickname,
-      kakaoId,
-      profilePicture,
-    );
-    const userId = await this.userService.joinUser(joinMember);
-    return userId;
+    await this.facade.createUser({ joinNicknameDto, kakaoId, profilePicture });
   }
 }
