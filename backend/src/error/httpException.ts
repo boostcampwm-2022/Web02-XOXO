@@ -59,3 +59,15 @@ export class InvalidNicknameException extends HttpException {
     );
   }
 }
+
+export class InternalDBException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InternalDBException',
+        message: '서버에 오류가 발생하였습니다.',
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}

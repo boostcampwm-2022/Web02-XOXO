@@ -13,7 +13,9 @@ import { Response, Request } from 'express';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
+  InternalDBException,
 } from 'src/error/httpException';
+import DBError from 'src/error/serverError';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import UserFacade from './users.facade';
 
@@ -63,7 +65,15 @@ export default class UsersController {
     @Body() joinNicknameDto: JoinNicknameDto,
     @Req() req: Request,
   ) {
-    const { kakaoId, profilePicture } = req.cookies;
-    await this.facade.createUser({ joinNicknameDto, kakaoId, profilePicture });
+    try {
+      const { kakaoId, profilePicture } = req.cookies;
+      await this.facade.createUser({
+        joinNicknameDto,
+        kakaoId,
+        profilePicture,
+      });
+    } catch (e) {
+      if (e instanceof DBError) throw new InternalDBException();
+    }
   }
 }
