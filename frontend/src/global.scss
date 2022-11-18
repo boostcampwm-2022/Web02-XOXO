@@ -137,20 +137,18 @@ a {
 }
 
 @mixin circle($size: 32px, $has-border: false, $border-color: $black) {
-  div {
-    @include vhcenter;
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    overflow: hidden;
-    @if $has-border {
-      border: 1px solid $border-color;
-    }
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  @include vhcenter;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  overflow: hidden;
+  @if $has-border {
+    border: 1px solid $border-color;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
