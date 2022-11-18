@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -14,18 +14,18 @@ export default class Users {
 
   @IsString()
   @IsNotEmpty()
-  @Column('varchar', { name: 'nickname', length: 15 })
+  @Column('varchar', { name: 'nickname', length: 15, unique: true })
   nickname: string;
 
-  // to-do: url 판단 validatation annotation 추가
   @IsString()
   @IsNotEmpty()
+  @IsUrl()
   @Column('varchar', { name: 'profile' })
   profile: string;
 
   @IsNotEmpty()
   @IsString()
-  @Column('varchar', { name: 'kakaoId', length: 20 })
+  @Column('varchar', { name: 'kakaoId', length: 20, unique: true })
   kakaoId: string;
 
   @DeleteDateColumn()
