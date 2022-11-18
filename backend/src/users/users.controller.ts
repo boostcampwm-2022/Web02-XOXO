@@ -1,6 +1,9 @@
 import { Controller, Get, Post, Query, Req, Body, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { FailedToRedirectKakao } from 'src/error/httpException';
+import {
+  FailedToLoginKakao,
+  FailedToRedirectKakao,
+} from 'src/error/httpException';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import UserFacade from './users.facade';
 
@@ -20,26 +23,26 @@ export default class UsersController {
     );
   }
 
-  // 로그인 취소..?
-  //   HTTP/1.1 302 Found
-  // Content-Length: 0
-  // Location: ${REDIRECT_URI}?error=access_denied&error_description=User%20denied%20access
   // eslint-disable-next-line class-methods-use-this
-
   @Get('kakao/callback')
   async loginUser(@Query('code') code, @Res() res: Response) {
-    const { user, profilePicture, kakaoId } =
-      await this.facade.getUserInfoFromKakao(code);
-    if (!user) {
-      res.cookie('kakaoId', kakaoId, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 1000,
-      });
-      res.cookie('profilePicture', profilePicture, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 1000,
-      });
-      res.redirect('http://localhost:3001');
+    try {
+      const { user, profilePicture, kakaoId } =
+        await this.facade.getUserInfoFromKakao(code);
+      if (!user) {
+        res.cookie('kakaoId', kakaoId, {
+          httpOnly: true,
+          maxAge: 60 * 60 * 1000,
+        });
+        res.cookie('profilePicture', profilePicture, {
+          httpOnly: true,
+          maxAge: 60 * 60 * 1000,
+        });
+        res.redirect('http://localhost:3001');
+      }
+      throw new Error();
+    } catch (err) {
+      throw new FailedToLoginKakao();
     }
 
     // 이미 가입한 유저니깐 로그인 처리 -> 토큰 발행
