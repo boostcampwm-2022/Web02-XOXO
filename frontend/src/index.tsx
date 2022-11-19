@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import MainPage from '@src/pages/MainPage'
 import CreateFeed from '@src/pages/CreateFeed'
+import Posting from '@src/pages/Posting'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -10,6 +11,7 @@ root.render(
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/createfeed" element={<CreateFeed />} />
+      <Route path="/posting" element={<Posting />} />
     </Routes>
   </BrowserRouter>
 )
