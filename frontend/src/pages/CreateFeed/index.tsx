@@ -2,11 +2,21 @@ import React from 'react'
 import './styles.scss'
 import { ReactComponent as WarningIcon } from '@assets/warningIcon.svg'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
+import defaultUserImage from '@assets/defaultUserImage.svg'
+import Header from '@src/components/Header'
 const CreateFeed = () => {
   return (
     <div className="createfeed-page">
-      <div className="createfeed-header">피드 생성</div>
+      <Header page="CreateFeed" text={'피드 생성'} />
       <div className="createfeed-body">
+        <div className="profile-pic-wrapper">
+          <button>
+            <div className="profile-pic-circle">
+              <img src={defaultUserImage} alt="" />
+            </div>
+            <span>피드 사진 생성</span>
+          </button>
+        </div>
         <div className="form-wrapper">
           <label className="form-label" htmlFor="feedName">
             제목
@@ -20,7 +30,9 @@ const CreateFeed = () => {
           <input type="text" id="feedDescribe" placeholder="피드의 소개를 입력해주세요" />
         </div>
         <div className="form-wrapper">
-          <label className="form-label" htmlFor="dueDate"></label>
+          <label className="form-label" htmlFor="dueDate">
+            공개일
+          </label>
           <div className="form-warning">
             <WarningIcon />
             <span>한번 설정한 공개일은 추후에 바꿀 수 없습니다</span>
@@ -39,14 +51,14 @@ const CreateFeed = () => {
           </label>
           <span className="form-no-member">현재 추가된 그룹원이 없습니다</span>
           <div className="form-members-wrapper">
-            <div className="form-member">
-              <span>규현</span>
+            <button className="form-member">
+              <span>규규규규규</span>
               <XIcon />
-            </div>
+            </button>
           </div>
         </div>
+        <button className="button-large">피드 생성하기</button>
       </div>
-      <button className="button-large">피드 생성하기</button>
     </div>
   )
 }
