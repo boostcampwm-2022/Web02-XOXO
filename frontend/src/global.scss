@@ -103,16 +103,12 @@ a {
 }
 
 @mixin button-large($bg-color: $primary-3, $font-color: $white) {
+  @include bold(3.75vw, $font-color);
+  @include vhcenter;
   width: 100%;
   background-color: $bg-color;
-  padding: 12px 0;
+  padding: 3.75vw 0;
   border-radius: 6px;
-  div {
-    @include vhcenter;
-    span {
-      @include bold(12px, $font-color);
-    }
-  }
   &.disabled {
     cursor: default;
     background-color: $primary-2;
