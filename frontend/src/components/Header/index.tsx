@@ -11,31 +11,21 @@ interface headerProps {
 const Header = ({ page, text }: headerProps) => {
   const handleRenderHeader = () => {
     switch (page) {
-      case 'feed' :
+      case 'feed':
         return (
-            <div className='feed-header'>
-                <div className='text-wrapper'>
-                    <span className='text'>
-                        {text}
-                    </span>
-                    <DownIcon/>
-                </div>
-                <LogoutIcon/>
+          <div className="feed-header">
+            <div className="text-wrapper">
+              <span className="text">{text}</span>
+              <DownIcon />
             </div>
+            <LogoutIcon />
+          </div>
         )
-      default :
-        return (
-            <div>
-                {text}
-            </div>
-        )
+      default:
+        return <div className="default-header">{text}</div>
     }
   }
-  return (
-    <>
-        { handleRenderHeader() }
-    </>
-  )
+  return <>{handleRenderHeader()}</>
 }
 
 export default Header

@@ -1,13 +1,18 @@
-@import "@src/global";
+@import '@src/global';
 
-.feed-header{
-    @include header;
-    background-color: $white;
-    justify-content: space-between;
-    .text-wrapper{
-        @include vcenter;
-        .text{
-            margin-right: 4px;
-        }
+.feed-header {
+  @include header;
+  background-color: $white;
+  justify-content: space-between;
+  .text-wrapper {
+    @include vcenter;
+    .text {
+      margin-right: 4px;
     }
+  }
+}
+.default-header {
+  @include vhcenter;
+  @include bold(5.625vw, $black);
+  height: 20vw;
 }
