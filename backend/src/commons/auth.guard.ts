@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable, Req } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import UsersService from 'src/users/users.service';
+import { AuthenticationService } from 'src/authentication/authentication.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly authenticationService: AuthenticationService) {}
 
   canActivate(
     context: ExecutionContext,
@@ -14,6 +14,9 @@ export class AuthGuard implements CanActivate {
   }
 
   validateRequest(@Req() req: Request) {
+    const accessToken = req.headers.get('accessToken');
+    const payload = this.authenticationService.verifyToken(accessToken);
+    console.log(payload);
     return true;
   }
 }

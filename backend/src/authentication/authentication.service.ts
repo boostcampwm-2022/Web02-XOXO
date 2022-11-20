@@ -9,10 +9,9 @@ export class AuthenticationService {
     private readonly configService: ConfigService,
   ) {}
 
-  public getJwtTokenwithExpirationTime(nickname: string) {
+  getJwtTokenwithExpirationTime(nickname: string) {
     const accessTokenPayload = { nickname, tokenType: 'accessToken' };
     const refreshTokenPayload = { nickname, tokenType: 'refreshToken' };
-    console.log(accessTokenPayload);
 
     const accessToken = this.jwtService.sign(accessTokenPayload, {
       secret: this.configService.get('JWT_SECRET'),
@@ -30,5 +29,12 @@ export class AuthenticationService {
       refreshToken,
       refreshTokenExpires,
     };
+  }
+
+  verifyToken(token: string) {
+    const payload = this.jwtService.verify(token, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+    return payload;
   }
 }

@@ -99,4 +99,24 @@ export default class UsersController {
     // TODO :  회원가입하고 로그인 처리를 어떻게 할까?
     return userId;
   }
+
+  @Get('logout')
+  async logoutUser(@Req() req: Request, @Res() res: Response) {
+    const {
+      accessToken,
+      refreshToken,
+      accessTokenExpires,
+      refreshTokenExpires,
+    } = await this.userService.logOut();
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      expires: new Date(accessTokenExpires),
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      expires: new Date(refreshTokenExpires),
+    });
+
+    return res.redirect('http://localhost:3001');
+  }
 }

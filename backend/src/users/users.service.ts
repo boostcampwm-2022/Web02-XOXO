@@ -21,4 +21,13 @@ export default class UsersService {
     const userId = await this.userRepository.save(user);
     return userId;
   }
+
+  async logOut() {
+    return {
+      accessToken: '',
+      refreshToken: '',
+      accessTokenExpires: 0,
+      refreshTokenExpires: 0,
+    };
+  }
 }
