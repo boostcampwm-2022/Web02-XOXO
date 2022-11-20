@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { OauthService } from 'src/oauth/oauth.service';
 import UsersService from './users.service';
 
+@Injectable()
 export default class UserFacade {
   constructor(
     private readonly userService: UsersService,

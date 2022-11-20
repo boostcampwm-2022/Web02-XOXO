@@ -1,18 +1,19 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Req } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import UsersService from 'src/users/users.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(private usersService: UsersService) {}
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    if (!request.user) throw new UnauthorizedException('권한이 없습니다.');
+    return this.validateRequest(request);
+  }
+
+  validateRequest(@Req() req: Request) {
     return true;
   }
 }

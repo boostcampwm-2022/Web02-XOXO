@@ -9,9 +9,8 @@ import {
   HttpException,
   BadRequestException,
 } from '@nestjs/common';
-import { profile } from 'console';
 import { Response, Request } from 'express';
-import { join } from 'path';
+import { AuthenticationService } from 'src/authentication/authentication.service';
 import { OauthService } from 'src/oauth/oauth.service';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -25,6 +24,7 @@ export default class UsersController {
     private readonly oauthService: OauthService,
     private readonly userService: UsersService,
     private readonly facade: UserFacade,
+    private readonly authenticationService: AuthenticationService,
   ) {}
 
   // eslint-disable-next-line class-methods-use-this
@@ -36,7 +36,6 @@ export default class UsersController {
         '카카오톡 로그인으로 리다이렉트를 실패했습니다.',
         500,
       );
-
     res.redirect(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.KAKAO_REDIRECT_URL}&response_type=code`,
     );
@@ -61,9 +60,24 @@ export default class UsersController {
         httpOnly: true,
         maxAge: 60 * 60 * 1000,
       });
-      res.redirect('http://localhost:3001');
+      return res.redirect('http://localhost:3001');
     }
     // 이미 가입한 유저니깐 로그인 처리 -> 토큰 발행
+    const {
+      accessToken,
+      refreshToken,
+      accessTokenExpires,
+      refreshTokenExpires,
+    } = this.authenticationService.getJwtTokenwithExpirationTime(user.nickname);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      expires: new Date(accessTokenExpires),
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      expires: new Date(refreshTokenExpires),
+    });
+    return res.redirect('http://localhost:3001');
   }
 
   @Post('join')
@@ -82,6 +96,7 @@ export default class UsersController {
       profilePicture,
     );
     const userId = await this.userService.joinUser(joinMember);
+    // TODO :  회원가입하고 로그인 처리를 어떻게 할까?
     return userId;
   }
 }
