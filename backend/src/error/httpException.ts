@@ -71,3 +71,27 @@ export class InternalDBException extends HttpException {
     );
   }
 }
+
+export class InvalidFeedName extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InvalidFeedName',
+        message: '피드 제목은 15글자를 초과할 수 없습니다.',
+      },
+      HttpStatus.CONFLICT,
+    );
+  }
+}
+
+export class InvalidPostingDtoException extends HttpException {
+  constructor(emptyValue: string) {
+    super(
+      {
+        error: 'InvalidPostingDtoException',
+        message: `${emptyValue}는 필수값입니다.`,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
