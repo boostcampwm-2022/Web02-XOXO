@@ -8,9 +8,11 @@ import {
   Res,
   HttpException,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthenticationService } from 'src/authentication/authentication.service';
+import { AuthGuard } from 'src/commons/auth.guard';
 import { OauthService } from 'src/oauth/oauth.service';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -100,6 +102,7 @@ export default class UsersController {
     return userId;
   }
 
+  @UseGuards(AuthGuard)
   @Get('logout')
   async logoutUser(@Req() req: Request, @Res() res: Response) {
     const {

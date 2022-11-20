@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable, Req } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 
@@ -13,10 +13,7 @@ export class AuthGuard implements CanActivate {
     return this.validateRequest(request);
   }
 
-  validateRequest(@Req() req: Request) {
-    const accessToken = req.headers.get('accessToken');
-    const payload = this.authenticationService.verifyToken(accessToken);
-    console.log(payload);
+  validateRequest(request: Request) {
     return true;
   }
 }
