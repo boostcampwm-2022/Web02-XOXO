@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 import Users from 'src/entities/Users';
 import { OauthModule } from 'src/oauth/oauth.module';
@@ -18,7 +16,6 @@ import UsersService from './users.service';
     UserFacade,
     AuthenticationService,
     JwtService,
-    ConfigService,
     UserFacade,
   ],
 })

@@ -65,20 +65,13 @@ export default class UsersController {
       return res.redirect('http://localhost:3001');
     }
     // 이미 가입한 유저니깐 로그인 처리 -> 토큰 발행
-    const {
-      accessToken,
-      refreshToken,
-      accessTokenExpires,
-      refreshTokenExpires,
-    } = this.authenticationService.getJwtTokenwithExpirationTime(user.nickname);
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      expires: new Date(accessTokenExpires),
-    });
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      expires: new Date(refreshTokenExpires),
-    });
+    const { accessToken, ...accessTokenOption } =
+      this.authenticationService.getCookieWithJwtAccessToken(user.nickname);
+    const { refreshToken, ...refreshTokenOption } =
+      this.authenticationService.getCookieWithJwtRefreshToken(user.nickname);
+
+    res.cookie('refreshToken', refreshToken, refreshTokenOption);
+    res.cookie('accessToken', accessToken, accessTokenOption);
     return res.redirect('http://localhost:3001');
   }
 
