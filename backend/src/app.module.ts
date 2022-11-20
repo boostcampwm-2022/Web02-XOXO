@@ -5,7 +5,7 @@ import UsersModule from './users/users.module';
 import AppController from './app.controller';
 import AppService from './app.service';
 import configuration from '../configuration';
-import Users from './entities/Users';
+import Users from './entities/User.entity';
 
 @Module({
   imports: [
@@ -21,10 +21,10 @@ import Users from './entities/Users';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      synchronize: false,
+      synchronize: true,
       logging: true,
       keepConnectionAlive: true,
-      entities: [Users],
+      entities: [__dirname + '/entities/*.entity{.ts,.js}'],
     }),
     UsersModule,
   ],

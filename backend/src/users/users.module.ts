@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   DuplicatNickname,
   InvalidNickname,
-} from 'src/customValidator/nicknameValidate';
-import Users from 'src/entities/Users';
+} from 'src/customValidators/nicknameValidate';
+import Users from 'src/entities/User.entity';
 import { OauthModule } from 'src/oauth/oauth.module';
 import UsersController from './users.controller';
 import UserFacade from './users.facade';

@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
-import Users from '../../entities/Users';
+import Users from '../../entities/User.entity';
 
 export default class JoinRequestDto extends PickType(Users, [
   'profile',
