@@ -9,6 +9,10 @@ $grey: #ededed;
 $white: #ffffff;
 $error: #fd4747;
 
+body {
+  margin: 0;
+}
+
 @mixin font($color: $black) {
   font-family: 'Noto Sans KR';
   font-style: normal;
