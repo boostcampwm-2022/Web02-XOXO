@@ -15,7 +15,7 @@ import { AuthenticationService } from 'src/authentication/authentication.service
 import { AccessAuthGuard } from 'src/commons/accesstoken.guard';
 import { RefreshAuthGuard } from 'src/commons/refreshtoken.guard';
 import Users from 'src/entities/Users';
-import usersDecorators, { User } from './decorators/users.decorators';
+import { User } from './decorators/users.decorators';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
 import UserFacade from './users.facade';

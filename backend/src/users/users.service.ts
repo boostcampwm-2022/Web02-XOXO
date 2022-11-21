@@ -1,8 +1,9 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, compare } from 'bcrypt';
-import Users from 'src/entities/Users';
 import { Repository } from 'typeorm';
+import Users from '../entities/Users';
+
 import JoinRequestDto from './dto/join.request.dto';
 
 @Injectable()
@@ -12,9 +13,7 @@ export default class UsersService {
   ) {}
 
   async getUserByKakaoId(kakaoId: string) {
-    const user = await this.userRepository.findOne({
-      where: { kakaoId },
-    });
+    const user = await this.userRepository.findOne({ where: { kakaoId } });
     return user;
   }
 
