@@ -8,6 +8,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     display: flex;
+    z-index: 998;
 }
 .modal {
     position: absolute;
@@ -15,9 +16,10 @@
     margin-bottom: 2vw;
     padding: 2.5vw;
     border-radius: 2vw;
-    top: 52vh;
+    top: 100vw;
     left: 72vw;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.24);
+    z-index: 999;
     &:after{
         border: 2vw solid transparent;
         border-top-color: $white;

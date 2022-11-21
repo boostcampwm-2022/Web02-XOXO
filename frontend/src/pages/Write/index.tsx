@@ -40,13 +40,15 @@ const Write = () => {
 
   return (
         <div className='write-page'>
-            {isModalOpen ? <ThumbnailPreview isModalOpen={isModalOpen} setModalOpen={setModalOpen} /> : null}
+            {isModalOpen ? <ThumbnailPreview isModalOpen={isModalOpen} setModalOpen={setModalOpen} imageSrc={imagePreviews[0]}/> : null}
             <Header text="업로드"/>
             <div className="write-body">
                 <div className="image-list">
                   {imagePreviews.map((image, id) => (
                   <div className='image-holder' key={id}>
-                    <img className='image-holder' src={image} alt="이미지" />
+                    <div>
+                      <img className='image-holder' src={image} alt="이미지" />
+                    </div>
                     <div className="image-delete-button" onClick={() => handleDeleteImage(id)}>
                         <XIcon width="2.5vw" height="3.75vw" fill="#ffffff"/>
                   </div>
@@ -56,7 +58,7 @@ const Write = () => {
                 <div className="button-bar-wrapper">
                   <CameraIcon onClick={onUploadImageButtonClick}/>
                   <input type="file" multiple className="image-input" accept='image/*' ref={inputRef} onChange={handleAddImagePreviews}/>
-                  <button className='thumbnail-preview' onClick={handleModal}>썸네일 미리보기</button>
+                  <button className='thumbnail-preview' onClick={handleModal} disabled={imagePreviews.length === 0}>썸네일 미리보기</button>
                 </div>
                 <textarea className='text-area' placeholder='글 내용을 입력해주세요'/>
               <button className="write-button">
