@@ -1,5 +1,4 @@
 import { OauthService } from 'src/oauth/oauth.service';
-import { InvalidLoginDtoException } from 'src/error/httpException';
 import { forwardRef, Inject } from '@nestjs/common';
 import UsersService from './users.service';
 import JoinRequestDto from './dto/join.request.dto';
