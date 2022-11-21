@@ -45,8 +45,11 @@ export class FeedController {
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    await this.feedService.createGroupFeed(createFeedDto, memberIdList);
+    const encryuptedFeedID = await this.feedService.createGroupFeed(
+      createFeedDto,
+      memberIdList,
+    );
 
-    return 'groupFeed';
+    return encryuptedFeedID;
   }
 }
