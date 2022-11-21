@@ -9,7 +9,8 @@ export class AuthenticationService {
     const payload = { nickname, tokenType: 'accessToken' };
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: Number(process.env.JWT_EXPIRATION_TIME) * 1000 * 60,
+      expiresIn: '1s',
+      // expiresIn: Number(process.env.JWT_EXPIRATION_TIME) * 1000 * 60,
     });
     return {
       accessToken,
@@ -21,7 +22,7 @@ export class AuthenticationService {
     const payload = { nickname, tokenType: 'refreshToken' };
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: '7d',
+      expiresIn: '1m',
     });
     return {
       refreshToken,

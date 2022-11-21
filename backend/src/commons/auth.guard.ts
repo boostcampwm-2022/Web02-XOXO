@@ -21,13 +21,13 @@ export class AuthGuard implements CanActivate {
     if (accessToken === undefined)
       throw new HttpException('Token이 없습니다.', HttpStatus.UNAUTHORIZED);
 
-    request.user = this.validateAccessToken(accessToken);
+    request.user = this.validateToken(accessToken);
     return true;
   }
 
-  validateAccessToken(accessToken: string) {
+  validateToken(token: string) {
     try {
-      const user = this.authenticationService.verifyToken(accessToken);
+      const user = this.authenticationService.verifyToken(token);
       return user.nickname;
     } catch (error) {
       switch (error.message) {

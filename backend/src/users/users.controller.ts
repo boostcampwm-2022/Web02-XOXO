@@ -13,6 +13,7 @@ import {
 import { Response, Request } from 'express';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 import { AuthGuard } from 'src/commons/auth.guard';
+import { RefreshAuthGuard } from 'src/commons/refreshtoken.guard';
 import { OauthService } from 'src/oauth/oauth.service';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -20,6 +21,7 @@ import UserFacade from './users.facade';
 import UsersService from './users.service';
 
 // todo: api controller 전역에 /api 추가해주는 것
+
 @Controller('users')
 export default class UsersController {
   constructor(
@@ -28,6 +30,10 @@ export default class UsersController {
     private readonly facade: UserFacade,
     private readonly authenticationService: AuthenticationService,
   ) {}
+
+  @UseGuards(RefreshAuthGuard)
+  @Get('test')
+  testingRefreshToken(@Res() res: Response) {}
 
   // eslint-disable-next-line class-methods-use-this
   @Get('kakao')
@@ -64,7 +70,7 @@ export default class UsersController {
       });
       return res.redirect('http://localhost:3001');
     }
-    // 이미 가입한 유저니깐 로그인 처리 -> 토큰 발행
+
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(user.nickname);
     const { refreshToken, ...refreshTokenOption } =
