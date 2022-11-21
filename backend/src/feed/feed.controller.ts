@@ -1,15 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import CreateFeedDto from './dto/create.feed.dto';
 import { FeedService } from './feed.service';
 import { Feed } from 'src/customDecorator/feed.decorator';
 import userIdDto from './dto/create.userId.dto';
+import { decrypt } from './feed.utils';
 
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
-  async post(
+  async createPosting(
     @Body('userId') userId: number,
     @Feed() createFeedDto: CreateFeedDto,
   ) {
@@ -20,5 +21,11 @@ export class FeedController {
     );
 
     return feedParam;
+  }
+
+  @Patch('/:feedId')
+  async editPosting(@Param('feedId') encryptedFeedId: string) {
+    const feedId = decrypt(encryptedFeedId);
+    return feedId;
   }
 }
