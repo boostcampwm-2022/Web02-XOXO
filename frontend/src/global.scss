@@ -57,10 +57,10 @@ body {
 }
 
 @mixin page {
+  @include scroll;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100vh;
 }
 
 @mixin header {
@@ -85,7 +85,6 @@ body {
 }
 
 @mixin body {
-  @include scroll;
   flex: 1;
   padding: 16px;
 }
@@ -123,7 +122,7 @@ a {
 
 @mixin input-common {
   @include regular(3.75vw);
-  width: 100%;
+  width: calc(100%-32px);
   height: 6.6vw;
   background-color: $white;
   border: none;
