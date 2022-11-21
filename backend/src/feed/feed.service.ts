@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createWriteStream } from 'fs';
 import { Feed } from 'src/entities/Feed.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
+import { NonExistUserIdException } from 'src/error/httpException';
 import DBError from 'src/error/serverError';
 import { DataSource, Repository } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
@@ -33,6 +34,10 @@ export class FeedService {
     } catch (e) {
       console.log(e);
       await queryRunner.rollbackTransaction();
+
+      if (e.code === 'ER_NO_REFERENCED_ROW_2')
+        throw new NonExistUserIdException();
+
       throw new DBError('DBError: createFeed 오류');
     } finally {
       await queryRunner.release();
