@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsUrl } from 'class-validator';
+import { IsDate, IsDateString, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsValidFeedName } from 'src/customValidators/feedValidate';
 import {
   Entity,
   Column,
@@ -16,6 +17,7 @@ export class Feed {
   id: number;
 
   @IsNotEmpty()
+  @IsValidFeedName()
   @Column({ type: 'varchar', length: 15 })
   name: string;
 
@@ -30,9 +32,9 @@ export class Feed {
 
   @IsNotEmpty()
   @Column({ type: 'datetime' })
-  dueDate: string;
+  dueDate: Date;
 
-  @Column('int')
+  @Column('int', { default: 0 })
   memberCount: number;
 
   @DeleteDateColumn()
