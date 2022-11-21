@@ -28,6 +28,7 @@ export class DuplicatNickname implements ValidatorConstraintInterface {
 @Injectable()
 export class InvalidNickname implements ValidatorConstraintInterface {
   async validate(nickname: string, args: ValidationArguments) {
+    if (!nickname) return false;
     return nickname.length < 10;
   }
 

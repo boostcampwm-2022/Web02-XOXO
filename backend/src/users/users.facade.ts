@@ -4,11 +4,11 @@ import { forwardRef, Inject } from '@nestjs/common';
 import UsersService from './users.service';
 import JoinRequestDto from './dto/join.request.dto';
 import JoinNicknameDto from './dto/join.nickname.dto';
+import JoinCookieDto from './dto/join.cookie.dto';
 
 interface JoinUserInterface {
   joinNicknameDto: JoinNicknameDto;
-  kakaoId: string | undefined;
-  profilePicture: string | undefined;
+  joinCookieDto: JoinCookieDto;
 }
 
 export default class UserFacade {
@@ -25,18 +25,11 @@ export default class UserFacade {
     return { user, profilePicture, kakaoId };
   }
 
-  async createUser({
-    joinNicknameDto,
-    kakaoId,
-    profilePicture,
-  }: JoinUserInterface) {
-    if (!kakaoId) throw new InvalidLoginDtoException('kakaoId');
-    if (!profilePicture) throw new InvalidLoginDtoException('profilePicture');
-
+  async createUser({ joinNicknameDto, joinCookieDto }: JoinUserInterface) {
     const joinMember = new JoinRequestDto(
       joinNicknameDto.nickname,
-      kakaoId,
-      profilePicture,
+      joinCookieDto.kakaoId,
+      joinCookieDto.profilePicture,
     );
     const userId = await this.userService.joinUser(joinMember);
     return userId;

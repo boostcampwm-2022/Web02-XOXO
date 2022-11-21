@@ -11,7 +11,7 @@ export default class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async getUserByKakaoId(kakaoId: string) {
+  async getUserByKakaoId(kakaoId: number) {
     const user = await this.userRepository.findOne({
       where: { kakaoId },
     });

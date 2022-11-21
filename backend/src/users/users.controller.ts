@@ -1,11 +1,14 @@
 import { Controller, Get, Post, Query, Req, Body, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { Cookie } from 'src/customDecorator/cookie.decorator';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
   InternalDBException,
 } from 'src/error/httpException';
 import DBError from 'src/error/serverError';
+import ValidationPipe422 from 'src/validation';
+import JoinCookieDto from './dto/join.cookie.dto';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import UserFacade from './users.facade';
 
@@ -51,14 +54,13 @@ export default class UsersController {
   @Post('join')
   async joinUser(
     @Body() joinNicknameDto: JoinNicknameDto,
-    @Req() req: Request,
+    @Cookie(new ValidationPipe422({ validateCustomDecorators: true }))
+    joinCookieDto: JoinCookieDto,
   ) {
     try {
-      const { kakaoId, profilePicture } = req.cookies;
       await this.facade.createUser({
         joinNicknameDto,
-        kakaoId,
-        profilePicture,
+        joinCookieDto,
       });
     } catch (e) {
       if (e instanceof DBError) throw new InternalDBException();

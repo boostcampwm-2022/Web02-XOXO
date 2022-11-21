@@ -27,9 +27,8 @@ export default class User {
   profile: string;
 
   @IsNotEmpty()
-  @IsString()
-  @Column('varchar', { name: 'kakaoId', length: 20, unique: true })
-  kakaoId: string;
+  @Column('int', { name: 'kakaoId', unique: true })
+  kakaoId: number;
 
   @DeleteDateColumn()
   deletedAt: Date | null;
