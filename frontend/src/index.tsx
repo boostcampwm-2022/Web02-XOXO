@@ -5,6 +5,7 @@ import Feed from '@src/pages/Feed'
 import CreateFeed from '@src/pages/CreateFeed'
 import Write from '@pages/Write'
 import SignIn from '@pages/SignIn'
+import Posting from '@src/pages/Posting'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -14,6 +15,7 @@ root.render(
       <Route path="/Write" element={<Write />} />
       <Route path="/SignIn" element={<SignIn />} />
       <Route path="/createfeed" element={<CreateFeed />} />
+      <Route path="/posting" element={<Posting />} />
     </Routes>
   </BrowserRouter>
 )

@@ -10,10 +10,15 @@ export default class UsersService {
     @InjectRepository(Users) private userRepository: Repository<Users>,
   ) {}
 
-  async postUser(data: JoinRequestDto) {
+  async getUserByKakaoId(kakaoId: string) {
     const user = await this.userRepository.findOne({
-      where: { nickname: data.nickname },
+      where: { kakaoId },
     });
-    if (user) throw new Error('이미 존재하는 사용자입니다.');
+    return user;
+  }
+
+  async joinUser(user: JoinRequestDto) {
+    const userId = await this.userRepository.save(user);
+    return userId;
   }
 }

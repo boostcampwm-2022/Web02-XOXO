@@ -1,4 +1,4 @@
-@import "@src/global";
+@import '@src/global';
 
 .feed-header {
   @include header;
@@ -11,4 +11,9 @@
       margin-right: 4px;
     }
   }
+}
+.default-header {
+  @include vhcenter;
+  @include bold(5.625vw, $black);
+  height: 20vw;
 }
