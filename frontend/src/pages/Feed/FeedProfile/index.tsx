@@ -11,14 +11,11 @@ const FeedProfile = () => {
     <div>
         <div className="feed-profile-header">
             <div className="feed-profile-image-wrapper">
-                <div className="feed-profile-image"><div className="circle">
-                <img src={feedInfo.image !== '' ? feedInfo.image : DefaultUserImage} alt="유저 프로필 이미지"/>
+                <div className="feed-profile-image">
+                    <img src={feedInfo.image !== '' ? feedInfo.image : DefaultUserImage} alt="유저 프로필 이미지"/>
                 </div>
-                </div>
-            <div className="edit-button">
-                <div className="circle">
+                <div className="edit-button">
                     <EditIcon/>
-                </div>
                 </div>
             </div>
             <div className="feed-profile-info-wrapper">

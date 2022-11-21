@@ -5,10 +5,7 @@
     margin: 0 -16px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-    @media screen and (max-width: 718px) {
     gap: 1px;
-    }
 }
 
 .posting-container {

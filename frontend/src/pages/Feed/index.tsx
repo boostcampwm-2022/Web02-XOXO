@@ -1,8 +1,8 @@
 import React from 'react'
 import './style.scss'
-import FeedPostingList from '@src/components/FeedPostingList'
-import FeedProfile from '@src/components/FeedProfile'
-import Header from '@src/components/Header'
+import FeedPostingList from './FeedPostingList'
+import FeedProfile from './FeedProfile'
+import Header from '@components/Header'
 
 const MainPage = () => {
   // 테스트 데이터
