@@ -1,17 +1,20 @@
+import { ArgumentMetadata, ValidationPipe } from '@nestjs/common';
 import {
-  ArgumentMetadata,
-  BadRequestException,
-  UnprocessableEntityException,
-  ValidationPipe,
-} from '@nestjs/common';
+  DuplicateNicknameException,
+  InvalidNicknameException,
+} from './error/httpException';
 
 export default class ValidationPipe422 extends ValidationPipe {
   public async transform(value, metadata: ArgumentMetadata) {
     try {
       return await super.transform(value, metadata);
     } catch (e) {
-      if (e instanceof BadRequestException) {
-        throw new UnprocessableEntityException('custom error');
+      const res = e.response;
+      if (res.message.includes('InvalidNickname')) {
+        throw new InvalidNicknameException();
+      }
+      if (res.message.includes('DuplicateNickname')) {
+        throw new DuplicateNicknameException();
       }
     }
   }
