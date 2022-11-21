@@ -1,7 +1,7 @@
 import {
   IsDuplicateNickname,
   IsValidNickname,
-} from 'src/customValidator/nicknameValidate';
+} from 'src/customValidators/nicknameValidate';
 
 export default class JoinNicknameDto {
   @IsValidNickname()

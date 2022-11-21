@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Query,
-  Req,
-  Body,
-  Res,
-  Inject,
-  forwardRef,
-} from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, Body, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
 import {
   FailedToLoginKakaoException,
@@ -72,6 +62,7 @@ export default class UsersController {
       });
     } catch (e) {
       if (e instanceof DBError) throw new InternalDBException();
+      else throw e;
     }
   }
 }

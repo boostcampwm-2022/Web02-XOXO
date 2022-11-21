@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FeedModule } from './feed/feed.module';
 import UsersModule from './users/users.module';
 import AppController from './app.controller';
 import AppService from './app.service';
 import configuration from '../configuration';
-import Users from './entities/Users';
+import Users from './entities/User.entity';
 
 @Module({
   imports: [
@@ -24,9 +25,10 @@ import Users from './entities/Users';
       synchronize: false,
       logging: true,
       keepConnectionAlive: true,
-      entities: [Users],
+      entities: [__dirname + '/entities/*.entity{.ts,.js}'],
     }),
     UsersModule,
+    FeedModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
