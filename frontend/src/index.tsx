@@ -14,7 +14,6 @@ root.render(
       <Route path="/Write" element={<Write />} />
       <Route path="/SignIn" element={<SignIn />} />
       <Route path="/createfeed" element={<CreateFeed />} />
-      <Route path="/SignIn" element={<SignIn />} />
     </Routes>
   </BrowserRouter>
 )
