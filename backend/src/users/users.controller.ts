@@ -98,19 +98,14 @@ export default class UsersController {
   @UseGuards(AuthGuard)
   @Get('logout')
   async logoutUser(@Req() req: Request, @Res() res: Response) {
-    const {
-      accessToken,
-      refreshToken,
-      accessTokenExpires,
-      refreshTokenExpires,
-    } = await this.userService.logOut();
+    const { accessToken, refreshToken } = await this.userService.logOut();
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      expires: new Date(accessTokenExpires),
+      maxAge: 0,
     });
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      expires: new Date(refreshTokenExpires),
+      maxAge: 0,
     });
 
     return res.redirect('http://localhost:3001');

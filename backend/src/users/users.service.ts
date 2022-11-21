@@ -26,8 +26,6 @@ export default class UsersService {
     return {
       accessToken: '',
       refreshToken: '',
-      accessTokenExpires: 0,
-      refreshTokenExpires: 0,
     };
   }
 }
