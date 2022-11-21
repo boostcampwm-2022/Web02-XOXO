@@ -34,7 +34,7 @@ const Write = () => {
 
   return (
         <div className='write-page'>
-            <Header page="feed" text="업로드"/>
+            <Header text="업로드"/>
             <div className="write-body">
                 <div className="image-list">
                   {imagePreviews.map((image, id) => (
