@@ -5,12 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthenticationService {
   constructor(private readonly jwtService: JwtService) {}
 
-  getCookieWithJwtAccessToken(nickname: string) {
-    const payload = { nickname, tokenType: 'accessToken' };
+  getCookieWithJwtAccessToken(nickname: string, id: number) {
+    const payload = { id, nickname, tokenType: 'accessToken' };
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: '1s',
-      // expiresIn: Number(process.env.JWT_EXPIRATION_TIME) * 1000 * 60,
+      expiresIn: 60 * 1000 * Number(process.env.JWT_EXPIRATION_TIME),
     });
     return {
       accessToken,
@@ -18,11 +17,11 @@ export class AuthenticationService {
     };
   }
 
-  getCookieWithJwtRefreshToken(nickname: string) {
-    const payload = { nickname, tokenType: 'refreshToken' };
+  getCookieWithJwtRefreshToken(nickname: string, id: number) {
+    const payload = { id, nickname, tokenType: 'refreshToken' };
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: '1m',
+      expiresIn: 7 * 24 * 60 * 60 * 1000,
     });
     return {
       refreshToken,

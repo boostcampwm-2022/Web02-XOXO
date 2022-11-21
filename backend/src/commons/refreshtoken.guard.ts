@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,43 +5,32 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { AuthenticationService } from 'src/authentication/authentication.service';
+import UsersService from 'src/users/users.service';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly usersService: UsersService,
+  ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const { accessToken, refreshToken } = request.cookies;
-    if (accessToken === undefined)
+    const { refreshToken } = request.cookies;
+    if (refreshToken === undefined)
       throw new HttpException('Token이 없습니다.', HttpStatus.UNAUTHORIZED);
-    try {
-      request.user = this.validateToken(accessToken);
-      return true;
-    } catch (error) {
-      if (error.status === 410) {
-        if (refreshToken === undefined)
-          throw new HttpException(
-            'refreshToken이 없습니다',
-            HttpStatus.UNAUTHORIZED,
-          );
-        const verify = this.validateToken(refreshToken);
-        if (verify) {
-          return true;
-        }
-      }
-      return false;
-    }
+    request.user = await this.validateToken(refreshToken);
+    return true;
   }
 
-  validateToken(token: string) {
+  async validateToken(token: string) {
     try {
-      const user = this.authenticationService.verifyToken(token);
-      return user.nickname;
+      const user = await this.authenticationService.verifyToken(token);
+      return await this.usersService.getUserIfRefreshTokenMatches(
+        token,
+        user.id,
+      );
     } catch (error) {
       switch (error.message) {
         case 'invalid token':

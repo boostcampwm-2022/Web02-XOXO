@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { hash, compare } from 'bcrypt';
 import Users from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import JoinRequestDto from './dto/join.request.dto';
@@ -22,10 +23,26 @@ export default class UsersService {
     return userId;
   }
 
-  async logOut() {
-    return {
-      accessToken: '',
-      refreshToken: '',
-    };
+  async setCurrentRefreshToken(refreshtoken: string, id: number) {
+    const currentHashedRefreshToken = await hash(refreshtoken, 10);
+    await this.userRepository.update(id, { currentHashedRefreshToken });
+  }
+
+  async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new HttpException('권한이 인증되지 않았습니다.', 401);
+    const isRefreshTokenMatched = await compare(
+      refreshtoken,
+      user.currentHashedRefreshToken,
+    );
+    if (!isRefreshTokenMatched)
+      throw new HttpException('권한이 인증되지 않았습니다.', 401);
+    return user;
+  }
+
+  async removeRefreshToken(id: number) {
+    return this.userRepository.update(id, {
+      currentHashedRefreshToken: null,
+    });
   }
 }

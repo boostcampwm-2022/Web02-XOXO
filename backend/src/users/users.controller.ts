@@ -12,30 +12,41 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthenticationService } from 'src/authentication/authentication.service';
-import { AuthGuard } from 'src/commons/auth.guard';
+import { AccessAuthGuard } from 'src/commons/accesstoken.guard';
 import { RefreshAuthGuard } from 'src/commons/refreshtoken.guard';
-import { OauthService } from 'src/oauth/oauth.service';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
 import UserFacade from './users.facade';
 import UsersService from './users.service';
 
-// todo: api controller 전역에 /api 추가해주는 것
-
 @Controller('users')
 export default class UsersController {
   constructor(
-    private readonly oauthService: OauthService,
     private readonly userService: UsersService,
     private readonly facade: UserFacade,
     private readonly authenticationService: AuthenticationService,
   ) {}
 
   @UseGuards(RefreshAuthGuard)
-  @Get('test')
-  testingRefreshToken(@Res() res: Response) {}
+  @Get('refresh')
+  async refreshToken(@Req() req: Request, @Res() res: Response) {
+    const { user } = req;
+    const { accessToken, ...accessTokenOption } =
+      this.authenticationService.getCookieWithJwtAccessToken(
+        user['nickname'],
+        user['id'],
+      );
+    const { refreshToken, ...refreshTokenOption } =
+      this.authenticationService.getCookieWithJwtRefreshToken(
+        user['nickname'],
+        user['id'],
+      );
+    await this.userService.setCurrentRefreshToken(refreshToken, user['id']);
+    res.cookie('refreshToken', refreshToken, refreshTokenOption);
+    res.cookie('accessToken', accessToken, accessTokenOption);
+    return res.redirect('http://localhost:3001');
+  }
 
-  // eslint-disable-next-line class-methods-use-this
   @Get('kakao')
   redirectToKakao(@Res() res: Response) {
     if (!process.env.KAKAO_CLIENT_ID || !process.env.KAKAO_REDIRECT_URL)
@@ -48,12 +59,6 @@ export default class UsersController {
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.KAKAO_REDIRECT_URL}&response_type=code`,
     );
   }
-
-  // 로그인 취소..?
-  //   HTTP/1.1 302 Found
-  // Content-Length: 0
-  // Location: ${REDIRECT_URI}?error=access_denied&error_description=User%20denied%20access
-  // eslint-disable-next-line class-methods-use-this
 
   @Get('kakao/callback')
   async loginUser(@Query('code') code, @Res() res: Response) {
@@ -72,10 +77,16 @@ export default class UsersController {
     }
 
     const { accessToken, ...accessTokenOption } =
-      this.authenticationService.getCookieWithJwtAccessToken(user.nickname);
+      this.authenticationService.getCookieWithJwtAccessToken(
+        user.nickname,
+        user.id,
+      );
     const { refreshToken, ...refreshTokenOption } =
-      this.authenticationService.getCookieWithJwtRefreshToken(user.nickname);
-
+      this.authenticationService.getCookieWithJwtRefreshToken(
+        user.nickname,
+        user.id,
+      );
+    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
     return res.redirect('http://localhost:3001');
@@ -101,19 +112,13 @@ export default class UsersController {
     return userId;
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AccessAuthGuard)
   @Get('logout')
   async logoutUser(@Req() req: Request, @Res() res: Response) {
-    const { accessToken, refreshToken } = await this.userService.logOut();
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      maxAge: 0,
-    });
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 0,
-    });
-
+    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
+    console.log(req.user);
+    await this.userService.removeRefreshToken(req.user['id']);
     return res.redirect('http://localhost:3001');
   }
 }

@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import {
   Entity,
@@ -30,4 +31,8 @@ export default class Users {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @Column({ nullable: true })
+  @Exclude()
+  currentHashedRefreshToken?: string;
 }

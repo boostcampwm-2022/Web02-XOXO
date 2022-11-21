@@ -8,27 +8,28 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from 'src/authentication/authentication.service';
+import UsersService from 'src/users/users.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+export class AccessAuthGuard implements CanActivate {
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly usersService: UsersService,
+  ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const { accessToken } = request.cookies;
     if (accessToken === undefined)
       throw new HttpException('Token이 없습니다.', HttpStatus.UNAUTHORIZED);
-
-    request.user = this.validateToken(accessToken);
+    request.user = await this.validateToken(accessToken);
     return true;
   }
 
-  validateToken(token: string) {
+  async validateToken(token: string) {
     try {
-      const user = this.authenticationService.verifyToken(token);
-      return user.nickname;
+      const user = await this.authenticationService.verifyToken(token);
+      return user;
     } catch (error) {
       switch (error.message) {
         case 'invalid token':
