@@ -1,9 +1,10 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { createWriteStream } from 'fs';
 import { Feed } from 'src/entities/Feed.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
 import DBError from 'src/error/serverError';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
 
 @Injectable()
@@ -12,17 +13,29 @@ export class FeedService {
     @InjectRepository(Feed) private feedRepository: Repository<Feed>,
     @InjectRepository(UserFeedMapping)
     private userFeedMapRepository: Repository<UserFeedMapping>,
+    private dataSource: DataSource,
   ) {}
 
-  async createFeed(createFeedReqDto: CreateFeedDto, userId: number) {
+  async createFeed(createFeedDto: CreateFeedDto, userId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      console.log(createFeedReqDto);
-      const feed = await this.feedRepository.save(createFeedReqDto);
-      await this.userFeedMapRepository.save({ feedId: feed.id, userId });
+      const feed = await queryRunner.manager
+        .getRepository(Feed)
+        .save(createFeedDto);
+      await queryRunner.manager
+        .getRepository(UserFeedMapping)
+        .save({ feedId: feed.id, userId });
+      await queryRunner.commitTransaction();
       return feed;
     } catch (e) {
       console.log(e);
-      throw new DBError('DBError: createFeed .save() 오류');
+      await queryRunner.rollbackTransaction();
+      throw new DBError('DBError: createFeed 오류');
+    } finally {
+      await queryRunner.release();
     }
   }
 }

@@ -1,12 +1,5 @@
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  DeleteDateColumn,
-  ManyToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { IsExistUserId } from 'src/customValidators/userIdValidate';
+import { Entity, DeleteDateColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Feed } from './Feed.entity';
 import User from './User.entity';
 

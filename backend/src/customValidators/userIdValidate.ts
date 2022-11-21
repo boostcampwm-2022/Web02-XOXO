@@ -24,10 +24,10 @@ export class ExistUserId implements ValidatorConstraintInterface {
   }
 }
 
-export function IsExistNickname(validationOptions?: ValidationOptions) {
+export function IsExistUserId(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
-      name: 'IsExistNickname',
+      name: 'IsExistUserId',
       target: object.constructor,
       propertyName,
       options: validationOptions,
