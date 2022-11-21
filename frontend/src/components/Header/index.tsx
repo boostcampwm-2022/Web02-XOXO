@@ -1,5 +1,6 @@
 import React from 'react'
 import './style.scss'
+import { Link } from 'react-router-dom'
 import { ReactComponent as DownIcon } from '@assets/downIcon.svg'
 import { ReactComponent as LogoutIcon } from '@assets/logoutIcon.svg'
 
@@ -14,10 +15,10 @@ const Header = ({ page, text }: headerProps) => {
       case 'feed':
         return (
           <div className="feed-header">
-            <div className="text-wrapper">
+            <Link className="text-wrapper" to="/feeds">
               <span className="text">{text}</span>
               <DownIcon />
-            </div>
+            </Link>
             <LogoutIcon />
           </div>
         )
