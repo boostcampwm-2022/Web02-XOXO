@@ -1,16 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Query,
-  Req,
-  Body,
-  Res,
-  Inject,
-  forwardRef,
-} from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, Body, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
-import Users from 'src/entities/User.entity';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
@@ -18,7 +7,6 @@ import {
 } from 'src/error/httpException';
 import DBError from 'src/error/serverError';
 import JoinNicknameDto from './dto/join.nickname.dto';
-import testDTO from './dto/test.dto';
 import UserFacade from './users.facade';
 
 // todo: api controller 전역에 /api 추가해주는 것
@@ -75,16 +63,6 @@ export default class UsersController {
     } catch (e) {
       if (e instanceof DBError) throw new InternalDBException();
       else throw e;
-    }
-  }
-
-  @Get('test')
-  test(@Body() testdto: testDTO) {
-    try {
-      console.log('test');
-      const testdto = new testDTO('hello');
-    } catch (e) {
-      console.log(e);
     }
   }
 }
