@@ -7,13 +7,13 @@
   .text-wrapper {
     @include vcenter;
     .text {
-      @include bold(5.625vw, $black);
+      @include bold(5vw, $black);
       margin-right: 4px;
     }
   }
 }
 .default-header {
   @include vhcenter;
-  @include bold(5.625vw, $black);
-  height: 20vw;
+  @include bold(5vw, $black);
+  height: 16vw;
 }

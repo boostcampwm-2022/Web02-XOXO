@@ -24,7 +24,7 @@
 .form-wrapper {
   @include display-col(1.25vw);
   .form-label {
-    @include bold(4.375vw, $black);
+    @include medium(4.375vw, $black);
   }
   input {
     @include input-common;

@@ -53,7 +53,7 @@ const CreateFeed = () => {
           <div className="form-members-wrapper">
             <button className="form-member">
               <span>규규규규규</span>
-              <XIcon />
+              <XIcon fill="#ea4b35" />
             </button>
           </div>
         </div>
