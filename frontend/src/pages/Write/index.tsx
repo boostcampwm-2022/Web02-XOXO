@@ -37,6 +37,10 @@ const Write = () => {
     e.stopPropagation()
     setModalOpen(true)
   }
+  const isDisabledButton = () => {
+    console.log(imagePreviews.length)
+    return imagePreviews.length === 0
+  }
 
   return (
         <div className='write-page'>
@@ -44,28 +48,29 @@ const Write = () => {
             <Header text="업로드"/>
             <div className="write-body">
                 <div className="image-list">
-                  {imagePreviews.map((image, id) => (
-                  <div className='image-holder' key={id}>
-                    <div>
-                      <img className='image-holder' src={image} alt="이미지" />
-                    </div>
-                    <div className="image-delete-button" onClick={() => handleDeleteImage(id)}>
-                        <XIcon width="2.5vw" height="3.75vw" fill="#ffffff"/>
-                  </div>
-                  </div>
-                  ))}
+                  {imagePreviews.length === 0
+                    ? <div className="text-container">
+                        <p className="title">아직 사진이 추가되지 않았어요</p>
+                        <p className="desc">아래 버튼을 눌러 사진을 추가해주세요!</p>
+                      </div>
+                    : imagePreviews.map((image, id) => (
+                        <div className='image-holder' key={id}>
+                          <div>
+                            <img className='image-holder' src={image} alt="이미지" />
+                          </div>
+                          <div className="image-delete-button" onClick={() => handleDeleteImage(id)}>
+                              <XIcon width="2.5vw" height="3.75vw" fill="#ffffff"/>
+                          </div>
+                        </div>
+                    ))}
                 </div>
                 <div className="button-bar-wrapper">
                   <CameraIcon onClick={onUploadImageButtonClick}/>
                   <input type="file" multiple className="image-input" accept='image/*' ref={inputRef} onChange={handleAddImagePreviews}/>
-                  <button className='thumbnail-preview' onClick={handleModal} disabled={imagePreviews.length === 0}>썸네일 미리보기</button>
+                  <button className='thumbnail-preview' onClick={handleModal} disabled={isDisabledButton()}>썸네일 미리보기</button>
                 </div>
                 <textarea className='text-area' placeholder='글 내용을 입력해주세요'/>
-              <button className="write-button">
-                <div>
-                  <span>게시물 업로드 하기</span>
-                </div>
-              </button>
+              <button className="write-button" disabled={isDisabledButton()}>게시물 업로드 하기</button>
             </div>
         </div>
   )

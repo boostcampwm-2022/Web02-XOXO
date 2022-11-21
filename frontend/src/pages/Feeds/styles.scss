@@ -8,7 +8,7 @@
   padding: 2.5vw 5vw;
 }
 .feeds-title {
-  @include medium(5vw, $black);
+  @include medium(3.75vw, $black);
   display: block;
   margin: 3.75vw 0;
 }
@@ -31,10 +31,10 @@
     &-text {
       vertical-align: center;
       &.add {
-        @include regular(3.75vw, $black);
+        @include medium(3.13vw, $black);
       }
       &.basic {
-        @include regular(3.75vw, $black);
+        @include regular(3.13vw, $black);
       }
     }
   }
