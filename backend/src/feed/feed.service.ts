@@ -59,13 +59,15 @@ export class FeedService {
         .getRepository(Feed)
         .findOne({ where: { id: feedId } });
       if (!feed) throw new NonExistFeedIdException();
+
+      await queryRunner.manager
+        .getRepository(Feed)
+        .update({ id: feedId }, createFeedDto);
+
+      await queryRunner.commitTransaction();
     } catch (e) {
       console.log(e);
       await queryRunner.rollbackTransaction();
-
-      if (e.code === 'ER_NO_REFERENCED_ROW_2')
-        throw new NonExistUserIdException();
-
       throw new DBError('DBError: editFeed 오류');
     } finally {
       await queryRunner.release();

@@ -32,8 +32,10 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-    console.log(createFeedDto);
     await this.feedService.editFeed(createFeedDto, Number(feedId));
-    return feedId;
+    return {
+      success: true,
+      code: 200,
+    };
   }
 }
