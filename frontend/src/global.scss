@@ -9,8 +9,11 @@ $grey: #ededed;
 $white: #ffffff;
 $error: #fd4747;
 
+html,
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 @mixin font($color: $black) {
@@ -82,13 +85,12 @@ body {
 }
 
 @mixin body {
+  @include scroll;
   flex: 1;
   padding: 16px;
-  @include scroll;
 }
 
 @mixin scroll {
-  overflow: auto;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
