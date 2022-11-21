@@ -38,4 +38,15 @@ export class FeedController {
       code: 200,
     };
   }
+
+  @Post('group')
+  async createGroupPosting(
+    @Body('memberIdList') memberIdList: number[],
+    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    createFeedDto: CreateFeedDto,
+  ) {
+    await this.feedService.createGroupFeed(createFeedDto, memberIdList);
+
+    return 'groupFeed';
+  }
 }

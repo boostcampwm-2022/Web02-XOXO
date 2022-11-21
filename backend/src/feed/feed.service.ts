@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Feed } from 'src/entities/Feed.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
 import {
+  EmptyGroupFeedMemberList,
   NonExistFeedIdException,
   NonExistUserIdException,
 } from 'src/error/httpException';
@@ -44,6 +45,28 @@ export class FeedService {
         throw new NonExistUserIdException();
 
       throw new DBError('DBError: createFeed 오류');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
+    if (!memberIdList || !memberIdList.length)
+      throw new EmptyGroupFeedMemberList();
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+    } catch (e) {
+      console.log(e);
+      await queryRunner.rollbackTransaction();
+
+      if (e.code === 'ER_NO_REFERENCED_ROW_2')
+        throw new NonExistUserIdException();
+
+      throw new DBError('DBError: createGroupFeed 오류');
     } finally {
       await queryRunner.release();
     }
