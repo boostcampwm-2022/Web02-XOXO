@@ -1,6 +1,5 @@
-import { ConsoleLogger, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createWriteStream } from 'fs';
 import { Feed } from 'src/entities/Feed.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
 import { NonExistUserIdException } from 'src/error/httpException';

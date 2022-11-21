@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import CreateFeedDto from './dto/create.feed.dto';
 import { FeedService } from './feed.service';
-import { createCipheriv } from 'crypto';
 import { Feed } from 'src/customDecorator/feed.decorator';
+import userIdDto from './dto/create.userId.dto';
 
 @Controller('feed')
 export class FeedController {
@@ -13,8 +13,8 @@ export class FeedController {
     @Body('userId') userId: number,
     @Feed() createFeedDto: CreateFeedDto,
   ) {
-    console.log(userId);
-    const feed = await this.feedService.createFeed(createFeedDto, userId);
+    const id = new userIdDto(userId);
+    const feed = await this.feedService.createFeed(createFeedDto, id.userId);
     return feed.id;
   }
 }

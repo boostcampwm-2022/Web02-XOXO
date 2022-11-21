@@ -14,5 +14,6 @@ import UsersService from './users.service';
   imports: [OauthModule, TypeOrmModule.forFeature([Users])],
   controllers: [UsersController],
   providers: [UsersService, UserFacade, InvalidNickname, DuplicatNickname],
+  exports: [UsersService],
 })
 export default class UsersModule {}

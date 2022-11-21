@@ -1,6 +1,5 @@
-import { IsDate, IsDateString, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsUrl } from 'class-validator';
 import { IsValidFeedName } from 'src/customValidators/feedValidate';
-import createFeedDto from 'src/feed/dto/create.feed.dto';
 import {
   Entity,
   Column,
