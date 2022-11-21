@@ -4,6 +4,7 @@ import { FeedService } from './feed.service';
 import { Feed } from 'src/customDecorator/feed.decorator';
 import userIdDto from './dto/create.userId.dto';
 import { decrypt } from './feed.utils';
+import ValidationPipe422 from 'src/validation';
 
 @Controller('feed')
 export class FeedController {
@@ -12,7 +13,8 @@ export class FeedController {
   @Post()
   async createPosting(
     @Body('userId') userId: number,
-    @Feed() createFeedDto: CreateFeedDto,
+    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    createFeedDto: CreateFeedDto,
   ) {
     const id = new userIdDto(userId);
     const feedParam = await this.feedService.createFeed(
@@ -26,10 +28,12 @@ export class FeedController {
   @Patch('/:feedId')
   async editPosting(
     @Param('feedId') encryptedFeedId: string,
-    @Feed() createFeedDto: CreateFeedDto,
+    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-
+    console.log(createFeedDto);
+    await this.feedService.editFeed(createFeedDto, Number(feedId));
     return feedId;
   }
 }
