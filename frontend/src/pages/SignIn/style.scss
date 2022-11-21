@@ -23,8 +23,9 @@
         }
         .kakao-auth-button {
             @include button-large(#FEE500, $black);
+            @include vcenter;
+            flex-direction: row;
             span {
-                @include vcenter;
                 margin-left: 4px;
                 margin-bottom: 2px;
             }

@@ -11,19 +11,14 @@
 }
 .feed-profile-image{
     @include circle(20vw, true, $grey-font);
-    div {
-        background-color: $grey;
-    }
+    background-color: $grey;
 }
 .edit-button{
     @include circle(6vw, true, $white);
     position: absolute;
     right: 0px;
     bottom: 0px;
-    div {
-        background-color: $primary-3;
-        border: 2px solid $white;
-    }
+    background-color: $primary-3;
 }
 .feed-profile-info-wrapper {
     @include hcenter;
@@ -43,7 +38,7 @@
             margin: 0 1vw;
         }
         .bold{
-            @include bold(3vw);
+            @include bold(3.13vw);
         }
     }
 }
