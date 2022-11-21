@@ -52,4 +52,21 @@ export class FeedController {
 
     return encryuptedFeedID;
   }
+
+  @Patch('group/:feedId')
+  async editGroupPosting(
+    @Param('feedId') encryptedFeedId: string,
+    @Body('memberIdList') memberIdList: number[],
+    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    createFeedDto: CreateFeedDto,
+  ) {
+    const feedId = decrypt(encryptedFeedId);
+    const encryuptedFeedID = await this.feedService.editGroupFeed(
+      createFeedDto,
+      Number(feedId),
+      memberIdList,
+    );
+
+    return encryuptedFeedID;
+  }
 }

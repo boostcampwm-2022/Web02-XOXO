@@ -121,4 +121,76 @@ export class FeedService {
       await queryRunner.release();
     }
   }
+
+  async editGroupFeed(
+    createFeedDto: CreateFeedDto,
+    feedId: number,
+    memberIdList: number[],
+  ) {
+    //그룹 피드 멤버 1명 이상인지 체크
+    if (!memberIdList || !memberIdList.length)
+      throw new EmptyGroupFeedMemberList();
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      //존재하는 user인지 확인
+      for await (const userId of memberIdList) {
+        const id = await queryRunner.manager
+          .getRepository(User)
+          .findOne({ where: { id: userId } });
+
+        if (!id) throw new NonExistUserError();
+      }
+
+      //존재하는 피드인지 확인
+      const feed = await queryRunner.manager
+        .getRepository(Feed)
+        .findOne({ where: { id: feedId } });
+      if (!feed) throw new NonExistFeedIdException();
+
+      //피드 정보 업데이트
+      await queryRunner.manager
+        .getRepository(Feed)
+        .update({ id: feedId }, createFeedDto);
+
+      //그룹 피드 멤버 정보(user_feed_mapping) 업데이트
+      const prevMemberList = await queryRunner.manager
+        .getRepository(UserFeedMapping)
+        .find({ where: { feedId }, select: { userId: true } });
+
+      const prevMemberIdList = prevMemberList.map((member) => member.userId);
+
+      //1. 삭제
+      for await (const userId of prevMemberIdList) {
+        if (!memberIdList.includes(userId)) {
+          await queryRunner.manager
+            .getRepository(UserFeedMapping)
+            .delete({ userId });
+        }
+      }
+
+      //2. 추가
+      for await (const userId of memberIdList) {
+        if (!prevMemberIdList.includes(userId)) {
+          await queryRunner.manager
+            .getRepository(UserFeedMapping)
+            .save({ feedId, userId });
+        }
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      console.log(e);
+      await queryRunner.rollbackTransaction();
+
+      if (e instanceof NonExistUserError) throw new NonExistUserIdException();
+
+      throw new DBError('DBError: editGroupFeed 오류');
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }
