@@ -1,0 +1,59 @@
+@import "@src/global";
+
+.write-page{
+    @include page;
+}
+.write-body{
+    @include body;
+}
+.image-input {
+    display: none;
+}
+.image-list {
+    @include vcenter;
+    flex-direction: row;
+    height: 100vw;
+    width: 100vw;
+    overflow-x: scroll;
+    .image-holder{
+        position: relative;
+        width: 81.25vw;
+        height: 81.25vw;
+        border-radius: 8px;
+        margin-right: 5vw;
+        img {
+            width: 81.25vw;
+            height: 81.25vw;
+        }
+        .image-delete-button{
+            @include circle(6vw);
+            position: absolute;
+            right: -3vw;
+            top: -3vw;
+            div {
+                background-color: $primary-3;
+            }
+        }
+    }
+
+}
+.write-button {
+    @include button-large;
+}
+.button-bar-wrapper {
+    @include vcenter;
+    justify-content: space-between;
+    padding: 0 3.75vw;
+    height: 12.5vw;
+    border-top: solid 1px $grey;
+    border-bottom: solid 1px $grey;
+    .thumbnail-preview{
+        @include bold(3.13vw)
+    }
+}
+.text-area{
+    width: 80vw;
+    padding: 5vw;
+    border: 0;
+    @include regular(3.13vw)
+}

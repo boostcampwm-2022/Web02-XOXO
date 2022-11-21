@@ -4,9 +4,12 @@
     width: 100vw;
     height: 100vh;
     background-color: #222222;
+    background-image: url('~@assets/splashImage.svg');
+    background-repeat: no-repeat;
+    background-position: center bottom;
     .signin-body {
         @include vcenter;
-        padding: 54px 16px;
+        padding: 15vw 16px;
         flex-direction: column;
         .icon-image {
             width: 100%;
@@ -15,7 +18,8 @@
         .xoxo-info {
             width: 100%;
             text-align: right;
-            @include bold(12px, $white);
+            @include bold(3.75vw, $white);
+            line-height: 2vw;
         }
         .kakao-auth-button {
             @include button-large(#FEE500, $black);
@@ -25,10 +29,5 @@
                 margin-bottom: 2px;
             }
         }
-    }
-    .splash-image {
-        position: absolute;
-        bottom: 0;
-        margin: 0;
     }
 }

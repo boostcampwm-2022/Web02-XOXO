@@ -6,17 +6,17 @@
 }
 .feed-profile-image-wrapper{
     position: relative;
-    width: 72px;
-    margin-right: 12px;
+    width: 20vw;
+    margin-right: 4vw;
 }
 .feed-profile-image{
-    @include circle(72px, true, $grey-font);
+    @include circle(20vw, true, $grey-font);
     div {
         background-color: $grey;
     }
 }
 .edit-button{
-    @include circle(20px, true, $white);
+    @include circle(6vw, true, $white);
     position: absolute;
     right: 0px;
     bottom: 0px;
@@ -30,20 +30,20 @@
     flex-direction: column;
     .feed-profile-description {
         display: block;
-        @include regular(10px);
+        @include regular(3.13vw);
         line-height: 160%;
     }
     .feed-profile-status {
         margin-top: 0.6em;
-        @include regular(10px);
+        @include regular(3.13vw);
         .line{
-            height: 12px;
+            height: 3vw;
             width: 0px;
-            border-right: 1px solid $grey-font;
-            margin: 0 4px;
+            border-right: 2px solid $grey-font;
+            margin: 0 1vw;
         }
         .bold{
-            @include bold(10px);
+            @include bold(3vw);
         }
     }
 }

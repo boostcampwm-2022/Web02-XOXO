@@ -55,15 +55,16 @@ $error: #FD4747;
     flex-direction: column;
     width: 100%;
     height: 100vh;
+    background-color: $white;
 }
 
 @mixin header {
     @include vcenter;
-    @include bold(18px);
+    @include bold(5.63vw);
     // @include shadow-bottom;
     width: calc(100% - 32px);
     margin: 0;
-    padding: 20px 16px 0 16px;
+    padding: 6.25vw 16px;
     .side {
         width: 24px;
         img {
@@ -110,7 +111,7 @@ a {
     div {
         @include vhcenter;
         span {
-            @include bold(12px,$font-color);
+            @include bold(3.75vw,$font-color);
         }
     }
     &.disabled {
