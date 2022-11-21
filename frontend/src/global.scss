@@ -114,7 +114,7 @@ a {
   background-color: $bg-color;
   padding: 3.75vw 0;
   border-radius: 6px;
-  &.disabled {
+  &:disabled {
     cursor: default;
     background-color: $primary-2;
   }
