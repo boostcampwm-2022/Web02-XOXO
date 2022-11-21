@@ -14,14 +14,14 @@ const Write = () => {
     const imageLists = event.target.files
     let imageUrlLists = [...imagePreviews]
 
-    for (let i = 0; i < imageLists.length; i++) {
-      const currentImageUrl = URL.createObjectURL(imageLists[i])
-      imageUrlLists.push(currentImageUrl)
+    if (imageUrlLists.length > 10) {
+      alert('이미지는 최대 10장만 업로드 가능합니다.')
+      return
     }
 
-    if (imageUrlLists.length > 10) {
-      imageUrlLists = imageUrlLists.slice(0, 10)
-    }
+    imageUrlLists = Object.values(imageLists).map((image: any) => {
+      return URL.createObjectURL(image)
+    })
 
     setImagePreviews(imageUrlLists)
   }
@@ -38,7 +38,6 @@ const Write = () => {
     setModalOpen(true)
   }
   const isDisabledButton = () => {
-    console.log(imagePreviews.length)
     return imagePreviews.length === 0
   }
 
