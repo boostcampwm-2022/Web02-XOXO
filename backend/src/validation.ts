@@ -1,5 +1,8 @@
-import { ArgumentMetadata, ValidationPipe } from '@nestjs/common';
-import e from 'express';
+import {
+  ArgumentMetadata,
+  ValidationPipe,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import {
   DuplicateNicknameException,
   InvalidFeedNameException,
@@ -26,7 +29,7 @@ export default class ValidationPipe422 extends ValidationPipe {
       if (res.message.includes(`NonExistUserId`)) {
         throw new NonExistUserIdException();
       }
-      throw e;
+      throw new UnprocessableEntityException();
     }
   }
 }

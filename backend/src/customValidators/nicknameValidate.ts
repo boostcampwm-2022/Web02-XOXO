@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -28,6 +28,7 @@ export class DuplicatNickname implements ValidatorConstraintInterface {
 @Injectable()
 export class InvalidNickname implements ValidatorConstraintInterface {
   async validate(nickname: string, args: ValidationArguments) {
+    if (!nickname) return false;
     return nickname.length < 10;
   }
 

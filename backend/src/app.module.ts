@@ -6,7 +6,6 @@ import UsersModule from './users/users.module';
 import AppController from './app.controller';
 import AppService from './app.service';
 import configuration from '../configuration';
-import Users from './entities/User.entity';
 
 @Module({
   imports: [
