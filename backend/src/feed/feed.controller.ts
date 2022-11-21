@@ -24,8 +24,12 @@ export class FeedController {
   }
 
   @Patch('/:feedId')
-  async editPosting(@Param('feedId') encryptedFeedId: string) {
+  async editPosting(
+    @Param('feedId') encryptedFeedId: string,
+    @Feed() createFeedDto: CreateFeedDto,
+  ) {
     const feedId = decrypt(encryptedFeedId);
+
     return feedId;
   }
 }

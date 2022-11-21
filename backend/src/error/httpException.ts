@@ -107,3 +107,15 @@ export class NonExistUserIdException extends HttpException {
     );
   }
 }
+
+export class NonExistFeedIdException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'NonExistFeedIdException',
+        message: `존재하지 않는 피드 입니다.`,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
