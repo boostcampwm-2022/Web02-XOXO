@@ -7,6 +7,7 @@
   .text-wrapper {
     @include vcenter;
     .text {
+      @include bold(5.625vw, $black);
       margin-right: 4px;
     }
   }
