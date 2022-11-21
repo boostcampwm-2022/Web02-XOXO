@@ -6,6 +6,7 @@ import { NonExistUserIdException } from 'src/error/httpException';
 import DBError from 'src/error/serverError';
 import { DataSource, Repository } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
+import { encrypt } from './feed.utils';
 
 @Injectable()
 export class FeedService {
@@ -29,7 +30,7 @@ export class FeedService {
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
       await queryRunner.commitTransaction();
-      return feed;
+      return encrypt(feed.id.toString());
     } catch (e) {
       console.log(e);
       await queryRunner.rollbackTransaction();
