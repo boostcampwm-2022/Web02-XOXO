@@ -14,6 +14,8 @@ import { Response, Request } from 'express';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 import { AccessAuthGuard } from 'src/commons/accesstoken.guard';
 import { RefreshAuthGuard } from 'src/commons/refreshtoken.guard';
+import Users from 'src/entities/Users';
+import usersDecorators, { User } from './decorators/users.decorators';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
 import UserFacade from './users.facade';
@@ -29,19 +31,18 @@ export default class UsersController {
 
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
-  async refreshToken(@Req() req: Request, @Res() res: Response) {
-    const { user } = req;
+  async refreshToken(@User() user: Users, @Res() res: Response) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
-        user['nickname'],
-        user['id'],
+        user.nickname,
+        user.id,
       );
     const { refreshToken, ...refreshTokenOption } =
       this.authenticationService.getCookieWithJwtRefreshToken(
-        user['nickname'],
-        user['id'],
+        user.nickname,
+        user.id,
       );
-    await this.userService.setCurrentRefreshToken(refreshToken, user['id']);
+    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
     return res.redirect('http://localhost:3001');
@@ -61,7 +62,7 @@ export default class UsersController {
   }
 
   @Get('kakao/callback')
-  async loginUser(@Query('code') code, @Res() res: Response) {
+  async loginUser(@Query('code') code: string, @Res() res: Response) {
     const { user, profilePicture, kakaoId } =
       await this.facade.getUserInfoFromKakao(code);
     if (!user) {
@@ -114,11 +115,10 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get('logout')
-  async logoutUser(@Req() req: Request, @Res() res: Response) {
+  async logoutUser(@User() user: any, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
-    console.log(req.user);
-    await this.userService.removeRefreshToken(req.user['id']);
+    await this.userService.removeRefreshToken(user.id);
     return res.redirect('http://localhost:3001');
   }
 }
