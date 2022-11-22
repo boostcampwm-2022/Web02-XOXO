@@ -1,5 +1,5 @@
 name: GitHub Action CI
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} is testing out GitHub Actions [CI]🚀
 on:
    pull_request:
       branches:
