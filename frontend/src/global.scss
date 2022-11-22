@@ -124,7 +124,7 @@ a {
   @include regular(3.75vw);
   width: calc(100%-32px);
   height: 6.6vw;
-  background-color: $white;
+  background-color: transparent;
   border: none;
   border-bottom: 1px solid $grey;
   margin: 2.5vw 0;
@@ -158,4 +158,12 @@ a {
   flex-direction: column;
   justify-content: flex-start;
   gap: $gap;
+}
+@mixin signin-bg {
+  width: 100vw;
+  height: 100vh;
+  background-color: #222222;
+  background-image: url('~@assets/splashImage.svg');
+  background-repeat: no-repeat;
+  background-position: center bottom;
 }
