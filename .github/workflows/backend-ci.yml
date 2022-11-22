@@ -18,9 +18,9 @@ jobs:
            uses: actions/checkout@v3
 
          - name: nodeJS
-               uses: actions/setup-node@v3
-               with:
-                  node-version: 16.13.x
+           uses: actions/setup-node@v3
+           with:
+               node-version: 16.13.x
 
          - name: install dependency
             run: npm install      
