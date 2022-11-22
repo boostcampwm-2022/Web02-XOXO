@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Feed } from 'src/entities/Feed.entity';
 import User from 'src/entities/User.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
@@ -10,18 +8,13 @@ import {
   NonExistUserIdException,
 } from 'src/error/httpException';
 import { DBError, NonExistUserError } from 'src/error/serverError';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
 import { encrypt } from './feed.utils';
 
 @Injectable()
 export class FeedService {
-  constructor(
-    @InjectRepository(Feed) private feedRepository: Repository<Feed>,
-    @InjectRepository(UserFeedMapping)
-    private userFeedMapRepository: Repository<UserFeedMapping>,
-    private dataSource: DataSource,
-  ) {}
+  constructor(private dataSource: DataSource) {}
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
