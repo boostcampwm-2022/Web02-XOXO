@@ -41,4 +41,8 @@ export default class User {
 
   @OneToMany((type) => Like, (like) => like.posting)
   likes: Like[];
+
+  @Column({ nullable: true })
+  @Exclude()
+  currentHashedRefreshToken?: string;
 }

@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { OauthService } from 'src/oauth/oauth.service';
 import { forwardRef, Inject } from '@nestjs/common';
 import UsersService from './users.service';
@@ -10,6 +11,7 @@ interface JoinUserInterface {
   joinCookieDto: JoinCookieDto;
 }
 
+@Injectable()
 export default class UserFacade {
   constructor(
     @Inject(forwardRef(() => UsersService)) // 여기 순환참조...
