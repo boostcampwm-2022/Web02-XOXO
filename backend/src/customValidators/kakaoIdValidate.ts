@@ -3,12 +3,10 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
   ValidationArguments,
-  ValidationOptions,
-  registerDecorator,
 } from 'class-validator';
 import UsersService from 'src/users/users.service';
 
-@ValidatorConstraint({ name: 'DuplicatNickname', async: true })
+@ValidatorConstraint({ name: 'DuplicatKakaoId', async: true })
 @Injectable()
 export class DuplicatNickname implements ValidatorConstraintInterface {
   constructor(private readonly userService: UsersService) {}
@@ -35,28 +33,4 @@ export class InvalidNickname implements ValidatorConstraintInterface {
   defaultMessage(args: ValidationArguments) {
     return 'InvalidNickname';
   }
-}
-
-export function IsValidNickname(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
-    registerDecorator({
-      name: 'IsValidNickname',
-      target: object.constructor,
-      propertyName,
-      options: validationOptions,
-      validator: InvalidNickname,
-    });
-  };
-}
-
-export function IsDuplicateNickname(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
-    registerDecorator({
-      name: 'IsDuplicateNickname',
-      target: object.constructor,
-      propertyName,
-      options: validationOptions,
-      validator: DuplicatNickname,
-    });
-  };
 }

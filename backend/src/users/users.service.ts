@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/entities/User.entity';
 import { DBError } from 'src/error/serverError';
 import { Repository } from 'typeorm';
+import { FindUserDto } from './dto/find.user.dto';
 import JoinRequestDto from './dto/join.request.dto';
 
 @Injectable()
@@ -10,13 +11,6 @@ export default class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-
-  async getUserByKakaoId(kakaoId: number) {
-    const user = await this.userRepository.findOne({
-      where: { kakaoId },
-    });
-    return user;
-  }
 
   async joinUser(user: JoinRequestDto) {
     try {
@@ -27,16 +21,9 @@ export default class UsersService {
     }
   }
 
-  async getuserByNickname(nickname: string) {
+  async getUser(findUserInterface: FindUserDto & Object) {
     const user = await this.userRepository.findOne({
-      where: { nickname },
-    });
-    return user;
-  }
-
-  async getuserById(id: number) {
-    const user = await this.userRepository.findOne({
-      where: { id },
+      where: findUserInterface,
     });
     return user;
   }

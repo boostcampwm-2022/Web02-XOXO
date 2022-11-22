@@ -14,7 +14,7 @@ export class ExistUserId implements ValidatorConstraintInterface {
   constructor(private readonly userService: UsersService) {}
 
   async validate(id: number, args: ValidationArguments) {
-    const user = await this.userService.getuserById(id);
+    const user = await this.userService.getUser({ id });
     if (!user) return false;
     return true;
   }

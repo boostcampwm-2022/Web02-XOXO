@@ -20,7 +20,7 @@ export default class UserFacade {
   async getUserInfoFromKakao(code: string) {
     const openID = await this.oauthService.getAccessToken(code);
     const { kakaoId, profilePicture } = this.oauthService.validateToken(openID);
-    const user = await this.userService.getUserByKakaoId(kakaoId);
+    const user = await this.userService.getUser({ kakaoId });
     return { user, profilePicture, kakaoId };
   }
 
@@ -30,6 +30,7 @@ export default class UserFacade {
       joinCookieDto.kakaoId,
       joinCookieDto.profilePicture,
     );
+
     const userId = await this.userService.joinUser(joinMember);
     return userId;
   }
