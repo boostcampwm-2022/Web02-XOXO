@@ -1,12 +1,12 @@
 import { PickType } from '@nestjs/swagger';
-import Users from '../../entities/Users';
+import User from '../../entities/User.entity';
 
-export default class JoinRequestDto extends PickType(Users, [
+export default class JoinRequestDto extends PickType(User, [
   'profile',
   'kakaoId',
   'nickname',
 ] as const) {
-  constructor(nickname: string, kakaoId: string, profile: string) {
+  constructor(nickname: string, kakaoId: number, profile: string) {
     super();
     this.nickname = nickname;
     this.kakaoId = kakaoId;

@@ -1,0 +1,19 @@
+@import '@src/global';
+
+.feed-header {
+  @include header;
+  background-color: $white;
+  justify-content: space-between;
+  .text-wrapper {
+    @include vcenter;
+    .text {
+      @include bold(5vw, $black);
+      margin-right: 4px;
+    }
+  }
+}
+.default-header {
+  @include vhcenter;
+  @include bold(5vw, $black);
+  height: 16vw;
+}

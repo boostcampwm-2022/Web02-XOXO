@@ -14,8 +14,8 @@ import { Response, Request } from 'express';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 import { AccessAuthGuard } from 'src/commons/accesstoken.guard';
 import { RefreshAuthGuard } from 'src/commons/refreshtoken.guard';
-import Users from 'src/entities/Users';
-import usersDecorators, { User } from './decorators/users.decorators';
+import User from 'src/entities/User.entity';
+import { UserReq } from './decorators/users.decorators';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
 import UserFacade from './users.facade';
@@ -31,7 +31,7 @@ export default class UsersController {
 
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
-  async refreshToken(@User() user: Users, @Res() res: Response) {
+  async refreshToken(@UserReq() user, @Res() res: Response) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
         user.nickname,
@@ -115,7 +115,7 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get('logout')
-  async logoutUser(@User() user: any, @Res() res: Response) {
+  async logoutUser(@UserReq() user, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
