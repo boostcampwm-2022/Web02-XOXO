@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is testing out GitHub Actions [CI]🚀
 on:
    pull_request:
       branches:
-         - main
+         - feat/cicd
       paths:
          - 'backend/**'
          - '.github/workflows/backend-ci.yml'
@@ -17,13 +17,13 @@ jobs:
          - name: Checkout
            uses: actions/checkout@v3
 
-         - name: Setup Node
-           uses: actions/setup-node@v3
-           with:
-              node-version: 16.13.x
+         - name: nodeJS
+               uses: actions/setup-node@v3
+               with:
+                  node-version: 16.13.x
 
          - name: install dependency
-           run: npm install
+            run: npm install      
 
          - name: lint
            run: npm run lint
