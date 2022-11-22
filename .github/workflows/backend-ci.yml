@@ -22,7 +22,7 @@ jobs:
            with:
               node-version: 16.13.x
 
-         - name: install dependency
+         - name: dependency install
            run: npm install
 
          - name: lint
