@@ -20,10 +20,10 @@ jobs:
          - name: nodeJS
            uses: actions/setup-node@v3
            with:
-               node-version: 16.13.x
+              node-version: 16.13.x
 
          - name: install dependency
-            run: npm install      
+           run: npm install
 
          - name: lint
            run: npm run lint
@@ -31,5 +31,5 @@ jobs:
          - name: build
            run: npm run build
 
-         - test: test
+         - name: test
            run: npm run test
