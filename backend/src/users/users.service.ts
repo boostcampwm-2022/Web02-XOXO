@@ -22,9 +22,13 @@ export default class UsersService {
   }
 
   async getUser(findUserInterface: FindUserDto & Object) {
-    const user = await this.userRepository.findOne({
-      where: findUserInterface,
-    });
-    return user;
+    try {
+      const user = await this.userRepository.findOne({
+        where: findUserInterface,
+      });
+      return user;
+    } catch (e) {
+      throw new DBError('DBError: joinUser .save() 오류');
+    }
   }
 }
