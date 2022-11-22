@@ -29,4 +29,4 @@ const Header = ({ page, text }: headerProps) => {
   return <>{handleRenderHeader()}</>
 }
 
-export default Header
+export default React.memo(Header)
