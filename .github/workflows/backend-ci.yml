@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is testing out GitHub Actions [CI]🚀
 on:
    pull_request:
       branches:
-         - feat/cicd
+         - 'feat/cicd'
       paths:
          - 'backend/**'
          - '.github/workflows/backend-ci.yml'
