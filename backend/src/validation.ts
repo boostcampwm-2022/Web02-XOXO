@@ -10,6 +10,7 @@ import {
   NonExistUserIdException,
 } from './error/httpException';
 
+//to-do: 하드코딩 제거
 export default class ValidationPipe422 extends ValidationPipe {
   public async transform(value, metadata: ArgumentMetadata) {
     try {

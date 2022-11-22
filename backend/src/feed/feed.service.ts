@@ -43,9 +43,6 @@ export class FeedService {
       console.log(e);
       await queryRunner.rollbackTransaction();
 
-      if (e.code === 'ER_NO_REFERENCED_ROW_2')
-        throw new NonExistUserIdException();
-
       throw new DBError('DBError: createFeed 오류');
     } finally {
       await queryRunner.release();
