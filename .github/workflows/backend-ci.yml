@@ -1,35 +1,18 @@
-name: GitHub Action BACKEND CI
-run-name: ${{ github.actor }} is testing out GitHub Actions🚀
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
    pull_request:
       branches:
          - 'feat/cicd'
-      paths:
-         - 'backend/**'
-         - '.github/workflows/backend-ci.yml'
 jobs:
-   CI:
-      runs-on: ubuntu-latest
+   runs-on: ubuntu-latest
       defaults:
          run:
             working-directory: './backend'
+      outputs:
+         status: ${{job.status}}
       steps:
-         - name: Checkout
+         - name: checkout
            uses: actions/checkout@v3
-
          - name: nodeJS
            uses: actions/setup-node@v3
-           with:
-              node-version: 16.13.x
-
-         - name: dependency install
-           run: npm install
-
-         - name: lint
-           run: npm run lint
-
-         - name: build
-           run: npm run build
-
-         - name: test
-           run: npm run test
