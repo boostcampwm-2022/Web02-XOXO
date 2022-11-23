@@ -17,3 +17,11 @@ jobs:
            uses: actions/checkout@v3
          - name: nodeJS
            uses: actions/setup-node@v3
+         - name: dependency install
+           uses: npm ci
+         - name: lint test
+           uses: npm run lint
+         - name: test
+           uses: npm run test
+         - name: build
+           uses: npm run build
