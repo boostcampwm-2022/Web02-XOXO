@@ -71,17 +71,6 @@ body {
   height: 40px;
   margin: 0;
   padding: 0px 8px;
-  .side {
-    width: 24px;
-    img {
-      width: 24px;
-      height: 24px;
-    }
-  }
-  .center {
-    flex: 1;
-    @include vhcenter;
-  }
 }
 
 @mixin body {
@@ -120,7 +109,7 @@ a {
   }
 }
 
-@mixin input-common {
+@mixin input-common($color: $black) {
   @include regular(3.75vw);
   width: calc(100%-32px);
   height: 6.6vw;
@@ -128,6 +117,7 @@ a {
   border: none;
   border-bottom: 1px solid $grey;
   margin: 2.5vw 0;
+  color: $color;
   &::placeholder {
     @include regular(3.75vw, $grey-font);
   }
@@ -166,4 +156,17 @@ a {
   background-image: url('~@assets/splashImage.svg');
   background-repeat: no-repeat;
   background-position: center bottom;
+}
+
+@mixin form-wrapper($label-color: $black, $font-color: $black) {
+  @include display-col(1.25vw);
+  .form-label {
+    @include medium(4.375vw, $label-color);
+  }
+  input {
+    @include input-common($font-color);
+  }
+  .form-warning {
+    @include regular(2.5vw, $error);
+  }
 }

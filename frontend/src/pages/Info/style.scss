@@ -10,15 +10,9 @@
   .icon-image {
     height: 20vw;
   }
-}
-.form-wrapper {
-  @include display-col(1.25vw);
-  width: 100%;
-  .form-label {
-    @include medium(4.375vw, $white);
-  }
-  input {
-    @include input-common;
+  .form-wrapper {
+    @include form-wrapper($white, $white);
+    width: 100%;
   }
   .form-button {
     @include button-large(#fee500, $black);
