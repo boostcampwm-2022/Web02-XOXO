@@ -4,7 +4,7 @@ import {
 } from 'src/customValidators/nicknameValidate';
 
 export default class JoinNicknameDto {
-  @IsValidNickname()
+  @IsValidNickname({ groups: ['customNickname'] })
   @IsDuplicateNickname()
   nickname: string;
 }
