@@ -1,0 +1,9 @@
+@import "@src/global";
+.feed-page{
+    @include page;
+}
+.feed-body{
+    @include body;
+}
+
+

@@ -1,0 +1,52 @@
+@import "@src/global";
+
+.feed-profile-header{
+    @include vcenter;
+    margin: 8px 0 24px 0;
+}
+.feed-profile-image-wrapper{
+    position: relative;
+    width: 20vw;
+    margin-right: 4vw;
+}
+.feed-profile-image{
+    @include circle(20vw, true, $grey-font);
+    background-color: $grey;
+}
+.edit-button{
+    @include circle(6vw, true, $white);
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    background-color: $primary-3;
+}
+.feed-profile-info-wrapper {
+    @include hcenter;
+    flex-direction: column;
+    .feed-profile-description {
+        display: block;
+        @include regular(3.13vw);
+        line-height: 160%;
+    }
+    .feed-profile-status {
+        margin-top: 0.6em;
+        @include regular(3.13vw);
+        .line{
+            height: 3vw;
+            width: 0px;
+            border-right: 2px solid $grey-font;
+            margin: 0 1vw;
+        }
+        .bold{
+            @include bold(3.13vw);
+        }
+    }
+}
+
+.feed-share-button{
+    @include button-large;
+    span {
+        margin-left: 4px;
+    }
+    margin-bottom: 32px;
+}
