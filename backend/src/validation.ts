@@ -3,13 +3,16 @@ import {
   ValidationPipe,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { ConnectableObservable } from 'rxjs';
 import {
+  DuplicateJoinException,
   DuplicateNicknameException,
   InvalidFeedNameException,
   InvalidNicknameException,
   NonExistUserIdException,
 } from './error/httpException';
 
+//to-do: 하드코딩 제거
 export default class ValidationPipe422 extends ValidationPipe {
   public async transform(value, metadata: ArgumentMetadata) {
     try {
@@ -28,6 +31,9 @@ export default class ValidationPipe422 extends ValidationPipe {
       }
       if (res.message.includes(`NonExistUserId`)) {
         throw new NonExistUserIdException();
+      }
+      if (res.message.includes(`DuplicatKakaoId`)) {
+        throw new DuplicateJoinException();
       }
       throw new UnprocessableEntityException();
     }

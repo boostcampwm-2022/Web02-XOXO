@@ -8,30 +8,30 @@ import {
 } from 'class-validator';
 import UsersService from 'src/users/users.service';
 
-@ValidatorConstraint({ name: 'ExistUserId', async: true })
+@ValidatorConstraint({ name: 'DuplicatKakaoId', async: true })
 @Injectable()
-export class ExistUserId implements ValidatorConstraintInterface {
+export class DuplicatKakaoId implements ValidatorConstraintInterface {
   constructor(private readonly userService: UsersService) {}
 
-  async validate(id: number, args: ValidationArguments) {
-    const user = await this.userService.getUser({ id });
-    if (!user) return false;
+  async validate(kakaoId: number, args: ValidationArguments) {
+    const user = await this.userService.getUser({ kakaoId });
+    if (user) return false;
     return true;
   }
 
   defaultMessage(args: ValidationArguments) {
-    return 'NonExistUserId';
+    return 'DuplicatKakaoId';
   }
 }
 
-export function IsExistUserId(validationOptions?: ValidationOptions) {
+export function IsDuplicateKakaoId(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
-      name: 'IsExistUserId',
+      name: 'IsDuplicateNickname',
       target: object.constructor,
       propertyName,
       options: validationOptions,
-      validator: ExistUserId,
+      validator: DuplicatKakaoId,
     });
   };
 }

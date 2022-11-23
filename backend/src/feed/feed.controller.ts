@@ -16,11 +16,7 @@ export class FeedController {
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    const id = new userIdDto(userId);
-    const feedParam = await this.feedService.createFeed(
-      createFeedDto,
-      id.userId,
-    );
+    const feedParam = await this.feedService.createFeed(createFeedDto, userId);
 
     return feedParam;
   }
@@ -61,12 +57,15 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-    const encryuptedFeedID = await this.feedService.editGroupFeed(
+    await this.feedService.editGroupFeed(
       createFeedDto,
       Number(feedId),
       memberIdList,
     );
 
-    return encryuptedFeedID;
+    return {
+      success: true,
+      code: 200,
+    };
   }
 }

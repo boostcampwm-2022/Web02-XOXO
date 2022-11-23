@@ -48,6 +48,18 @@ export class DuplicateNicknameException extends HttpException {
   }
 }
 
+export class DuplicateJoinException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'DuplicateUser',
+        message: '이미 존재하는 회원입니다.',
+      },
+      HttpStatus.CONFLICT,
+    );
+  }
+}
+
 export class InvalidNicknameException extends HttpException {
   constructor() {
     super(

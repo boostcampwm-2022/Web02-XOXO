@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
+import { DuplicatKakaoId } from 'src/customValidators/kakaoIdValidate';
 import { AuthenticationService } from 'src/authentication/authentication.service';
-
 import {
   DuplicatNickname,
   InvalidNickname,
@@ -18,7 +17,6 @@ import UsersService from './users.service';
 @Module({
   imports: [OauthModule, TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
-
   providers: [
     UsersService,
     UserFacade,
@@ -26,6 +24,7 @@ import UsersService from './users.service';
     JwtService,
     InvalidNickname,
     DuplicatNickname,
+    DuplicatKakaoId,
   ],
   exports: [UsersService],
 })

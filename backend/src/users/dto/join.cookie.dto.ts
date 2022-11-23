@@ -1,8 +1,9 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
+import { IsDuplicateKakaoId } from 'src/customValidators/kakaoIdValidate';
 
 export default class JoinCookieDto {
   @IsNotEmpty()
-  //unique 확인
+  @IsDuplicateKakaoId()
   kakaoId: number;
 
   @IsNotEmpty()
