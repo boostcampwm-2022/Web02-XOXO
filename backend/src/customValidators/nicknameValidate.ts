@@ -12,6 +12,7 @@ import UsersService from 'src/users/users.service';
 @Injectable()
 export class DuplicatNickname implements ValidatorConstraintInterface {
   constructor(private readonly userService: UsersService) {}
+
   async validate(nickname: string, args: ValidationArguments) {
     const user = await this.userService.getUser({ nickname });
     if (user) return false;
