@@ -1,4 +1,12 @@
 import {
+  FailedToLoginKakaoException,
+  FailedToRedirectKakaoException,
+  InternalDBException,
+} from 'src/error/httpException';
+import { DBError } from 'src/error/serverError';
+import ValidationPipe422 from 'src/validation';
+import JoinCookieDto from './dto/join.cookie.dto';
+import {
   Controller,
   Get,
   Post,

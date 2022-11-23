@@ -119,3 +119,15 @@ export class NonExistFeedIdException extends HttpException {
     );
   }
 }
+
+export class EmptyGroupFeedMemberList extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'EmptyGroupFeedMember',
+        message: `그룹 피드 생성에는 최소한 한 명 이상의 그룹원이 필요합니다.`,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}

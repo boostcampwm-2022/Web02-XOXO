@@ -4,8 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash, compare } from 'bcrypt';
 
 import User from 'src/entities/User.entity';
-import DBError from 'src/error/serverError';
-
+import { DBError } from 'src/error/serverError';
 import { Repository } from 'typeorm';
 import JoinRequestDto from './dto/join.request.dto';
 
