@@ -18,10 +18,10 @@ jobs:
          - name: nodeJS
            uses: actions/setup-node@v3
          - name: dependency install
-           uses: npm ci
+           run: npm ci
          - name: lint test
-           uses: npm run lint
+           run: npm run lint
          - name: test
-           uses: npm run test
+           run: npm run test
          - name: build
-           uses: npm run build
+           run: npm run build
