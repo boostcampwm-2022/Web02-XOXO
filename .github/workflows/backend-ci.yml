@@ -1,0 +1,19 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on:
+   pull_request:
+      branches:
+         - cicdtest
+jobs:
+   back-ci-job:
+      runs-on: ubuntu-latest
+      defaults:
+         run:
+            working-directory: './backend'
+      outputs:
+         status: ${{job.status}}
+      steps:
+         - name: checkout
+           uses: actions/checkout@v3
+         - name: nodeJS
+           uses: actions/setup-node@v3
