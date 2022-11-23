@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
+import * as Joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { AuthenticationModule } from './authentication/authentication.module';
+
 import { FeedModule } from './feed/feed.module';
+
 import UsersModule from './users/users.module';
 import AppController from './app.controller';
 import AppService from './app.service';
@@ -13,6 +18,17 @@ import configuration from '../configuration';
       isGlobal: true,
       envFilePath: `${process.cwd()}/config/.${process.env.NODE_ENV}.env`,
       load: [configuration],
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string().valid('development', 'production').required(),
+        PORT: Joi.number().required(),
+        DB_USERNAME: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_DATABASE: Joi.string().required(),
+        KAKAO_CLIENT_ID: Joi.string().required(),
+        KAKAO_REDIRECT_URL: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION_TIME: Joi.number().required(),
+      }),
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -27,6 +43,8 @@ import configuration from '../configuration';
       entities: [__dirname + '/entities/*.entity{.ts,.js}'],
     }),
     UsersModule,
+    AuthenticationModule,
+
     FeedModule,
   ],
   controllers: [AppController],

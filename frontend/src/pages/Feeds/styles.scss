@@ -1,0 +1,41 @@
+@import '@src/global';
+
+.feeds-page {
+  @include page;
+}
+.feeds-body {
+  @include body;
+  padding: 2.5vw 5vw;
+}
+.feeds-title {
+  @include medium(3.75vw, $black);
+  display: block;
+  margin: 3.75vw 0;
+}
+.feeds-list {
+  padding-bottom: 1.5vw;
+  .feeds-card {
+    @include vcenter;
+    padding: 1.25vw 0;
+    &-circle {
+      margin-right: 2.5vw;
+      &.add {
+        @include circle(9.375vw, true, $primary-3);
+        @include vhcenter;
+      }
+      &.basic {
+        @include circle(10vw);
+      }
+    }
+
+    &-text {
+      vertical-align: center;
+      &.add {
+        @include medium(3.13vw, $black);
+      }
+      &.basic {
+        @include regular(3.13vw, $black);
+      }
+    }
+  }
+}
