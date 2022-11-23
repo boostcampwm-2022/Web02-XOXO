@@ -5,7 +5,8 @@ on:
       branches:
          - 'feat/cicd'
 jobs:
-   runs-on: ubuntu-latest
+   back-ci-job:
+      runs-on: ubuntu-latest
       defaults:
          run:
             working-directory: './backend'
