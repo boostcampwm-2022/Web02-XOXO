@@ -7,7 +7,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 
-@ValidatorConstraint({ name: 'InvalideNickname' })
+@ValidatorConstraint({ name: 'InvalidNickname' })
 @Injectable()
 export class InvalidNickname implements ValidatorConstraintInterface {
   async validate(nickname: string, args: ValidationArguments) {

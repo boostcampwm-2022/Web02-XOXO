@@ -1,4 +1,3 @@
-import { Response, Request } from 'express';
 import Cookie from 'src/customDecorator/cookie.decorator';
 import {
   FailedToLoginKakaoException,
@@ -7,7 +6,6 @@ import {
 } from 'src/error/httpException';
 import { DBError } from 'src/error/serverError';
 import ValidationPipe422 from 'src/validation';
-import JoinCookieDto from './dto/join.cookie.dto';
 import {
   Controller,
   Get,
@@ -40,7 +38,7 @@ export default class UsersController {
   ) {}
 
   @UseGuards(RefreshAuthGuard)
-  @Get('refresh')
+  @Post('refresh')
   async refreshToken(@UserReq() user, @Res() res: Response) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
@@ -104,7 +102,6 @@ export default class UsersController {
   }
 
   @Post('join')
-  // TODO : 중복검사를 가드로 할지 아니면 그냥 이 컨트롤러 안에서 코드로 할지 결정해야함.
   async joinUser(
     @Body() joinNicknameDto: JoinNicknameDto,
     @Req() req: Request,
@@ -124,7 +121,7 @@ export default class UsersController {
   }
 
   @UseGuards(AccessAuthGuard)
-  @Get('logout')
+  @Post('logout')
   async logoutUser(@UserReq() user, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');

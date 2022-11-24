@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
+
 import {
   Entity,
   Column,

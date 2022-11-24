@@ -1,4 +1,3 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
@@ -6,7 +5,6 @@ import * as cookieParser from 'cookie-parser';
 import AppModule from './app.module';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { ServerErrorHandlingFilter } from './serverErrorHandlingFilter';
-import UsersModule from './users/users.module';
 import ValidationPipe422 from './validation';
 
 declare const module: any;

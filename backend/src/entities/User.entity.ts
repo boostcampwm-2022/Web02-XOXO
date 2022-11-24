@@ -6,7 +6,11 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
+
+import { Exclude } from 'class-transformer';
+
 import { UserInterface } from './entityInterfaces/UserInterface';
+
 import Like from './Like.entity';
 import UserFeedMapping from './UserFeedMapping.entity';
 
