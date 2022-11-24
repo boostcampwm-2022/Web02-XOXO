@@ -6,6 +6,7 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import Like from './Like.entity';
 import UserFeedMapping from './UserFeedMapping.entity';
 
