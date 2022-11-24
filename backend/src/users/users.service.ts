@@ -17,14 +17,14 @@ export default class UsersService {
 
   async joinUser(user: JoinRequestDto) {
     try {
-      const userId = await this.userRepository.save(user);
-      return userId;
+      const InsertedUser = await this.userRepository.save(user);
+      return InsertedUser;
     } catch (e) {
       throw new DBError('DBError: joinUser .save() 오류');
     }
   }
 
-  async getUser(findUserInterface: FindUserDto & Object) {
+  async getUser(findUserInterface: FindUserDto & Record<string, unknown>) {
     try {
       const user = await this.userRepository.findOne({
         where: findUserInterface,
