@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Feed } from 'src/entities/Feed.entity';
-import User from 'src/entities/User.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
+import { NonExistFeedIdException } from 'src/error/httpException';
 import {
-  EmptyGroupFeedMemberList,
-  NonExistFeedIdException,
-  NonExistUserIdException,
-} from 'src/error/httpException';
-import { DBError, NonExistUserError } from 'src/error/serverError';
+  DBError,
+  InvalidFKConstraintError,
+  MemberListMustMoreThanOne,
+  NonExistFeedError,
+  NonExistUserError,
+} from 'src/error/serverError';
 import { DataSource } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
 import { encrypt } from './feed.utils';
@@ -28,13 +29,15 @@ export class FeedService {
 
       await queryRunner.manager
         .getRepository(UserFeedMapping)
-        .save({ feedId: feed.id, userId });
+        .save({ feedId: 12345, userId });
 
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
-      console.log(e);
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
+
+      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistUserError();
 
       throw new DBError('DBError: createFeed 오류');
     } finally {
@@ -43,31 +46,22 @@ export class FeedService {
   }
 
   async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
-    //그룹 피드 멤버 1명 이상인지 체크
+    // 그룹 피드 멤버 1명 이상인지 체크
     if (!memberIdList || !memberIdList.length)
-      throw new EmptyGroupFeedMemberList();
+      throw new MemberListMustMoreThanOne();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      //존재하는 user인지 확인
-      for await (const userId of memberIdList) {
-        const id = await queryRunner.manager
-          .getRepository(User)
-          .findOne({ where: { id: userId } });
-
-        if (!id) throw new NonExistUserError();
-      }
-
-      //새로운 피드 생성
+      // 새로운 피드 생성
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .insert(createFeedDto);
       const feedId: number = feed.identifiers[0].id;
 
-      //useFeedMappingTable 삽입
+      // useFeedMappingTable 삽입
       for await (const userId of memberIdList) {
         const id = await queryRunner.manager
           .getRepository(UserFeedMapping)
@@ -76,10 +70,10 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
-      console.log(e);
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
 
-      if (e instanceof NonExistUserError) throw new NonExistUserIdException();
+      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistUserError();
 
       throw new DBError('DBError: createGroupFeed 오류');
     } finally {
@@ -104,8 +98,11 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
-      console.log(e);
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
+
+      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistFeedError();
+
       throw new DBError('DBError: editFeed 오류');
     } finally {
       await queryRunner.release();
@@ -117,43 +114,28 @@ export class FeedService {
     feedId: number,
     memberIdList: number[],
   ) {
-    //그룹 피드 멤버 1명 이상인지 체크
+    // 그룹 피드 멤버 1명 이상인지 체크
     if (!memberIdList || !memberIdList.length)
-      throw new EmptyGroupFeedMemberList();
+      throw new MemberListMustMoreThanOne();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      //존재하는 user인지 확인
-      for await (const userId of memberIdList) {
-        const id = await queryRunner.manager
-          .getRepository(User)
-          .findOne({ where: { id: userId } });
-
-        if (!id) throw new NonExistUserError();
-      }
-
-      //존재하는 피드인지 확인
-      const feed = await queryRunner.manager
-        .getRepository(Feed)
-        .findOne({ where: { id: feedId } });
-      if (!feed) throw new NonExistFeedIdException();
-
-      //피드 정보 업데이트
+      // 피드 정보 업데이트
       await queryRunner.manager
         .getRepository(Feed)
         .update({ id: feedId }, createFeedDto);
 
-      //그룹 피드 멤버 정보(user_feed_mapping) 업데이트
+      // 그룹 피드 멤버 정보(user_feed_mapping) 업데이트
       const prevMemberList = await queryRunner.manager
         .getRepository(UserFeedMapping)
         .find({ where: { feedId }, select: { userId: true } });
 
       const prevMemberIdList = prevMemberList.map((member) => member.userId);
 
-      //1. 삭제
+      // 1. 삭제
       for await (const userId of prevMemberIdList) {
         if (!memberIdList.includes(userId)) {
           await queryRunner.manager
@@ -162,7 +144,7 @@ export class FeedService {
         }
       }
 
-      //2. 추가
+      // 2. 추가
       for await (const userId of memberIdList) {
         if (!prevMemberIdList.includes(userId)) {
           await queryRunner.manager
@@ -173,10 +155,11 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
-      console.log(e);
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
 
-      if (e instanceof NonExistUserError) throw new NonExistUserIdException();
+      if (errorType === 'ER_NO_REFERENCED_ROW_2')
+        throw new InvalidFKConstraintError();
 
       throw new DBError('DBError: editGroupFeed 오류');
     } finally {

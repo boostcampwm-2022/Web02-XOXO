@@ -5,19 +5,16 @@ import {
   HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import {
+  DuplicateJoinException,
   DuplicateNicknameException,
+  EmptyGroupFeedMemberList,
   InternalDBException,
   InvalidFKConstraintException,
+  NonExistFeedIdException,
   NonExistUserIdException,
 } from './error/httpException';
-import {
-  DBError,
-  DuplicateNicknameError,
-  InvalidFKConstraintError,
-  NonExistUserError,
-} from './error/serverError';
 
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {
@@ -27,6 +24,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
     let exception: HttpException;
     const errorName = error.name;
+    console.log(error);
     switch (errorName) {
       case 'DBError':
         exception = new InternalDBException();
@@ -44,8 +42,22 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
         exception = new InvalidFKConstraintException();
         break;
 
+      case 'NonExistFeedError':
+        exception = new NonExistFeedIdException();
+        break;
+
+      case 'MemberListMustMoreThanOne':
+        exception = new EmptyGroupFeedMemberList();
+        break;
+
+      case 'DuplicateKakaoIdError':
+        exception = new DuplicateJoinException();
+        break;
+
       default:
-        exception = new InternalServerErrorException();
+        if (error.message.includes('digital envelope routines'))
+          exception = new NonExistFeedIdException();
+        else exception = new InternalServerErrorException();
     }
 
     const response = (exception as HttpException).getResponse();
