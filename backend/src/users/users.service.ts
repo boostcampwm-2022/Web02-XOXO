@@ -17,23 +17,23 @@ export default class UsersService {
 
   async joinUser(user: JoinRequestDto) {
     try {
-      const userId = await this.userRepository.save(user);
+      const userId = await this.userRepository.upsert(user, ['kakaoId']);
       return userId;
     } catch (e) {
       throw new DBError('DBError: joinUser .save() 오류');
     }
   }
 
-  async getUser(findUserInterface: FindUserDto & Object) {
-    try {
-      const user = await this.userRepository.findOne({
-        where: findUserInterface,
-      });
-      return user;
-    } catch (e) {
-      throw new DBError('DBError: joinUser .save() 오류');
-    }
-  }
+  // async getUser(findUserInterface: FindUserDto & Object) {
+  //   try {
+  //     const user = await this.userRepository.findOne({
+  //       where: findUserInterface,
+  //     });
+  //     return user;
+  //   } catch (e) {
+  //     throw new DBError('DBError: joinUser .save() 오류');
+  //   }
+  // }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
     const currentHashedRefreshToken = await hash(refreshtoken, 10);
