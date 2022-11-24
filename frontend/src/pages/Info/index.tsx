@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import './style.scss'
 import XoxoIcon from '@assets/xoxoIcon.svg'
 import Input from '@components/Input'
-import { containsKO, longer } from '@src/util/validation/bool'
+import { containsKO, longer } from '@util/validation/bool'
 
 const Info = () => {
   const userNickname = useRef('')

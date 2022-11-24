@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { bindValue } from '@src/util'
+import { bindValue } from '@util/index'
 import './style.scss'
 import { ReactComponent as WarningIcon } from '@assets/warningIcon.svg'
 
