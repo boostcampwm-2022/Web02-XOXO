@@ -16,13 +16,16 @@
       @include bold(3.75vw, $white);
       line-height: 2vw;
     }
-    .kakao-auth-button {
-      @include button-large(#fee500, $black);
-      @include vcenter;
-      flex-direction: row;
-      span {
-        margin-left: 4px;
-        margin-bottom: 2px;
+    a{
+      width: 100%;
+      .kakao-auth-button {
+        @include button-large(#fee500, $black);
+        @include vcenter;
+        flex-direction: row;
+        span {
+          margin-left: 4px;
+          margin-bottom: 2px;
+        }
       }
     }
   }
