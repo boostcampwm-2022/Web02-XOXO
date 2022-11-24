@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Query, Req, Body, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { Cookie } from 'src/customDecorator/cookie.decorator';
+import Cookie from 'src/customDecorator/cookie.decorator';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
@@ -12,7 +12,6 @@ import JoinCookieDto from './dto/join.cookie.dto';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import UserFacade from './users.facade';
 
-// todo: api controller 전역에 /api 추가해주는 것
 @Controller('users')
 export default class UsersController {
   constructor(private readonly facade: UserFacade) {}

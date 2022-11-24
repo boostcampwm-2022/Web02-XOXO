@@ -29,7 +29,7 @@ export class FeedService {
 
       await queryRunner.manager
         .getRepository(UserFeedMapping)
-        .save({ feedId: 12345, userId });
+        .save({ feedId: feed.id, userId });
 
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
