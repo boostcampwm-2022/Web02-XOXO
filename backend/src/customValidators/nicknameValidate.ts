@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import UsersService from 'src/users/users.service';
 
-@ValidatorConstraint({ name: 'DuplicatNickname', async: true })
+@ValidatorConstraint({ name: 'DuplicateNickname', async: true })
 @Injectable()
 export class DuplicatNickname implements ValidatorConstraintInterface {
   constructor(private readonly userService: UsersService) {}
@@ -24,7 +24,7 @@ export class DuplicatNickname implements ValidatorConstraintInterface {
   }
 }
 
-@ValidatorConstraint({ name: 'InvalideNickname' })
+@ValidatorConstraint({ name: 'InvalidNickname' })
 @Injectable()
 export class InvalidNickname implements ValidatorConstraintInterface {
   async validate(nickname: string, args: ValidationArguments) {

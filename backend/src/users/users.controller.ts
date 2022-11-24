@@ -101,7 +101,6 @@ export default class UsersController {
   }
 
   @Post('join')
-  // TODO : 중복검사를 가드로 할지 아니면 그냥 이 컨트롤러 안에서 코드로 할지 결정해야함.
   async joinUser(
     @Body() joinNicknameDto: JoinNicknameDto,
     @Req() req: Request,
