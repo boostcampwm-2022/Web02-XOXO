@@ -1,0 +1,48 @@
+@import '@src/global';
+.createfeed-page {
+  @include page;
+}
+.createfeed-header {
+  @include header;
+}
+.createfeed-body {
+  @include body;
+  @include display-col(1.25vw);
+}
+.profile-pic-wrapper {
+  @include vcenter;
+  @include display-col(3.75vw);
+  .profile-pic-circle {
+    @include circle(22.5vw, true, $grey);
+  }
+  span {
+    @include bold(3.75vw, $primary-3);
+    display: block;
+    padding: 1.88vw 0 1.88vw 0;
+  }
+}
+.button-large {
+  @include button-large;
+  margin: 8.75vw 0;
+}
+
+.form-no-member {
+  @include regular(3.75vw, $grey);
+}
+.form-members-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25vw;
+  .form-member {
+    @include regular(3.75vw, $primary-3);
+    vertical-align: middle;
+    padding: 1.25vw 1.875vw;
+    border-radius: 4px;
+    background-color: $primary-1;
+    display: inline;
+    svg {
+      margin-left: 1.25vw;
+      padding-bottom: 0.4vw;
+    }
+  }
+}
