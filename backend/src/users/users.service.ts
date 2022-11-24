@@ -50,6 +50,20 @@ export default class UsersService {
     }
   }
 
+  async getUserList(nickname: string, maxRecord: number) {
+    try {
+      const userList = await this.userRepository
+        .createQueryBuilder()
+        .select(['id', 'nickname'])
+        .where(`MATCH(nickname) AGAINST ('+${nickname}' IN BOOLEAN MODE)`)
+        .limit(maxRecord)
+        .execute();
+      return userList;
+    } catch (e) {
+      throw new DBError('DBError: getUserList 오류');
+    }
+  }
+
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
     const currentHashedRefreshToken = await hash(refreshtoken, 10);
     await this.userRepository.update(id, { currentHashedRefreshToken });
