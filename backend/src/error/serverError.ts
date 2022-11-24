@@ -18,3 +18,10 @@ export class DuplicateNicknameError extends Error {
     this.name = 'DuplicateNicknameError';
   }
 }
+
+export class InvalidFKConstraintError extends Error {
+  constructor() {
+    super('유요하지 않은 참조입니다.'); // (1)
+    this.name = 'InvalidFKConstraintError';
+  }
+}
