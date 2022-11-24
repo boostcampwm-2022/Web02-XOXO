@@ -23,7 +23,6 @@ export default class UsersService {
       throw new DBError('DBError: joinUser .save() 오류');
     }
   }
-
   // async getUser(findUserInterface: FindUserDto & Object) {
   //   try {
   //     const user = await this.userRepository.findOne({
