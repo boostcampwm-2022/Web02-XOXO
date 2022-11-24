@@ -11,3 +11,10 @@ export class NonExistUserError extends Error {
     this.name = 'NonExistUserError';
   }
 }
+
+export class DuplicateNicknameError extends Error {
+  constructor() {
+    super('중복된 닉네임 입니다.'); // (1)
+    this.name = 'DuplicateNicknameError';
+  }
+}

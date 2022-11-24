@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/entities/User.entity';
-import { DBError } from 'src/error/serverError';
+import { DBError, DuplicateNicknameError } from 'src/error/serverError';
 import { Repository } from 'typeorm';
 import { FindUserDto } from './dto/find.user.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -17,6 +17,8 @@ export default class UsersService {
       const InsertedUser = await this.userRepository.save(user);
       return InsertedUser;
     } catch (e) {
+      const errorType = e.code;
+      if (errorType === 'ER_DUP_ENTRY') throw new DuplicateNicknameError();
       throw new DBError('DBError: joinUser .save() 오류');
     }
   }

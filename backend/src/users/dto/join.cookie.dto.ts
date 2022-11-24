@@ -3,7 +3,6 @@ import { IsDuplicateKakaoId } from 'src/customValidators/kakaoIdValidate';
 
 export default class JoinCookieDto {
   @IsNotEmpty()
-  @IsDuplicateKakaoId()
   kakaoId: number;
 
   @IsNotEmpty()
