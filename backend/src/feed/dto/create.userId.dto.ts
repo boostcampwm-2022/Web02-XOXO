@@ -1,6 +1,6 @@
 import IsExistUserId from 'src/customValidators/userIdValidate';
 
-export default class userIdDto {
+export default class UserIdDto {
   @IsExistUserId()
   userId: number;
 
