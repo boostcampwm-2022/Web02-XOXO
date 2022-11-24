@@ -6,11 +6,12 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
+import { UserInterface } from './entityInterfaces/UserInterface';
 import Like from './Like.entity';
 import UserFeedMapping from './UserFeedMapping.entity';
 
 @Entity({ schema: 'xoxo', name: 'users' })
-export default class User {
+export default class User implements UserInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
   id: number;

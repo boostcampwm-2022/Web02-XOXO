@@ -6,11 +6,12 @@ import {
   DeleteDateColumn,
   ManyToOne,
 } from 'typeorm';
-import Posting from './Posting.entity';
-import User from './User.entity';
+import { CommentInterface } from './entityInterfaces/CommentInterface';
+import { PostingInterface } from './entityInterfaces/PostingInterface';
+import { UserInterface } from './entityInterfaces/UserInterface';
 
 @Entity({ schema: 'xoxo', name: 'comments' })
-export default class Comment {
+export default class Comment implements CommentInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
   id: number;
@@ -23,9 +24,9 @@ export default class Comment {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne((type) => Posting, (posting) => posting.comments)
-  posting: Posting;
+  @ManyToOne('Posting', 'comments')
+  posting: PostingInterface;
 
-  @ManyToOne((type) => User)
-  writer: User;
+  @ManyToOne('User')
+  writer: UserInterface;
 }

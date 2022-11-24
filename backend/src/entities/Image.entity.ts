@@ -6,10 +6,11 @@ import {
   DeleteDateColumn,
   ManyToOne,
 } from 'typeorm';
-import Posting from './Posting.entity';
+import { ImageInterface } from './entityInterfaces/ImageInterface';
+import { PostingInterface } from './entityInterfaces/PostingInterface';
 
 @Entity({ schema: 'xoxo', name: 'images' })
-export default class Image {
+export default class Image implements ImageInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
   id: number;
@@ -22,6 +23,6 @@ export default class Image {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne((type) => Posting, (posting) => posting.images)
-  posting: Posting;
+  @ManyToOne('Posting', 'images')
+  posting: PostingInterface;
 }

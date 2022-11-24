@@ -1,6 +1,6 @@
 import { Entity, DeleteDateColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { IUser } from './entityInterfaces/UserInterface';
-import { Ifeed } from './Feed.entity';
+import { UserInterface } from './entityInterfaces/UserInterface';
+import { FeedInterface } from './entityInterfaces/FeedInterface';
 
 @Entity({ schema: 'xoxo', name: 'user_feed_mapping' })
 export default class UserFeedMapping {
@@ -11,10 +11,10 @@ export default class UserFeedMapping {
   feedId: number;
 
   @ManyToOne('User', 'feeds')
-  user: IUser;
+  user: UserInterface;
 
   @ManyToOne('Feed')
-  feed: Ifeed;
+  feed: FeedInterface;
 
   @DeleteDateColumn()
   deletedAt: Date | null;
