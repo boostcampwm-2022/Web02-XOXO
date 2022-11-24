@@ -24,7 +24,7 @@ export class ExistUserId implements ValidatorConstraintInterface {
   }
 }
 
-export function IsExistUserId(validationOptions?: ValidationOptions) {
+export default function IsExistUserId(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       name: 'IsExistUserId',

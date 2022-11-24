@@ -1,4 +1,4 @@
-import { IsExistUserId } from 'src/customValidators/userIdValidate';
+import IsExistUserId from 'src/customValidators/userIdValidate';
 
 export default class userIdDto {
   @IsExistUserId()

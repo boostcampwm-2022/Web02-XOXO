@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
 import { Feed } from 'src/entities/Feed.entity';
 
-export default class createFeedDto extends PickType(Feed, [
+export default class CreateFeedDto extends PickType(Feed, [
   'name',
   'thumbnail',
   'description',

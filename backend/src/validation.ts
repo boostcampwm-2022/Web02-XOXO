@@ -16,7 +16,7 @@ export default class ValidationPipe422 extends ValidationPipe {
         switch (errorType) {
           case 'InvalideNickname':
             throw new InvalidNicknameException();
-          case 'DuplicatNickname':
+          case 'DuplicateNickname':
             throw new DuplicateNicknameException();
           case 'InvalidFeedName':
             throw new InvalidFeedNameException();

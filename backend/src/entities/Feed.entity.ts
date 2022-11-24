@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
-import { IsValidFeedName } from 'src/customValidators/feedValidate';
+import IsValidFeedName from 'src/customValidators/feedValidate';
 import {
   Entity,
   Column,

@@ -33,7 +33,6 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
-      console.log(e);
       await queryRunner.rollbackTransaction();
 
       throw new DBError('DBError: createFeed 오류');
@@ -43,7 +42,7 @@ export class FeedService {
   }
 
   async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
-    //그룹 피드 멤버 1명 이상인지 체크
+    // 그룹 피드 멤버 1명 이상인지 체크
     if (!memberIdList || !memberIdList.length)
       throw new EmptyGroupFeedMemberList();
 
@@ -52,31 +51,45 @@ export class FeedService {
     await queryRunner.startTransaction();
 
     try {
-      //존재하는 user인지 확인
-      for await (const userId of memberIdList) {
-        const id = await queryRunner.manager
-          .getRepository(User)
-          .findOne({ where: { id: userId } });
+      // 존재하는 user인지 확인
+      // for await (const userId of memberIdList) {
+      //   const id = await queryRunner.manager
+      //     .getRepository(User)
+      //     .findOne({ where: { id: userId } });
 
-        if (!id) throw new NonExistUserError();
-      }
+      //   if (!id) throw new NonExistUserError();
+      // }
+      await Promise.all(
+        memberIdList.map(async (userId) => {
+          const id = await queryRunner.manager
+            .getRepository(User)
+            .findOne({ where: { id: userId } });
+          if (!id) throw new NonExistUserError();
+        }),
+      );
 
-      //새로운 피드 생성
+      // 새로운 피드 생성
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .insert(createFeedDto);
       const feedId: number = feed.identifiers[0].id;
 
-      //useFeedMappingTable 삽입
-      for await (const userId of memberIdList) {
-        const id = await queryRunner.manager
-          .getRepository(UserFeedMapping)
-          .insert({ feedId, userId });
-      }
+      // useFeedMappingTable 삽입
+      // for await (const userId of memberIdList) {
+      //   const id = await queryRunner.manager
+      //     .getRepository(UserFeedMapping)
+      //     .insert({ feedId, userId });
+      // }
+      await Promise.all(
+        memberIdList.map(async (userId) => {
+          await queryRunner.manager
+            .getRepository(UserFeedMapping)
+            .insert({ feedId, userId });
+        }),
+      );
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
-      console.log(e);
       await queryRunner.rollbackTransaction();
 
       if (e instanceof NonExistUserError) throw new NonExistUserIdException();
@@ -104,7 +117,6 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
-      console.log(e);
       await queryRunner.rollbackTransaction();
       throw new DBError('DBError: editFeed 오류');
     } finally {
@@ -117,7 +129,7 @@ export class FeedService {
     feedId: number,
     memberIdList: number[],
   ) {
-    //그룹 피드 멤버 1명 이상인지 체크
+    // 그룹 피드 멤버 1명 이상인지 체크
     if (!memberIdList || !memberIdList.length)
       throw new EmptyGroupFeedMemberList();
 
@@ -126,50 +138,72 @@ export class FeedService {
     await queryRunner.startTransaction();
 
     try {
-      //존재하는 user인지 확인
-      for await (const userId of memberIdList) {
-        const id = await queryRunner.manager
-          .getRepository(User)
-          .findOne({ where: { id: userId } });
+      // 존재하는 user인지 확인
+      // for await (const userId of memberIdList) {
+      //   const id = await queryRunner.manager
+      //     .getRepository(User)
+      //     .findOne({ where: { id: userId } });
 
-        if (!id) throw new NonExistUserError();
-      }
-
-      //존재하는 피드인지 확인
+      //   if (!id) throw new NonExistUserError();
+      // }
+      Promise.all(
+        memberIdList.map(async (userId) => {
+          const id = await queryRunner.manager
+            .getRepository(User)
+            .findOne({ where: { id: userId } });
+          if (!id) throw new NonExistUserError();
+        }),
+      );
+      // 존재하는 피드인지 확인
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .findOne({ where: { id: feedId } });
       if (!feed) throw new NonExistFeedIdException();
 
-      //피드 정보 업데이트
+      // 피드 정보 업데이트
       await queryRunner.manager
         .getRepository(Feed)
         .update({ id: feedId }, createFeedDto);
 
-      //그룹 피드 멤버 정보(user_feed_mapping) 업데이트
+      // 그룹 피드 멤버 정보(user_feed_mapping) 업데이트
       const prevMemberList = await queryRunner.manager
         .getRepository(UserFeedMapping)
         .find({ where: { feedId }, select: { userId: true } });
 
       const prevMemberIdList = prevMemberList.map((member) => member.userId);
 
-      //1. 삭제
-      for await (const userId of prevMemberIdList) {
-        if (!memberIdList.includes(userId)) {
+      // 1. 삭제
+      // for await (const userId of prevMemberIdList) {
+      //   if (!memberIdList.includes(userId)) {
+      //     await queryRunner.manager
+      //       .getRepository(UserFeedMapping)
+      //       .delete({ userId });
+      //   }
+      // }
+
+      // //2. 추가
+      // for await (const userId of memberIdList) {
+      //   if (!prevMemberIdList.includes(userId)) {
+      //     await queryRunner.manager
+      //       .getRepository(UserFeedMapping)
+      //       .save({ feedId, userId });
+      //   }
+      // }
+
+      Promise.all(
+        prevMemberIdList.map(async (userId) => {
           await queryRunner.manager
             .getRepository(UserFeedMapping)
             .delete({ userId });
-        }
-      }
-
-      //2. 추가
-      for await (const userId of memberIdList) {
-        if (!prevMemberIdList.includes(userId)) {
+        }),
+      );
+      Promise.all(
+        memberIdList.map(async (userId) => {
           await queryRunner.manager
             .getRepository(UserFeedMapping)
             .save({ feedId, userId });
-        }
-      }
+        }),
+      );
 
       await queryRunner.commitTransaction();
     } catch (e) {

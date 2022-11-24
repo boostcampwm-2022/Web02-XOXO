@@ -10,7 +10,7 @@ import UsersService from 'src/users/users.service';
 
 @ValidatorConstraint({ name: 'DuplicateNickname', async: true })
 @Injectable()
-export class DuplicatNickname implements ValidatorConstraintInterface {
+export class DuplicateNickname implements ValidatorConstraintInterface {
   constructor(private readonly userService: UsersService) {}
 
   async validate(nickname: string, args: ValidationArguments) {
@@ -56,7 +56,7 @@ export function IsDuplicateNickname(validationOptions?: ValidationOptions) {
       target: object.constructor,
       propertyName,
       options: validationOptions,
-      validator: DuplicatNickname,
+      validator: DuplicateNickname,
     });
   };
 }

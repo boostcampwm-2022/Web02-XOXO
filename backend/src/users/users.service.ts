@@ -6,7 +6,7 @@ import { hash, compare } from 'bcrypt';
 import User from 'src/entities/User.entity';
 import { DBError } from 'src/error/serverError';
 import { Repository } from 'typeorm';
-import { FindUserDto } from './dto/find.user.dto';
+import FindUserDto from './dto/find.user.dto';
 import JoinRequestDto from './dto/join.request.dto';
 
 @Injectable()
@@ -36,7 +36,7 @@ export default class UsersService {
       });
       return user;
     } catch (e) {
-      throw new DBError('DBError: joinUser .save() 오류');
+      throw new DBError('DBError: getUser 오류');
     }
   }
 

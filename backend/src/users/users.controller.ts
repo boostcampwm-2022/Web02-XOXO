@@ -37,7 +37,7 @@ export default class UsersController {
   ) {}
 
   @UseGuards(RefreshAuthGuard)
-  @Get('refresh')
+  @Post('refresh')
   async refreshToken(@UserReq() user, @Res() res: Response) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
@@ -120,7 +120,7 @@ export default class UsersController {
   }
 
   @UseGuards(AccessAuthGuard)
-  @Get('logout')
+  @Post('logout')
   async logoutUser(@UserReq() user, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');

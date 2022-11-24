@@ -8,3 +8,5 @@ export const Feed = createParamDecorator(
     return body;
   },
 );
+
+export default Feed;

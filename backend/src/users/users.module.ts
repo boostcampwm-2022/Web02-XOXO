@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DuplicatKakaoId } from 'src/customValidators/kakaoIdValidate';
+import { DuplicateKakaoId } from 'src/customValidators/kakaoIdValidate';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 import {
-  DuplicatNickname,
+  DuplicateNickname,
   InvalidNickname,
 } from 'src/customValidators/nicknameValidate';
 import User from 'src/entities/User.entity';
@@ -23,8 +23,8 @@ import UsersService from './users.service';
     AuthenticationService,
     JwtService,
     InvalidNickname,
-    DuplicatNickname,
-    DuplicatKakaoId,
+    DuplicateNickname,
+    DuplicateKakaoId,
   ],
   exports: [UsersService],
 })
