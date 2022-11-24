@@ -1,9 +1,11 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import AppModule from './app.module';
 import { HttpExceptionFilter } from './http-exception.filter';
+import UsersModule from './users/users.module';
 import ValidationPipe422 from './validation';
 
 declare const module: any;
@@ -13,6 +15,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe422());
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   const config = new DocumentBuilder()
     .setTitle('XOXO API')

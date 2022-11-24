@@ -1,0 +1,29 @@
+@import '@src/global';
+
+.signin-page {
+  @include signin-bg;
+  .signin-body {
+    @include vcenter;
+    padding: 15vw 16px;
+    flex-direction: column;
+    .icon-image {
+      width: 100%;
+      margin: 56px 0;
+    }
+    .xoxo-info {
+      width: 100%;
+      text-align: right;
+      @include bold(3.75vw, $white);
+      line-height: 2vw;
+    }
+    .kakao-auth-button {
+      @include button-large(#fee500, $black);
+      @include vcenter;
+      flex-direction: row;
+      span {
+        margin-left: 4px;
+        margin-bottom: 2px;
+      }
+    }
+  }
+}

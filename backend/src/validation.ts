@@ -1,18 +1,33 @@
+import { ValidationPipe, UnprocessableEntityException } from '@nestjs/common';
+import { ValidationError } from 'class-validator';
 import {
-  ArgumentMetadata,
-  BadRequestException,
-  UnprocessableEntityException,
-  ValidationPipe,
-} from '@nestjs/common';
+  DuplicateJoinException,
+  DuplicateNicknameException,
+  InvalidFeedNameException,
+  InvalidNicknameException,
+  NonExistUserIdException,
+} from './error/httpException';
 
 export default class ValidationPipe422 extends ValidationPipe {
-  public async transform(value, metadata: ArgumentMetadata) {
-    try {
-      return await super.transform(value, metadata);
-    } catch (e) {
-      if (e instanceof BadRequestException) {
-        throw new UnprocessableEntityException('custom error');
-      }
-    }
+  public createExceptionFactory() {
+    return (validationErrors: ValidationError[] = []) => {
+      validationErrors.forEach((validationError) => {
+        const errorType = Object.keys(validationError.constraints)[0];
+        switch (errorType) {
+          case 'InvalideNickname':
+            throw new InvalidNicknameException();
+          case 'DuplicatNickname':
+            throw new DuplicateNicknameException();
+          case 'InvalidFeedName':
+            throw new InvalidFeedNameException();
+          case 'NonExistUserId':
+            throw new NonExistUserIdException();
+          case 'DuplicatKakaoId':
+            throw new DuplicateJoinException();
+          default:
+            throw new UnprocessableEntityException();
+        }
+      });
+    };
   }
 }

@@ -1,0 +1,4 @@
+@import '@src/global';
+.form-wrapper {
+  @include form-wrapper;
+}

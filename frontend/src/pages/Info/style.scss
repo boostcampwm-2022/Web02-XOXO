@@ -1,0 +1,21 @@
+@import '@src/global';
+
+.signin-page {
+  @include signin-bg;
+  @include page;
+}
+.signin-body {
+  @include vcenter;
+  @include body;
+  .icon-image {
+    height: 20vw;
+  }
+  .form-wrapper {
+    @include form-wrapper($white, $white);
+    width: 100%;
+  }
+  .form-button {
+    @include button-large(#fee500, $black);
+    margin-top: 9vw;
+  }
+}

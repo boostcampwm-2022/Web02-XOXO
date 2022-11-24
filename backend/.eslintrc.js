@@ -38,5 +38,7 @@ module.exports = {
     ],
     'import/no-import-module-exports': 0,
     'class-methods-use-this': 0,
+    'max-classes-per-file': 0,
+    'class-methods-use-this': 0,
   },
 };

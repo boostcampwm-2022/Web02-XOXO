@@ -21,8 +21,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:create": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:create -d ./dataSource.ts",
-    "db:drop": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d ./dataSource.ts",
+    "db:create": "NODE_ENV=development ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:create -d ./dataSource.ts",
+    "db:drop": "NODE_ENV=development ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d ./dataSource.ts",
     "seed": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -d ./dataSource.ts",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync"
@@ -41,6 +41,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
+    "crypto": "^1.0.1",
     "express": "^4.18.2",
     "joi": "^17.7.0",
     "mysql2": "^2.3.3",
