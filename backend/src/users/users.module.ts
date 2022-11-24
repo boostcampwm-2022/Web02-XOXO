@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { InvalidNickname } from 'src/customValidators/nicknameValidate';
+
 import { AuthenticationService } from 'src/authentication/authentication.service';
+import { InvalidNickname } from 'src/customValidators/nicknameValidate';
 import User from 'src/entities/User.entity';
 
 import { OauthModule } from 'src/oauth/oauth.module';
