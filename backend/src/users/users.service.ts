@@ -31,7 +31,7 @@ export default class UsersService {
     } catch (e) {
       const errorType = e.code;
       if (errorType === 'ER_DUP_ENTRY') {
-        if (e.sqlMessage.includes(process.env.DB_UERRS_KAKAOID_UNIQUE))
+        if (e.sqlMessage.includes(process.env.DB_UERS_KAKAOID_UNIQUE))
           throw new DuplicateKakaoIdError();
         else throw new DuplicateNicknameError();
       }
