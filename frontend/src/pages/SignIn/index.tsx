@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React from 'react'
 import './style.scss'
 import XoxoIcon from '@assets/xoxoIcon.svg'
@@ -5,6 +6,8 @@ import { ReactComponent as KakaoIcon } from '@assets/kakaoIcon.svg'
 import { ReactComponent as CameraIcon } from '@assets/cameraIcon.svg'
 
 const SignIn = () => {
+  const KAKAO_CLIENT_ID = String(process.env.REACT_APP_KAKAO_CLIENT_ID)
+  const KAKAO_REDIRECT_URI = String(process.env.REACT_APP_KAKAO_REDIRECT_URI)
   return (
     <div className="signin-page">
         <div className='signin-body'>
@@ -19,12 +22,14 @@ const SignIn = () => {
 
           </div>
           <img className="icon-image" src={XoxoIcon} alt="test" />
-          <button className='kakao-auth-button'>
-            <div>
-                <KakaoIcon/>
-                <span>카카오 로그인</span>
-            </div>
-        </button>
+          <a href={`https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}`}>
+            <button className='kakao-auth-button'>
+              <div>
+                  <KakaoIcon/>
+                  <span>카카오 로그인</span>
+              </div>
+            </button>
+        </a>
         </div>
     </div>
   )
