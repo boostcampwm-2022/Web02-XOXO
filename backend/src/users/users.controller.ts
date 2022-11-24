@@ -1,3 +1,4 @@
+import Cookie from 'src/customDecorator/cookie.decorator';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,

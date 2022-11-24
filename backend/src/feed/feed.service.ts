@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Feed } from 'src/entities/Feed.entity';
 import User from 'src/entities/User.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
+import { NonExistFeedIdException } from 'src/error/httpException';
 import {
-  EmptyGroupFeedMemberList,
-  NonExistFeedIdException,
-  NonExistUserIdException,
-} from 'src/error/httpException';
-import { DBError, NonExistUserError } from 'src/error/serverError';
+  DBError,
+  InvalidFKConstraintError,
+  MemberListMustMoreThanOne,
+  NonExistFeedError,
+  NonExistUserError,
+} from 'src/error/serverError';
 import { DataSource } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
 import { encrypt } from './feed.utils';
@@ -33,7 +35,10 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
+
+      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistUserError();
 
       throw new DBError('DBError: createFeed 오류');
     } finally {
@@ -44,7 +49,7 @@ export class FeedService {
   async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
     // 그룹 피드 멤버 1명 이상인지 체크
     if (!memberIdList || !memberIdList.length)
-      throw new EmptyGroupFeedMemberList();
+      throw new MemberListMustMoreThanOne();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -90,9 +95,10 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
 
-      if (e instanceof NonExistUserError) throw new NonExistUserIdException();
+      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistUserError();
 
       throw new DBError('DBError: createGroupFeed 오류');
     } finally {
@@ -117,7 +123,11 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
+
+      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistFeedError();
+
       throw new DBError('DBError: editFeed 오류');
     } finally {
       await queryRunner.release();
@@ -131,35 +141,13 @@ export class FeedService {
   ) {
     // 그룹 피드 멤버 1명 이상인지 체크
     if (!memberIdList || !memberIdList.length)
-      throw new EmptyGroupFeedMemberList();
+      throw new MemberListMustMoreThanOne();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      // 존재하는 user인지 확인
-      // for await (const userId of memberIdList) {
-      //   const id = await queryRunner.manager
-      //     .getRepository(User)
-      //     .findOne({ where: { id: userId } });
-
-      //   if (!id) throw new NonExistUserError();
-      // }
-      Promise.all(
-        memberIdList.map(async (userId) => {
-          const id = await queryRunner.manager
-            .getRepository(User)
-            .findOne({ where: { id: userId } });
-          if (!id) throw new NonExistUserError();
-        }),
-      );
-      // 존재하는 피드인지 확인
-      const feed = await queryRunner.manager
-        .getRepository(Feed)
-        .findOne({ where: { id: feedId } });
-      if (!feed) throw new NonExistFeedIdException();
-
       // 피드 정보 업데이트
       await queryRunner.manager
         .getRepository(Feed)
@@ -207,10 +195,11 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
-      console.log(e);
+      const errorType = e.code;
       await queryRunner.rollbackTransaction();
 
-      if (e instanceof NonExistUserError) throw new NonExistUserIdException();
+      if (errorType === 'ER_NO_REFERENCED_ROW_2')
+        throw new InvalidFKConstraintError();
 
       throw new DBError('DBError: editGroupFeed 오류');
     } finally {

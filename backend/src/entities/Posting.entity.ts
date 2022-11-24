@@ -7,13 +7,14 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import Comment from './Comment.entity';
-import { Feed } from './Feed.entity';
-import Image from './Image.entity';
-import User from './User.entity';
+import { CommentInterface } from './entityInterfaces/CommentInterface';
+import { FeedInterface } from './entityInterfaces/FeedInterface';
+import { ImageInterface } from './entityInterfaces/ImageInterface';
+import { PostingInterface } from './entityInterfaces/PostingInterface';
+import { UserInterface } from './entityInterfaces/UserInterface';
 
 @Entity({ schema: 'xoxo', name: 'postings' })
-export default class Posting {
+export default class Posting implements PostingInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
   id: number;
@@ -30,15 +31,15 @@ export default class Posting {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne((type) => User)
-  sender: User;
+  @ManyToOne('User')
+  sender: UserInterface;
 
-  @ManyToOne((type) => Feed, (feed) => feed.postings)
-  feed: Feed;
+  @ManyToOne('Feed', 'postings')
+  feed: FeedInterface;
 
-  @OneToMany((type) => Image, (image) => image.posting)
-  images: Image[];
+  @OneToMany('Image', 'posting')
+  images: ImageInterface[];
 
-  @OneToMany((type) => Comment, (comment) => comment.posting)
-  comments: Comment[];
+  @OneToMany('Comment', 'posting')
+  comments: CommentInterface[];
 }

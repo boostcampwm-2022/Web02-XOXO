@@ -143,3 +143,15 @@ export class EmptyGroupFeedMemberList extends HttpException {
     );
   }
 }
+
+export class InvalidFKConstraintException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InvalidFKConstraintException',
+        message: `입력값 중 유효하지 않은 참조값이 있습니다.`,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}

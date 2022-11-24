@@ -12,6 +12,7 @@ export default class ValidationPipe422 extends ValidationPipe {
   public createExceptionFactory() {
     return (validationErrors: ValidationError[] = []) => {
       validationErrors.forEach((validationError) => {
+        console.log(validationError);
         const errorType = Object.keys(validationError.constraints)[0];
         switch (errorType) {
           case 'InvalideNickname':

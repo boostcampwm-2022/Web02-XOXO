@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
-import IsValidFeedName from 'src/customValidators/feedValidate';
+
 import {
   Entity,
   Column,
@@ -7,17 +7,17 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import Posting from './Posting.entity';
+import { FeedInterface } from './entityInterfaces/FeedInterface';
+import { PostingInterface } from './entityInterfaces/PostingInterface';
 import UserFeedMapping from './UserFeedMapping.entity';
 
 @Entity({ schema: 'xoxo', name: 'feeds' })
-export class Feed {
+export class Feed implements FeedInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
   id: number;
 
   @IsNotEmpty()
-  @IsValidFeedName()
   @Column({ type: 'varchar', length: 15 })
   name: string;
 
@@ -40,8 +40,8 @@ export class Feed {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @OneToMany((type) => Posting, (posting) => posting.feed)
-  postings: Posting[];
+  @OneToMany('Posting', 'feed')
+  postings: PostingInterface[];
 
   @OneToMany(
     (type) => UserFeedMapping,

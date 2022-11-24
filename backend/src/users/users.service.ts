@@ -4,7 +4,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash, compare } from 'bcrypt';
 
 import User from 'src/entities/User.entity';
-import { DBError } from 'src/error/serverError';
+import {
+  DBError,
+  DuplicateKakaoIdError,
+  DuplicateNicknameError,
+} from 'src/error/serverError';
 import { Repository } from 'typeorm';
 import FindUserDto from './dto/find.user.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -25,7 +29,13 @@ export default class UsersService {
         .execute();
       return userId;
     } catch (e) {
-      throw new DBError('DBError: joinUser.insert() 오류');
+      const errorType = e.code;
+      if (errorType === 'ER_DUP_ENTRY') {
+        if (e.sqlMessage.includes(process.env.DB_UERRS_KAKAOID_UNIQUE))
+          throw new DuplicateKakaoIdError();
+        else throw new DuplicateNicknameError();
+      }
+      throw new DBError('DBError: joinUser .save() 오류');
     }
   }
 
