@@ -1,4 +1,4 @@
-import Cookie from 'src/customDecorator/cookie.decorator';
+import Cookie from 'src/custom/customDecorator/cookie.decorator';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
@@ -12,11 +12,12 @@ import {
   Body,
   Res,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthenticationService } from 'src/authentication/authentication.service';
-import { AccessAuthGuard } from 'src/commons/accesstoken.guard';
-import { RefreshAuthGuard } from 'src/commons/refreshtoken.guard';
+import { AccessAuthGuard } from 'src/common/accesstoken.guard';
+import { RefreshAuthGuard } from 'src/common/refreshtoken.guard';
 import { UserReq } from './decorators/users.decorators';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -121,5 +122,11 @@ export default class UsersController {
     const userId = await this.userService.joinUser(joinMember);
     // TODO :  회원가입하고 로그인 처리를 어떻게 할까?
     return userId;
+  }
+
+  @Get('search/:nickname')
+  async serachUser(@Param('nickname') nickname: string) {
+    const userList = await this.userService.getUserList(nickname, 10);
+    return userList;
   }
 }
