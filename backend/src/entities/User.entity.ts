@@ -5,6 +5,7 @@ import {
   Column,
   DeleteDateColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
@@ -20,9 +21,10 @@ export default class User implements UserInterface {
   @IsNotEmpty()
   id: number;
 
+  @Index({ fulltext: true, parser: 'ngram' })
   @IsString()
   @IsNotEmpty()
-  @Column('varchar', { name: 'nickname', length: 15, unique: true })
+  @Column('varchar', { name: 'nickname', length: 15 })
   nickname: string;
 
   @IsNotEmpty()
@@ -32,7 +34,7 @@ export default class User implements UserInterface {
   profile: string;
 
   @IsNotEmpty()
-  @Column('int', { name: 'kakaoId', unique: true })
+  @Column('bigint', { name: 'kakaoId', unique: true, unsigned: true })
   kakaoId: number;
 
   @DeleteDateColumn()

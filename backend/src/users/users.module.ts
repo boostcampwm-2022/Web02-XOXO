@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthenticationService } from 'src/authentication/authentication.service';
-import { InvalidNickname } from 'src/customValidators/nicknameValidate';
+import { InvalidNickname } from 'src/custom/customValidators/nicknameValidate';
 import User from 'src/entities/User.entity';
 
 import { OauthModule } from 'src/oauth/oauth.module';

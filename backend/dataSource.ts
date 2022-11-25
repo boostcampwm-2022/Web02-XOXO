@@ -11,8 +11,8 @@ const dataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [User],
-  synchronize: false,
+  entities: [`${__dirname}/src/entities/*.entity{.ts,.js}`],
+  synchronize: true,
   logging: true,
 });
 
