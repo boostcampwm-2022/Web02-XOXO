@@ -77,7 +77,7 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-        return res.redirect('http://localhost:3001');
+        return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =
@@ -93,7 +93,7 @@ export default class UsersController {
       await this.userService.setCurrentRefreshToken(refreshToken, user.id);
       res.cookie('refreshToken', refreshToken, refreshTokenOption);
       res.cookie('accessToken', accessToken, accessTokenOption);
-      return res.redirect('http://localhost:3001');
+      return res.redirect('http://localhost:3000/feed');
     } catch (e) {
       throw new FailedToLoginKakaoException();
     }
