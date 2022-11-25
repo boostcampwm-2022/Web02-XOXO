@@ -9,7 +9,7 @@ import { Response } from 'express';
 import {
   DuplicateJoinException,
   DuplicateNicknameException,
-  EmptyGroupFeedMemberList,
+  GroupFeedMemberListCountException,
   InternalDBException,
   InvalidFKConstraintException,
   NonExistFeedIdException,
@@ -46,8 +46,8 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
         exception = new NonExistFeedIdException();
         break;
 
-      case 'MemberListMustMoreThanOne':
-        exception = new EmptyGroupFeedMemberList();
+      case 'GroupFeedMemberListCountException':
+        exception = new GroupFeedMemberListCountException();
         break;
 
       case 'DuplicateKakaoIdError':

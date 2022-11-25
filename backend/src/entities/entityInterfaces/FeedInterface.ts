@@ -5,5 +5,5 @@ export interface FeedInterface {
 
   dueDate: Date;
 
-  memberCount: number;
+  isGroupFeed: boolean;
 }
