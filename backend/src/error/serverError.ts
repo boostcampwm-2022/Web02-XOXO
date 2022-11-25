@@ -12,10 +12,10 @@ export class NonExistUserError extends Error {
   }
 }
 
-export class MemberListMustMoreThanOne extends Error {
+export class GroupFeedMemberListCountException extends Error {
   constructor() {
-    super('그룹 피드 멤버는 무조건 1명 이상이여야 합니다.'); // (1)
-    this.name = 'MemberListMustMoreThanOne';
+    super('그룹 피드 멤버는 2명 이상 100명 이하입니다'); // (1)
+    this.name = 'GroupFeedMemberListCountException';
   }
 }
 

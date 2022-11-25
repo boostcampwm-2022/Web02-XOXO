@@ -5,8 +5,8 @@ import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
 import { NonExistFeedIdException } from 'src/error/httpException';
 import {
   DBError,
+  GroupFeedMemberListCountException,
   InvalidFKConstraintError,
-  MemberListMustMoreThanOne,
   NonExistFeedError,
   NonExistUserError,
 } from 'src/error/serverError';
@@ -26,7 +26,7 @@ export class FeedService {
     try {
       const feed = await queryRunner.manager
         .getRepository(Feed)
-        .save(createFeedDto);
+        .save({ ...createFeedDto, isGroupFeed: false });
 
       await queryRunner.manager
         .getRepository(UserFeedMapping)
@@ -47,51 +47,34 @@ export class FeedService {
   }
 
   async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
-    // 그룹 피드 멤버 1명 이상인지 체크
-    if (!memberIdList || !memberIdList.length)
-      throw new MemberListMustMoreThanOne();
+    // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
+    if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
+      throw new GroupFeedMemberListCountException();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      // 존재하는 user인지 확인
-      // for await (const userId of memberIdList) {
-      //   const id = await queryRunner.manager
-      //     .getRepository(User)
-      //     .findOne({ where: { id: userId } });
-
-      //   if (!id) throw new NonExistUserError();
-      // }
-      await Promise.all(
-        memberIdList.map(async (userId) => {
-          const id = await queryRunner.manager
-            .getRepository(User)
-            .findOne({ where: { id: userId } });
-          if (!id) throw new NonExistUserError();
-        }),
-      );
-
       // 새로운 피드 생성
       const feed = await queryRunner.manager
         .getRepository(Feed)
-        .insert(createFeedDto);
+        .insert({ ...createFeedDto, isGroupFeed: true });
       const feedId: number = feed.identifiers[0].id;
 
       // useFeedMappingTable 삽입
-      // for await (const userId of memberIdList) {
-      //   const id = await queryRunner.manager
-      //     .getRepository(UserFeedMapping)
-      //     .insert({ feedId, userId });
-      // }
-      await Promise.all(
-        memberIdList.map(async (userId) => {
-          await queryRunner.manager
-            .getRepository(UserFeedMapping)
-            .insert({ feedId, userId });
-        }),
-      );
+      for await (const userId of memberIdList) {
+        const id = await queryRunner.manager
+          .getRepository(UserFeedMapping)
+          .insert({ feedId, userId });
+      }
+      // await Promise.all(
+      //   memberIdList.map(async (userId) => {
+      //     await queryRunner.manager
+      //       .getRepository(UserFeedMapping)
+      //       .insert({ feedId, userId });
+      //   }),
+      // );
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
@@ -112,11 +95,6 @@ export class FeedService {
     await queryRunner.startTransaction();
 
     try {
-      const feed = await queryRunner.manager
-        .getRepository(Feed)
-        .findOne({ where: { id: feedId } });
-      if (!feed) throw new NonExistFeedIdException();
-
       await queryRunner.manager
         .getRepository(Feed)
         .update({ id: feedId }, createFeedDto);
@@ -139,9 +117,9 @@ export class FeedService {
     feedId: number,
     memberIdList: number[],
   ) {
-    // 그룹 피드 멤버 1명 이상인지 체크
-    if (!memberIdList || !memberIdList.length)
-      throw new MemberListMustMoreThanOne();
+    // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
+    if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
+      throw new GroupFeedMemberListCountException();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -161,37 +139,39 @@ export class FeedService {
       const prevMemberIdList = prevMemberList.map((member) => member.userId);
 
       // 1. 삭제
-      // for await (const userId of prevMemberIdList) {
-      //   if (!memberIdList.includes(userId)) {
-      //     await queryRunner.manager
-      //       .getRepository(UserFeedMapping)
-      //       .delete({ userId });
-      //   }
-      // }
-
-      // //2. 추가
-      // for await (const userId of memberIdList) {
-      //   if (!prevMemberIdList.includes(userId)) {
-      //     await queryRunner.manager
-      //       .getRepository(UserFeedMapping)
-      //       .save({ feedId, userId });
-      //   }
-      // }
-
-      Promise.all(
-        prevMemberIdList.map(async (userId) => {
+      for await (const userId of prevMemberIdList) {
+        if (!memberIdList.includes(userId)) {
           await queryRunner.manager
             .getRepository(UserFeedMapping)
             .delete({ userId });
-        }),
-      );
-      Promise.all(
-        memberIdList.map(async (userId) => {
+        }
+      }
+
+      // 2. 추가
+      for await (const userId of memberIdList) {
+        if (!prevMemberIdList.includes(userId)) {
           await queryRunner.manager
             .getRepository(UserFeedMapping)
             .save({ feedId, userId });
-        }),
-      );
+        }
+      }
+
+      // Promise.all(
+      //   prevMemberIdList
+      //     .filter((userId) => !memberIdList.includes(userId))
+      //     .map(async (userId) => {
+      //       await queryRunner.manager
+      //         .getRepository(UserFeedMapping)
+      //         .delete({ userId, feedId });
+      //     }),
+      // );
+      // Promise.all(
+      //   memberIdList.map(async (userId) => {
+      //     await queryRunner.manager
+      //       .getRepository(UserFeedMapping)
+      //       .save({ feedId, userId });
+      //   }),
+      // );
 
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -204,6 +184,22 @@ export class FeedService {
       throw new DBError('DBError: editGroupFeed 오류');
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async getPrivateFeedList(userId: number) {
+    try {
+      return 'private';
+      // this.dataSource
+      //   .createQueryBuilder()
+      //   .select(['id AS feed_id', 'name AS feed_name']).;
+    } catch (e) {
+      const errorType = e.code;
+
+      if (errorType === 'ER_NO_REFERENCED_ROW_2')
+        throw new InvalidFKConstraintError();
+
+      throw new DBError('DBError: editGroupFeed 오류');
     }
   }
 }

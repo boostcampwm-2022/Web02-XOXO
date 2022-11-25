@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  UseGuards,
+  Param,
+  Patch,
+  Post,
+  Get,
+} from '@nestjs/common';
+import { DueDateGuard } from 'src/common/dueDate.guard';
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import ValidationPipe422 from 'src/validation';

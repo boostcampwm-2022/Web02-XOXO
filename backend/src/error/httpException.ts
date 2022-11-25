@@ -132,12 +132,12 @@ export class NonExistFeedIdException extends HttpException {
   }
 }
 
-export class EmptyGroupFeedMemberList extends HttpException {
+export class GroupFeedMemberListCountException extends HttpException {
   constructor() {
     super(
       {
-        error: 'EmptyGroupFeedMember',
-        message: `그룹 피드 생성에는 최소한 한 명 이상의 그룹원이 필요합니다.`,
+        error: 'GroupFeedMemberListCountException',
+        message: `그룹 피드 멤버는 2명 이상 100명 이하입니다.`,
       },
       HttpStatus.UNPROCESSABLE_ENTITY,
     );
@@ -152,6 +152,30 @@ export class InvalidFKConstraintException extends HttpException {
         message: `입력값 중 유효하지 않은 참조값이 있습니다.`,
       },
       HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
+
+export class AccessBeforeDueDateException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'AccessBeforeDueDateException',
+        message: `피드 공개일 이전에는 포스팅에 접근할 수 없습니다.`,
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+}
+
+export class InvalidPostingId extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InvalidPostingId',
+        message: `존재하지 않는 포스팅 입니다.`,
+      },
+      HttpStatus.FORBIDDEN,
     );
   }
 }

@@ -26,6 +26,7 @@ export default class Posting implements PostingInterface {
 
   @IsNotEmpty()
   @IsUrl()
+  @Column('varchar')
   thumbnail: string;
 
   @DeleteDateColumn()
