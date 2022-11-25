@@ -34,8 +34,8 @@ export default class User implements UserInterface {
   profile: string;
 
   @IsNotEmpty()
-  @Column('int', { name: 'kakaoId', unique: true })
-  kakaoId: number;
+  @Column('varchar', { name: 'kakaoId', unique: true, length: 13 })
+  kakaoId: string;
 
   @DeleteDateColumn()
   deletedAt: Date | null;

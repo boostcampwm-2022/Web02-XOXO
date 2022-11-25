@@ -3,7 +3,7 @@ import { IsNotEmpty, IsNumberString, IsUrl } from 'class-validator';
 export default class JoinCookieDto {
   @IsNotEmpty()
   @IsNumberString()
-  kakaoId: number;
+  kakaoId: string;
 
   @IsNotEmpty()
   @IsUrl()
