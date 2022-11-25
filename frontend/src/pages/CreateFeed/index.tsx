@@ -9,8 +9,13 @@ const CreateFeed = () => {
   const feedName = useRef('')
   const feedDescribe = useRef('')
   const dueDate = useRef('')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [members, setMembers] = useState(['백', '규현', '양은서', 'edhz8888', '백규현', 'diddmstj98'])
+  // 그냥 mockup으로 넣어둠
+  const fakeMembers = ['백', '규현', '양은서', 'edhz8888', '백규현', 'diddmstj98']
+  const [suggestions, setSuggestions] = useState(Array(0))
+  const [members, setMembers] = useState(Array(0))
+  const debouncedSearch = debounce((query) => {
+    setSuggestions([...fakeMembers.filter((e) => query.length > 0 && e.includes(query))])
+  }, 500)
   return (
     <div className="createfeed-page">
       <Header page="CreateFeed" text={'피드 생성'} />
@@ -48,15 +53,20 @@ const CreateFeed = () => {
             id="userId"
             placeholder="그룹원의 카카오 이메일을 입력해주세요"
             onChange={(e) => {
-              debounce(() => {
-                console.log('called')
-              })
+              debouncedSearch(e.target.value)
             }}
           />
         </div>
         <div className="suggestions-wrapper">
-          {members.map((nickname, i) => (
-            <button className="suggestion-wrapper" key={i}>
+          {suggestions.map((nickname, i) => (
+            <button
+              className="suggestion-wrapper"
+              key={i}
+              onClick={(e) => {
+                e.preventDefault()
+                setMembers([...members, nickname])
+              }}
+            >
               <span className="suggestion-nickname">{nickname}</span>
               <span className="suggestion-add">추가</span>
             </button>
@@ -71,9 +81,15 @@ const CreateFeed = () => {
             <span className="form-no-member">현재 추가된 그룹원이 없습니다</span>
           ) : (
             <div className="form-members-wrapper">
-              {members.map((name) => (
+              {members.map((name, i) => (
                 // eslint-disable-next-line react/jsx-key
-                <button className="form-member">
+                <button
+                  className="form-member"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMembers(members.filter((member) => member !== name))
+                  }}
+                >
                   <span>{name}</span>
                   <XIcon fill="#ea4b35" />
                 </button>
