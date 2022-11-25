@@ -1,5 +1,4 @@
 import { ConfigModule } from '@nestjs/config';
-import User from 'src/entities/User.entity';
 import { DataSource } from 'typeorm';
 
 ConfigModule.forRoot();
