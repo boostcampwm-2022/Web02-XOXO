@@ -5,5 +5,5 @@ export interface UserInterface {
 
   profile: string;
 
-  kakaoId: string;
+  kakaoId: number;
 }

@@ -6,7 +6,7 @@ export default class JoinRequestDto extends PickType(User, [
   'kakaoId',
   'nickname',
 ] as const) {
-  constructor(nickname: string, kakaoId: string, profile: string) {
+  constructor(nickname: string, kakaoId: number, profile: string) {
     super();
     this.nickname = nickname;
     this.kakaoId = kakaoId;
