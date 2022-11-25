@@ -6,9 +6,10 @@
     @include vcenter;
     padding: 15vw 16px;
     flex-direction: column;
-    .icon-image {
+    .icon-wrapper {
       width: 100%;
       margin: 56px 0;
+      @include hcenter;
     }
     .xoxo-info {
       width: 100%;
@@ -16,9 +17,8 @@
       @include bold(3.75vw, $white);
       line-height: 2vw;
     }
-    a {
-      width: 100%;
       .kakao-auth-button {
+        width: 100%;
         @include button-large(#fee500, $black);
         @include vcenter;
         flex-direction: row;
@@ -27,6 +27,5 @@
           margin-bottom: 2px;
         }
       }
-    }
   }
 }
