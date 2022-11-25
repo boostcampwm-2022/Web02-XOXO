@@ -33,6 +33,10 @@ export default class UsersController {
     private readonly authenticationService: AuthenticationService,
   ) {}
 
+  @UseGuards(AccessAuthGuard)
+  @Get('test')
+  async test() {}
+
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@UserReq() user, @Res() res: Response) {
@@ -113,15 +117,35 @@ export default class UsersController {
     @Body() joinNicknameDto: JoinNicknameDto,
     @Cookie(new ValidationPipe422({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
+    @Res() res: Response,
   ) {
     const joinMember = new JoinRequestDto(
       joinNicknameDto.nickname,
       joinCookieDto.kakaoId,
       joinCookieDto.profilePicture,
     );
-    const userId = await this.userService.joinUser(joinMember);
-    // TODO :  회원가입하고 로그인 처리를 어떻게 할까?
-    return userId;
+    await this.userService.joinUser(joinMember);
+    // note : 여기서 userId를 조회하려면 이방법이 최선일까?
+    const { kakaoId } = joinCookieDto;
+    const user = await this.userService.getUser({
+      kakaoId,
+    });
+    console.log(user);
+    const { accessToken, ...accessTokenOption } =
+      this.authenticationService.getCookieWithJwtAccessToken(
+        user.nickname,
+        user.id,
+      );
+    const { refreshToken, ...refreshTokenOption } =
+      this.authenticationService.getCookieWithJwtRefreshToken(
+        user.nickname,
+        user.id,
+      );
+    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+    res.cookie('refreshToken', refreshToken, refreshTokenOption);
+    res.cookie('accessToken', accessToken, accessTokenOption);
+    console.log(accessToken);
+    return res.redirect('http://localhost:3000/feed');
   }
 
   @Get('search/:nickname')

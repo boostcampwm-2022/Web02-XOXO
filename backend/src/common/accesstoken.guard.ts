@@ -23,6 +23,7 @@ export class AccessAuthGuard implements CanActivate {
     if (accessToken === undefined)
       throw new HttpException('Token이 없습니다.', HttpStatus.UNAUTHORIZED);
     request.user = await this.validateToken(accessToken);
+    console.log(request.user);
     return true;
   }
 
@@ -31,6 +32,7 @@ export class AccessAuthGuard implements CanActivate {
       const user = await this.authenticationService.verifyToken(token);
       return user;
     } catch (error) {
+      console.log(error);
       switch (error.message) {
         case 'invalid token':
         case 'jwt malformed':
