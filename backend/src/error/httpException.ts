@@ -155,3 +155,27 @@ export class InvalidFKConstraintException extends HttpException {
     );
   }
 }
+
+export class AccessBeforeDueDateException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'AccessBeforeDueDateException',
+        message: `피드 공개일 이전에는 포스팅에 접근할 수 없습니다.`,
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+}
+
+export class InvalidPostingId extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InvalidPostingId',
+        message: `존재하지 않는 포스팅 입니다.`,
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+}

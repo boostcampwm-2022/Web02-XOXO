@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationModule } from './authentication/authentication.module';
 
 import { FeedModule } from './feed/feed.module';
+import { PostingController } from './posting/posting.controller';
+import { PostingService } from './posting/posting.service';
+import { PostingModule } from './posting/posting.module';
 
 import UsersModule from './users/users.module';
 import AppController from './app.controller';
@@ -46,6 +49,8 @@ import configuration from '../configuration';
     AuthenticationModule,
 
     FeedModule,
+
+    PostingModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
