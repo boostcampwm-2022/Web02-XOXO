@@ -55,7 +55,7 @@ export default class UsersService {
       const userList = await this.userRepository
         .createQueryBuilder()
         .select(['id', 'nickname'])
-        .where(`MATCH(nickname) AGAINST ('+${nickname}' IN BOOLEAN MODE)`)
+        .where(`MATCH(nickname) AGAINST ('+${nickname}*' IN BOOLEAN MODE)`)
         .limit(maxRecord)
         .execute();
       return userList;
