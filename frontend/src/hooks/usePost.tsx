@@ -4,8 +4,8 @@ import axios from 'axios'
 const usePost = (url: string) => {
   const post = useCallback(async (data: object) => {
     try {
-      const response = await axios.post(url, data)
-      return response.data
+      const response = await axios.post(url, data, { withCredentials: true })
+      return response
     } catch (err) {
       let message
       if (err instanceof Error) message = err.message

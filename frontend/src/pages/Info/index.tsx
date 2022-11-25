@@ -1,13 +1,25 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import React, { useRef } from 'react'
 import './style.scss'
+import usePost from '@hooks/usePost'
 import XoxoIcon from '@assets/xoxoIcon.svg'
 import Input from '@components/Input'
+import SigninBackground from '@components/SigninBackground'
 import { containsKO, longer } from '@util/validation/bool'
+import { useNavigate } from 'react-router-dom'
 
 const Info = () => {
   const userNickname = useRef('')
+  const postNickname = usePost('/users/join')
+  const navigate = useNavigate()
+  const handleNicknameForm = async () => {
+    const response = await postNickname({ nickname: userNickname.current })
+    if (response && response.statusText === 'Created') navigate('/feed')
+  }
   return (
     <div className="signin-page">
+      <SigninBackground />
       <div className="signin-body">
         <img className="icon-image" src={XoxoIcon} alt="serviceIcon" />
         <Input
@@ -20,7 +32,7 @@ const Info = () => {
             return ''
           }}
         />
-        <button className="form-button">시작하기</button>
+        <button className="form-button" onClick={handleNicknameForm}>시작하기</button>
       </div>
     </div>
   )
