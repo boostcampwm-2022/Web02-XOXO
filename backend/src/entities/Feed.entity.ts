@@ -18,24 +18,25 @@ export class Feed implements FeedInterface {
   id: number;
 
   @IsNotEmpty()
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'varchar', length: 15, nullable: false })
   name: string;
 
   @IsUrl()
   @IsNotEmpty()
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false })
   thumbnail: string;
 
   @IsNotEmpty()
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false })
   description: string;
 
   @IsNotEmpty()
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', nullable: false })
   dueDate: Date;
 
-  @Column('int', { default: 0 })
-  memberCount: number;
+  @IsNotEmpty()
+  @Column('bool', { nullable: false })
+  isGroupFeed: boolean;
 
   @DeleteDateColumn()
   deletedAt: Date | null;

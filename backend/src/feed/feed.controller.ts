@@ -10,6 +10,8 @@ import {
 import { AccessAuthGuard } from 'src/common/accesstoken.guard';
 import { AuthorizationGuard } from 'src/common/authorization.guard';
 
+import { DueDateGuard } from 'src/common/dueDate.guard';
+
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import ValidationPipe422 from 'src/validation';
 import CreateFeedDto from './dto/create.feed.dto';
