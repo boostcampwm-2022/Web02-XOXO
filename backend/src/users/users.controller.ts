@@ -33,10 +33,6 @@ export default class UsersController {
     private readonly authenticationService: AuthenticationService,
   ) {}
 
-  @UseGuards(AccessAuthGuard)
-  @Get('test')
-  async test() {}
-
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@UserReq() user, @Res() res: Response) {
@@ -81,6 +77,7 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
+
         return res.redirect('http://localhost:3000/signin/info');
       }
 
@@ -130,7 +127,6 @@ export default class UsersController {
     const user = await this.userService.getUser({
       kakaoId,
     });
-    console.log(user);
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
         user.nickname,
@@ -144,7 +140,6 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    console.log(accessToken);
     return res.redirect('http://localhost:3000/feed');
   }
 

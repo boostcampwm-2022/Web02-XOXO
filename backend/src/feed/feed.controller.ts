@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { AccessAuthGuard } from 'src/common/accesstoken.guard';
+import { AuthorizationGuard } from 'src/common/authorization.guard';
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import ValidationPipe422 from 'src/validation';
@@ -7,9 +17,14 @@ import { FeedService } from './feed.service';
 
 import { decrypt } from './feed.utils';
 
+@UseGuards(AccessAuthGuard)
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
+
+  @UseGuards(AuthorizationGuard)
+  @Get()
+  test() {}
 
   @Post()
   async createPosting(
@@ -18,7 +33,6 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedParam = await this.feedService.createFeed(createFeedDto, userId);
-
     return feedParam;
   }
 
