@@ -13,6 +13,8 @@ import { AuthorizationGuard } from 'src/common/authorization.guard';
 import { DueDateGuard } from 'src/common/dueDate.guard';
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
+import User from 'src/entities/User.entity';
+import { UserReq } from 'src/users/decorators/users.decorators';
 import ValidationPipe422 from 'src/validation';
 import CreateFeedDto from './dto/create.feed.dto';
 import { FeedService } from './feed.service';
@@ -25,7 +27,7 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @UseGuards(AuthorizationGuard)
-  @Get()
+  @Get('test')
   test() {}
 
   @Post()
@@ -84,5 +86,14 @@ export class FeedController {
       success: true,
       code: 200,
     };
+  }
+
+  @Get('list')
+  // TODO : user decorator 지금은 user하위에 있는데 따로뺄까...?
+  async getPersonalFeedList(@UserReq() user: User) {
+    const userId = user.id;
+    const feedList = await this.feedService.getPersonalFeedList(userId);
+    console.log(feedList);
+    return feedList;
   }
 }
