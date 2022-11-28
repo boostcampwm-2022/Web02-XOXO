@@ -19,8 +19,6 @@ jobs:
         uses: actions/setup-node@v3
       - name: dependency install
         run: npm ci
-      #  - name: lint test
-      #    run: npm run lint
       - name: test
         run: npm run test
       - name: build
