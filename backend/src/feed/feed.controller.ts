@@ -78,4 +78,12 @@ export class FeedController {
       code: 200,
     };
   }
+
+  @Get('group/feedList/:userId')
+  async getGroupFeedList(@Param('userId') userId: number) {
+    console.log(userId);
+
+    const feedList = await this.feedService.getGroupFeedList(userId);
+    return feedList;
+  }
 }
