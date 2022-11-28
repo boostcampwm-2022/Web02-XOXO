@@ -101,4 +101,12 @@ export class FeedController {
     );
     return personalFeedList;
   }
+
+  @Get('group/feedList/:userId')
+  async getGroupFeedList(@Param('userId') userId: number) {
+    console.log(userId);
+
+    const feedList = await this.feedService.getGroupFeedList(userId);
+    return feedList;
+  }
 }

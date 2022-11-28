@@ -5,6 +5,7 @@ import defaultUserImage from '@assets/defaultUserImage.svg'
 import Header from '@src/components/Header'
 import Input from '@src/components/Input'
 import { debounce } from 'lodash'
+import useSWR from 'swr'
 const CreateFeed = () => {
   const feedName = useRef('')
   const feedDescribe = useRef('')
@@ -14,7 +15,7 @@ const CreateFeed = () => {
   const [suggestions, setSuggestions] = useState(Array(0))
   const [members, setMembers] = useState(Array(0))
   const debouncedSearch = debounce((query) => {
-    setSuggestions([...fakeMembers.filter((e) => query.length > 0 && e.includes(query))])
+    useSWR()
   }, 500)
   return (
     <div className="createfeed-page">
