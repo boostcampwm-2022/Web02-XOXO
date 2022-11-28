@@ -187,12 +187,25 @@ export class FeedService {
     }
   }
 
-  async getPrivateFeedList(userId: number) {
+  async getGroupFeedList(userId: number) {
     try {
-      return 'private';
-      // this.dataSource
-      //   .createQueryBuilder()
-      //   .select(['id AS feed_id', 'name AS feed_name']).;
+      const subQuery = await this.dataSource
+        .createQueryBuilder()
+        .select('feedId')
+        .from(UserFeedMapping, 'user_feed_mapping')
+        .where('user_feed_mapping.feedId = feeds.id')
+        .andWhere('user_feed_mapping.userId = :userId', { userId });
+
+      const feedList = await this.dataSource
+        .createQueryBuilder()
+        .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
+        .from(Feed, 'feeds')
+        .where(`EXISTS (${subQuery.getQuery()})`)
+        .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
+        .setParameters(subQuery.getParameters())
+        .execute();
+
+      return feedList;
     } catch (e) {
       const errorType = e.code;
 
