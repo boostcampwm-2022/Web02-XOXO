@@ -93,7 +93,14 @@ export class FeedController {
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
-    console.log(feedList);
-    return feedList;
+    const personalFeedList = [];
+    feedList.forEach((f) =>
+      personalFeedList.push({
+        id: f.feed.id,
+        name: f.feed.name,
+        thumbnail: f.feed.thumbnail,
+      }),
+    );
+    return personalFeedList;
   }
 }

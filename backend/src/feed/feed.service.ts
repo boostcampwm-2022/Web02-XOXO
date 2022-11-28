@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Feed } from 'src/entities/Feed.entity';
 import User from 'src/entities/User.entity';
@@ -210,11 +211,14 @@ export class FeedService {
   async getPersonalFeedList(userId: number) {
     try {
       const feedList = await this.userFeedMappingRepository
-        .createQueryBuilder('mapping')
-        .select(['feed.id', 'feed.name'])
-        .leftJoin('mapping.feed', 'feed')
-        .where('feed.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
-        .andWhere('mapping.userId = :userId', { userId })
+        .createQueryBuilder('user_feed_mapping')
+        .leftJoinAndSelect(
+          'user_feed_mapping.feed',
+          'feeds',
+          'feeds.isGroupFeed = :isGroupFeed',
+          { isGroupFeed: 0 },
+        )
+        .andWhere('user_feed_mapping.userId = :userId', { userId })
         .getMany();
       return feedList;
     } catch (e) {
