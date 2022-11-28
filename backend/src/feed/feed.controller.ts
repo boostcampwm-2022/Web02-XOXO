@@ -10,8 +10,6 @@ import {
 import { AccessAuthGuard } from 'src/common/accesstoken.guard';
 import { AuthorizationGuard } from 'src/common/authorization.guard';
 
-import { DueDateGuard } from 'src/common/dueDate.guard';
-
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import User from 'src/entities/User.entity';
 import { UserReq } from 'src/users/decorators/users.decorators';
@@ -27,7 +25,7 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @UseGuards(AuthorizationGuard)
-  @Get('test')
+  @Get('test/:feedId')
   test() {}
 
   @Post()

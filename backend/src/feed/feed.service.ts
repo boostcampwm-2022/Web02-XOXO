@@ -212,7 +212,7 @@ export class FeedService {
     try {
       const feedList = await this.userFeedMappingRepository
         .createQueryBuilder('user_feed_mapping')
-        .leftJoinAndSelect(
+        .innerJoinAndSelect(
           'user_feed_mapping.feed',
           'feeds',
           'feeds.isGroupFeed = :isGroupFeed',
@@ -223,6 +223,19 @@ export class FeedService {
       return feedList;
     } catch (e) {
       throw new DBError('DB Error : getFeedList 오류');
+    }
+  }
+
+  async checkFeedOwner(id: number, feedId: string) {
+    try {
+      const owner = await this.userFeedMappingRepository
+        .createQueryBuilder('user_feed_mapping')
+        .where('user_feed_mapping.userId = :userId', { userId: id })
+        .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
+        .getOne();
+      return owner;
+    } catch (e) {
+      throw new DBError('DB Error : checkFeedOwner 오류 ');
     }
   }
 }
