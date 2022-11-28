@@ -32,7 +32,6 @@ export class FeedService {
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .save({ ...createFeedDto, isGroupFeed: false });
-
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
