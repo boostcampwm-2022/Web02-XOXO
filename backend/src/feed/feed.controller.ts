@@ -7,7 +7,7 @@ import {
   Post,
   Get,
 } from '@nestjs/common';
-import { DueDateGuard } from 'src/common/dueDate.guard';
+import { DueDateGuard } from 'src/common/DueDate.guard';
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import ValidationPipe422 from 'src/validation';
