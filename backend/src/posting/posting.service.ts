@@ -19,7 +19,6 @@ export class PostingService {
       });
       return posting;
     } catch (e) {
-      console.log(e);
       throw new DBError('DBError: getUser 오류');
     }
   }

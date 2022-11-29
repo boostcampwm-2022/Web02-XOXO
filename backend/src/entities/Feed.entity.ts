@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
+import IsValidFeedName from 'src/custom/customValidators/feedValidate';
 
 import {
   Entity,
@@ -18,6 +19,7 @@ export class Feed implements FeedInterface {
   id: number;
 
   @IsNotEmpty()
+  @IsValidFeedName()
   @Column({ type: 'varchar', length: 15, nullable: false })
   name: string;
 
