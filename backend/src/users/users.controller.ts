@@ -105,7 +105,7 @@ export default class UsersController {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
-    return res.redirect('http://localhost:3001');
+    return res.redirect('http://localhost:3000');
   }
 
   @Post('join')
