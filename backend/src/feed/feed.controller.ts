@@ -1,24 +1,32 @@
 import {
   Body,
   Controller,
-  UseGuards,
+  Get,
   Param,
   Patch,
   Post,
-  Get,
+  UseGuards,
 } from '@nestjs/common';
-import { DueDateGuard } from 'src/common/dueDate.guard';
+import { AccessAuthGuard } from 'src/common/accesstoken.guard';
+import { AuthorizationGuard } from 'src/common/authorization.guard';
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
+import User from 'src/entities/User.entity';
+import { UserReq } from 'src/users/decorators/users.decorators';
 import ValidationPipe422 from 'src/validation';
 import CreateFeedDto from './dto/create.feed.dto';
 import { FeedService } from './feed.service';
 
 import { decrypt } from './feed.utils';
 
+@UseGuards(AccessAuthGuard)
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
+
+  @UseGuards(AuthorizationGuard)
+  @Get('test/:feedId')
+  test() {}
 
   @Post()
   async createPosting(
@@ -27,7 +35,6 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedParam = await this.feedService.createFeed(createFeedDto, userId);
-
     return feedParam;
   }
 
@@ -77,6 +84,22 @@ export class FeedController {
       success: true,
       code: 200,
     };
+  }
+
+  @Get('list')
+  // TODO : user decorator 지금은 user하위에 있는데 따로뺄까...?
+  async getPersonalFeedList(@UserReq() user: User) {
+    const userId = user.id;
+    const feedList = await this.feedService.getPersonalFeedList(userId);
+    const personalFeedList = [];
+    feedList.forEach((f) =>
+      personalFeedList.push({
+        id: f.feed.id,
+        name: f.feed.name,
+        thumbnail: f.feed.thumbnail,
+      }),
+    );
+    return personalFeedList;
   }
 
   @Get('group/feedList/:userId')

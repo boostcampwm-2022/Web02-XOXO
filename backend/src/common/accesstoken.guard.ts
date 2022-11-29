@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,7 +5,6 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { AuthenticationService } from 'src/authentication/authentication.service';
 import UsersService from 'src/users/users.service';
 

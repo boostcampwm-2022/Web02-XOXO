@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Feed } from 'src/entities/Feed.entity';
 import User from 'src/entities/User.entity';
 import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
-import { NonExistFeedIdException } from 'src/error/httpException';
 import {
   DBError,
   GroupFeedMemberListCountException,
@@ -10,13 +11,18 @@ import {
   NonExistFeedError,
   NonExistUserError,
 } from 'src/error/serverError';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import CreateFeedDto from './dto/create.feed.dto';
 import { encrypt } from './feed.utils';
 
 @Injectable()
 export class FeedService {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    @InjectRepository(Feed) private feedRepository: Repository<Feed>,
+    @InjectRepository(UserFeedMapping)
+    private userFeedMappingRepository: Repository<UserFeedMapping>,
+    private dataSource: DataSource,
+  ) {}
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -27,7 +33,6 @@ export class FeedService {
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .save({ ...createFeedDto, isGroupFeed: false });
-
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
@@ -213,6 +218,37 @@ export class FeedService {
         throw new InvalidFKConstraintError();
 
       throw new DBError('DBError: editGroupFeed 오류');
+    }
+  }
+
+  async getPersonalFeedList(userId: number) {
+    try {
+      const feedList = await this.userFeedMappingRepository
+        .createQueryBuilder('user_feed_mapping')
+        .innerJoinAndSelect(
+          'user_feed_mapping.feed',
+          'feeds',
+          'feeds.isGroupFeed = :isGroupFeed',
+          { isGroupFeed: 0 },
+        )
+        .andWhere('user_feed_mapping.userId = :userId', { userId })
+        .getMany();
+      return feedList;
+    } catch (e) {
+      throw new DBError('DB Error : getFeedList 오류');
+    }
+  }
+
+  async checkFeedOwner(id: number, feedId: string) {
+    try {
+      const owner = await this.userFeedMappingRepository
+        .createQueryBuilder('user_feed_mapping')
+        .where('user_feed_mapping.userId = :userId', { userId: id })
+        .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
+        .getOne();
+      return owner;
+    } catch (e) {
+      throw new DBError('DB Error : checkFeedOwner 오류 ');
     }
   }
 }
