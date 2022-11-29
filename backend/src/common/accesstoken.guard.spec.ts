@@ -1,5 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import UsersController from './users.controller';
+import { AuthenticationService } from 'src/authentication/authentication.service';
 
 const MockExecutionContext: Partial<
   Record<jest.FunctionPropertyNames<ExecutionContext>, jest.MockFunction<any>>
@@ -10,15 +9,18 @@ const MockExecutionContext: Partial<
   }),
 };
 
-describe('UsersController', () => {
-  let controller: UsersController;
+describe('AccessGuardTest', () => {
+  let authenticationService: AuthenticationService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
+      controllers: [],
+      provide: [AuthenticationService],
     }).compile();
 
-    controller = module.get<UsersController>(UsersController);
+    authenticationService = module.get<AuthenticationService>(
+      AuthenticationService,
+    );
   });
 
   it('로그아웃', () => {
