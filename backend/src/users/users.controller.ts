@@ -77,8 +77,8 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-
-        return res.redirect('http://localhost:3000/signin/info');
+        return res.redirect('http://localhost:3001');
+        // return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =

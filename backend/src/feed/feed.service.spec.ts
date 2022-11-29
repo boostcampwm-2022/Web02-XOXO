@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Feed } from 'src/entities/Feed.entity';
 import { Repository } from 'typeorm';
+import { Feed } from '../entities/Feed.entity';
 import { FeedService } from './feed.service';
 
 describe('FeedService', () => {

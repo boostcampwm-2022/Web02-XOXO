@@ -29,6 +29,7 @@ export class AccessAuthGuard implements CanActivate {
       const user = await this.authenticationService.verifyToken(token);
       return user;
     } catch (error) {
+      console.log(error);
       switch (error.message) {
         case 'invalid token':
         case 'jwt malformed':

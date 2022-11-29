@@ -20,7 +20,9 @@ import configuration from '../configuration';
       envFilePath: `${process.cwd()}/config/.${process.env.NODE_ENV}.env`,
       load: [configuration],
       validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('development', 'production').required(),
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .required(),
         PORT: Joi.number().required(),
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
