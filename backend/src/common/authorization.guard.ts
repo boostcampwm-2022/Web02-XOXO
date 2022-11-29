@@ -5,7 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 
-import { FeedService } from 'src/feed/feed.service';
+import { FeedService } from '../feed/feed.service';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {

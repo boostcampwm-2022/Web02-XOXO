@@ -2,14 +2,13 @@ import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash, compare } from 'bcrypt';
-
-import User from 'src/entities/User.entity';
+import { Repository } from 'typeorm';
+import User from '../entities/User.entity';
 import {
   DBError,
   DuplicateKakaoIdError,
   DuplicateNicknameError,
-} from 'src/error/serverError';
-import { Repository } from 'typeorm';
+} from '../error/serverError';
 import FindUserDto from './dto/find.user.dto';
 import JoinRequestDto from './dto/join.request.dto';
 

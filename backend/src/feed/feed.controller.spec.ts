@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeedController } from 'src/feed/feed.controller';
+import { FeedController } from './feed.controller';
 
 describe('FeedController', () => {
   let controller: FeedController;

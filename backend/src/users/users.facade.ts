@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { OauthService } from 'src/oauth/oauth.service';
-
+import { OauthService } from '../oauth/oauth.service';
 import JoinRequestDto from './dto/join.request.dto';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinCookieDto from './dto/join.cookie.dto';
