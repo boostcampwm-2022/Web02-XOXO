@@ -2,9 +2,9 @@ import { useCallback } from 'react'
 import axios from 'axios'
 
 const usePost = (url: string) => {
-  const post = useCallback(async (data: object) => {
+  const post = useCallback(async (data: object, options?: object) => {
     try {
-      const response = await axios.post(url, data, { withCredentials: true })
+      const response = await axios.post(url, data, { ...options, withCredentials: true })
       return response
     } catch (err) {
       let message
