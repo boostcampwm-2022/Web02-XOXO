@@ -14,12 +14,14 @@ export class AuthorizationGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
+    // TODO : 로그인을 하지 않았다는 error
+    if (!('user' in request)) throw new NoExistTokenException();
+    // TODO : url 잘못되어있다는 error
+    if (!('feedId' in request.params)) throw new NoFeedIdException();
+
     const { user } = request;
     const feedId = decrypt(request.params.feedId);
-    // TODO : 로그인을 하지 않았다는 error
-    if (user === undefined) throw new NoExistTokenException();
-    // TODO : url 잘못되어있다는 error
-    if (feedId === undefined) throw new NoFeedIdException();
+
     const ownerId = await this.validateUser(user, feedId);
     return ownerId;
   }

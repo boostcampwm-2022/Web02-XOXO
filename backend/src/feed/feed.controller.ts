@@ -32,14 +32,15 @@ export class FeedController {
 
   @Post()
   async createPosting(
-    @Body('userId') userId: number,
+    @UserReq() user: User,
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    const feedParam = await this.feedService.createFeed(createFeedDto, userId);
+    const feedParam = await this.feedService.createFeed(createFeedDto, user.id);
     return feedParam;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Patch('/:feedId')
   async editPosting(
     @Param('feedId') encryptedFeedId: string,
@@ -47,6 +48,7 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
+    console.log(feedId);
     await this.feedService.editFeed(createFeedDto, Number(feedId));
     return {
       success: true,
@@ -56,31 +58,33 @@ export class FeedController {
 
   @Post('group')
   async createGroupPosting(
+    @UserReq() user: User,
     @Body('memberIdList') memberIdList: number[],
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const encryuptedFeedID = await this.feedService.createGroupFeed(
       createFeedDto,
-      memberIdList,
+      [...memberIdList, user.id],
     );
 
     return encryuptedFeedID;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Patch('group/:feedId')
   async editGroupPosting(
+    @UserReq() user: User,
     @Param('feedId') encryptedFeedId: string,
     @Body('memberIdList') memberIdList: number[],
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-    await this.feedService.editGroupFeed(
-      createFeedDto,
-      Number(feedId),
-      memberIdList,
-    );
+    await this.feedService.editGroupFeed(createFeedDto, Number(feedId), [
+      ...memberIdList,
+      user.id,
+    ]);
 
     return {
       success: true,
@@ -104,11 +108,9 @@ export class FeedController {
     return personalFeedList;
   }
 
-  @Get('group/feedList/:userId')
-  async getGroupFeedList(@Param('userId') userId: number) {
-    console.log(userId);
-
-    const feedList = await this.feedService.getGroupFeedList(userId);
+  @Get('group/feedList')
+  async getGroupFeedList(@UserReq() user: User) {
+    const feedList = await this.feedService.getGroupFeedList(user.id);
     return feedList;
   }
 }
