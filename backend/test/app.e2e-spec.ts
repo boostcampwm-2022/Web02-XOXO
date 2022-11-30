@@ -135,6 +135,7 @@ describe('AppController (e2e)', () => {
       expect.arrayContaining(expected),
     );
   });
+
   afterAll(async () => {
     await app.close();
   });
