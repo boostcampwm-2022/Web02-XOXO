@@ -20,6 +20,9 @@
       display: block;
       padding: 1.88vw 0 1.88vw 0;
     }
+    input {
+      display: none;
+    }
   }
   .button-large {
     @include button-large;

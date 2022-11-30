@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState } from 'react'
 import './style.scss'
 
@@ -6,24 +7,43 @@ import Header from '@src/components/Header'
 import Input from '@src/components/Input'
 import GroupMember from './GroupMember'
 import { ISuggestion } from './types'
+import ImageCompressor from '@src/components/ImageCompressor'
 
 const CreateFeed = () => {
+  const feedThumbnail = useRef<HTMLInputElement | null>(null)
   const feedName = useRef('')
   const feedDescribe = useRef('')
   const dueDate = useRef('')
   const [members, setMembers] = useState<ISuggestion[]>([])
 
+  const [thumbnail, setThumbnail] = useState<File>()
+  const [thumbnailSrc, setThumbnailSrc] = useState(defaultUserImage)
+  const onChangeFeedThumbnail = (e: any) => {
+    setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
+    setThumbnail(e.target.files[0])
+    console.log(thumbnail)
+
+    if (thumbnail != null) {
+      const imageURL = URL.createObjectURL(thumbnail)
+      setThumbnailSrc(imageURL)
+    }
+  }
+
+  const onThumbnailUploadClicked = (e: any) => {
+    if (feedThumbnail.current !== null) feedThumbnail.current.click()
+  }
   return (
     <div className="createfeed-page">
       <Header page="CreateFeed" text={'피드 생성'} />
       <div className="createfeed-body">
         <div className="profile-pic-wrapper">
-          <button>
+          <button onClick={onThumbnailUploadClicked}>
             <div className="profile-pic-circle">
-              <img src={defaultUserImage} alt="" />
+              <img src={thumbnailSrc} alt="" />
             </div>
             <span>피드 사진 생성</span>
           </button>
+          <input type="file" accept="image/*" ref={feedThumbnail} onChange={onChangeFeedThumbnail} />
         </div>
         <Input label="제목" placeholder="피드의 제목을 입력해주세요" bind={feedName} />
         <Input
@@ -44,6 +64,7 @@ const CreateFeed = () => {
         <GroupMember members={members} setMembers={setMembers} />
         <button className="button-large">피드 생성하기</button>
       </div>
+      {thumbnail != null && <ImageCompressor file={thumbnail} setFile={setThumbnail} />}
     </div>
   )
 }
