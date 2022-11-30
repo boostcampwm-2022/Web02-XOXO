@@ -5,16 +5,8 @@ import {
   UnauthorizedException,
 } from 'src/error/httpException';
 
-<<<<<<< HEAD
 import { FeedService } from '@feed/feed.service';
-=======
-<<<<<<< HEAD
-import { FeedService } from '../feed/feed.service';
-=======
-import { FeedService } from 'src/feed/feed.service';
-import { decrypt } from 'src/feed/feed.utils';
->>>>>>> e128001dbee8a8e1c4b6e40e635462770260b602
->>>>>>> main
+import { decrypt } from '@feed/feed.utils';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {

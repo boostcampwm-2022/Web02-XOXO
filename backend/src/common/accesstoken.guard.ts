@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   CanActivate,
   ExecutionContext,
@@ -6,23 +5,13 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-<<<<<<< HEAD
 import { AuthenticationService } from '@root/authentication/authentication.service';
-=======
-import { AuthenticationService } from '../authentication/authentication.service';
-import UsersService from '../users/users.service';
-=======
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { AuthenticationService } from 'src/authentication/authentication.service';
 import {
+  InvalidTokenException,
   ExpiredTokenException,
   InternalServerException,
-  InvalidTokenException,
   NoExistTokenException,
-} from 'src/error/httpException';
-import UsersService from 'src/users/users.service';
->>>>>>> e128001dbee8a8e1c4b6e40e635462770260b602
->>>>>>> main
+} from '@root/src/error/httpException';
 
 @Injectable()
 export class AccessAuthGuard implements CanActivate {

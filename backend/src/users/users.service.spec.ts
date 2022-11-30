@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import User from '@root/entities/User.entity';
-import UsersService from './users.service';
+import UsersService from '@users/users.service';
 
 class MockUserRepository {
   #data = [

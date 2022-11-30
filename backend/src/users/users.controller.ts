@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 import { Response } from 'express';
-=======
-import Cookie from 'src/custom/customDecorator/cookie.decorator';
-import {
-  FailedToLoginKakaoException,
-  FailedToRedirectKakaoException,
-} from 'src/error/httpException';
-import CustomValidationPipe from 'src/customValidationPipe';
->>>>>>> e128001dbee8a8e1c4b6e40e635462770260b602
+import CustomValidationPipe from '@root/customValidationPipe';
 import {
   Controller,
   Get,
@@ -22,7 +14,6 @@ import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
 } from '@root/error/httpException';
-import ValidationPipe422 from '@root/validation';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/accesstoken.guard';
