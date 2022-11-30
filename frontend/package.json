@@ -16,6 +16,7 @@
     "@types/react-dom": "^18.0.9",
     "@types/react-slick": "^0.23.10",
     "axios": "^1.2.0",
+    "browser-image-compression": "^2.0.0",
     "lodash": "^4.17.21",
     "node-sass": "^8.0.0",
     "react": "^18.2.0",
