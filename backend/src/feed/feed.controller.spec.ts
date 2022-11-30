@@ -43,7 +43,7 @@ describe('FeedController', () => {
           port: 3306,
           username: process.env.DB_USERNAME,
           password: process.env.DB_PASSWORD,
-          database: process.env.DB_DATABASE,
+          database: 'xoxo_test',
           synchronize: false,
           logging: true,
           keepConnectionAlive: true,
@@ -81,7 +81,7 @@ describe('FeedController', () => {
 
   it('/feed 개인 피드 생성(unit) : 정상 동작일 시 디비 삽입 확인', async () => {
     const mockCreateFeedDto = {
-      name: '피드 이름 1',
+      name: '피드 이름 2',
       thumbnail: 'naver.com',
       description: '피드 1 설명',
       dueDate: new Date('2022-11-20'),
