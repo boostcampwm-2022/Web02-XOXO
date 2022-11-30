@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { createCipheriv, createDecipheriv } from 'crypto';
 
 export function encrypt(text: string) {
   const iv = Buffer.from(process.env.IV);

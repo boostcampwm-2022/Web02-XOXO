@@ -77,7 +77,8 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-        return res.redirect('http://localhost:3001');
+
+        return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =
@@ -93,7 +94,7 @@ export default class UsersController {
       await this.userService.setCurrentRefreshToken(refreshToken, user.id);
       res.cookie('refreshToken', refreshToken, refreshTokenOption);
       res.cookie('accessToken', accessToken, accessTokenOption);
-      return res.redirect('http://localhost:3001');
+      return res.redirect('http://localhost:3000/feed');
     } catch (e) {
       throw new FailedToLoginKakaoException();
     }
@@ -105,7 +106,7 @@ export default class UsersController {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
-    return res.redirect('http://localhost:3001');
+    return res.redirect('http://localhost:3000');
   }
 
   @Post('join')
@@ -113,15 +114,33 @@ export default class UsersController {
     @Body() joinNicknameDto: JoinNicknameDto,
     @Cookie(new ValidationPipe422({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
+    @Res() res: Response,
   ) {
     const joinMember = new JoinRequestDto(
       joinNicknameDto.nickname,
       joinCookieDto.kakaoId,
       joinCookieDto.profilePicture,
     );
-    const userId = await this.userService.joinUser(joinMember);
-    // TODO :  회원가입하고 로그인 처리를 어떻게 할까?
-    return userId;
+    await this.userService.joinUser(joinMember);
+    // note : 여기서 userId를 조회하려면 이방법이 최선일까?
+    const { kakaoId } = joinCookieDto;
+    const user = await this.userService.getUser({
+      kakaoId,
+    });
+    const { accessToken, ...accessTokenOption } =
+      this.authenticationService.getCookieWithJwtAccessToken(
+        user.nickname,
+        user.id,
+      );
+    const { refreshToken, ...refreshTokenOption } =
+      this.authenticationService.getCookieWithJwtRefreshToken(
+        user.nickname,
+        user.id,
+      );
+    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+    res.cookie('refreshToken', refreshToken, refreshTokenOption);
+    res.cookie('accessToken', accessToken, accessTokenOption);
+    return res.redirect('http://localhost:3000/feed');
   }
 
   @Get('search/:nickname')

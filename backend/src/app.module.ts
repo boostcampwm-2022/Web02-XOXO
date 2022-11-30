@@ -7,6 +7,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 
 import { FeedModule } from './feed/feed.module';
 import { PostingModule } from './posting/posting.module';
+import { ImageModule } from './image/image.module';
 
 import UsersModule from './users/users.module';
 import AppController from './app.controller';
@@ -51,6 +52,8 @@ import configuration from '../configuration';
     FeedModule,
 
     PostingModule,
+
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

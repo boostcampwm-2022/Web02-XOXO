@@ -1,15 +1,18 @@
 import React, { useRef, useState } from 'react'
-import './styles.scss'
-import { ReactComponent as XIcon } from '@assets/XIcon.svg'
+import './style.scss'
+
 import defaultUserImage from '@assets/defaultUserImage.svg'
 import Header from '@src/components/Header'
 import Input from '@src/components/Input'
+import GroupMember from './GroupMember'
+import { ISuggestion } from './types'
+
 const CreateFeed = () => {
   const feedName = useRef('')
   const feedDescribe = useRef('')
   const dueDate = useRef('')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [members, setMembers] = useState(['백', '규현', '양은서', 'edhz8888', '백규현', 'diddmstj98'])
+  const [members, setMembers] = useState<ISuggestion[]>([])
+
   return (
     <div className="createfeed-page">
       <Header page="CreateFeed" text={'피드 생성'} />
@@ -38,27 +41,7 @@ const CreateFeed = () => {
           bind={dueDate}
           validate={(_) => '한번 설정한 공개일은 추후에 바꿀 수 없습니다'}
         />
-        <div className="form-wrapper">
-          <label className="form-label" htmlFor="userId">
-            그룹원 추가
-          </label>
-          <input type="text" id="userId" placeholder="그룹원의 카카오 이메일을 입력해주세요" />
-        </div>
-        <div className="form-wrapper">
-          <label className="form-label" htmlFor="userId">
-            그룹원 목록
-          </label>
-          <span className="form-no-member">현재 추가된 그룹원이 없습니다</span>
-          <div className="form-members-wrapper">
-            {members.map((name) => (
-              // eslint-disable-next-line react/jsx-key
-              <button className="form-member">
-                <span>{name}</span>
-                <XIcon fill="#ea4b35" />
-              </button>
-            ))}
-          </div>
-        </div>
+        <GroupMember members={members} setMembers={setMembers} />
         <button className="button-large">피드 생성하기</button>
       </div>
     </div>
