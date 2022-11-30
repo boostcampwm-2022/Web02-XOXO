@@ -33,6 +33,7 @@ export class FeedService {
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .save({ ...createFeedDto, isGroupFeed: false });
+
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
@@ -40,7 +41,6 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
-      console.log(e);
       const errorType = e.code;
       await queryRunner.rollbackTransaction();
 

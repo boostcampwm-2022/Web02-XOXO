@@ -27,7 +27,7 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
-  async createPosting(
+  async createFeed(
     @UserReq() user: User,
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
@@ -38,7 +38,7 @@ export class FeedController {
 
   @UseGuards(AuthorizationGuard)
   @Patch('/:feedId')
-  async editPosting(
+  async editFeed(
     @Param('feedId') encryptedFeedId: string,
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
@@ -53,7 +53,7 @@ export class FeedController {
   }
 
   @Post('group')
-  async createGroupPosting(
+  async createGroupFeed(
     @UserReq() user: User,
     @Body('memberIdList') memberIdList: number[],
     @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
@@ -69,7 +69,7 @@ export class FeedController {
 
   @UseGuards(AuthorizationGuard)
   @Patch('group/:feedId')
-  async editGroupPosting(
+  async editGroupFeed(
     @UserReq() user: User,
     @Param('feedId') encryptedFeedId: string,
     @Body('memberIdList') memberIdList: number[],
