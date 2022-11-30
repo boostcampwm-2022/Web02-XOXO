@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState } from 'react'
 import './style.scss'
 
@@ -6,24 +8,43 @@ import Header from '@src/components/Header'
 import Input from '@src/components/Input'
 import GroupMember from './GroupMember'
 import { ISuggestion } from './types'
+import { compressImage } from '@src/util/imageCompress'
 
 const CreateFeed = () => {
+  const feedThumbnail = useRef<HTMLInputElement | null>(null)
   const feedName = useRef('')
   const feedDescribe = useRef('')
   const dueDate = useRef('')
   const [members, setMembers] = useState<ISuggestion[]>([])
 
+  const [thumbnail, setThumbnail] = useState<File>()
+  const [thumbnailSrc, setThumbnailSrc] = useState(defaultUserImage)
+
+  const onChangeFeedThumbnail = async (e: any) => {
+    const compressedImage = await compressImage(e.target.files[0])
+    console.log(compressedImage)
+
+    setThumbnail(compressedImage)
+    if (thumbnailSrc !== defaultUserImage) URL.revokeObjectURL(thumbnailSrc)
+    const url = URL.createObjectURL(compressedImage)
+    setThumbnailSrc(url)
+  }
+
+  const onThumbnailUploadClicked = (e: any) => {
+    if (feedThumbnail.current !== null) feedThumbnail.current.click()
+  }
   return (
     <div className="createfeed-page">
       <Header page="CreateFeed" text={'피드 생성'} />
       <div className="createfeed-body">
         <div className="profile-pic-wrapper">
-          <button>
+          <button onClick={onThumbnailUploadClicked}>
             <div className="profile-pic-circle">
-              <img src={defaultUserImage} alt="" />
+              <img src={thumbnailSrc} alt="" />
             </div>
             <span>피드 사진 생성</span>
           </button>
+          <input type="file" accept="image/*" ref={feedThumbnail} onChange={onChangeFeedThumbnail} />
         </div>
         <Input label="제목" placeholder="피드의 제목을 입력해주세요" bind={feedName} />
         <Input
