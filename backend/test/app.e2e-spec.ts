@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
+import setApplication from 'setApplication';
 import * as cookieParser from 'cookie-parser';
 import configuration from '../configuration';
 import AppModule from '../src/app.module';
@@ -78,12 +79,7 @@ describe('AppController (e2e)', () => {
       .useValue(mockRefreshAuthGuard)
       .compile();
     app = moduleFixture.createNestApplication();
-    app.use(cookieParser());
-    app.useGlobalFilters(
-      new ServerErrorHandlingFilter(),
-      new HttpExceptionFilter(),
-    );
-    app.useGlobalPipes(new ValidationPipe422());
+    setApplication(app);
     await app.init();
   });
 

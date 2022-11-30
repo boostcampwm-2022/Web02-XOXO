@@ -1,16 +1,15 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { hash, compare } from 'bcrypt';
 import { Repository } from 'typeorm';
-import User from '../entities/User.entity';
+import User from '@root/entities/User.entity';
 import {
   DBError,
   DuplicateKakaoIdError,
   DuplicateNicknameError,
-} from '../error/serverError';
-import FindUserDto from './dto/find.user.dto';
-import JoinRequestDto from './dto/join.request.dto';
+} from '@root/error/serverError';
+import FindUserDto from '@users/dto/find.user.dto';
+import JoinRequestDto from '@users/dto/join.request.dto';
 
 @Injectable()
 export default class UsersService {

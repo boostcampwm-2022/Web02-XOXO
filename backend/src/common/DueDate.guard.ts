@@ -2,8 +2,8 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import {
   AccessBeforeDueDateException,
   InvalidPostingId,
-} from '../error/httpException';
-import { PostingService } from '../posting/posting.service';
+} from '@root/error/httpException';
+import { PostingService } from '@posting/posting.service';
 
 @Injectable()
 export class DueDateGuard implements CanActivate {

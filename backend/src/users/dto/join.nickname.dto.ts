@@ -1,4 +1,4 @@
-import IsValidNickname from '../../custom/customValidators/nicknameValidate';
+import IsValidNickname from '@root/custom/customValidators/nicknameValidate';
 
 export default class JoinNicknameDto {
   @IsValidNickname({ groups: ['customNickname'] })

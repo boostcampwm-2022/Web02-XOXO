@@ -5,15 +5,11 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { AuthenticationService } from '../authentication/authentication.service';
-import UsersService from '../users/users.service';
+import { AuthenticationService } from '@root/authentication/authentication.service';
 
 @Injectable()
 export class AccessAuthGuard implements CanActivate {
-  constructor(
-    private readonly authenticationService: AuthenticationService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly authenticationService: AuthenticationService) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -29,7 +25,6 @@ export class AccessAuthGuard implements CanActivate {
       const user = await this.authenticationService.verifyToken(token);
       return user;
     } catch (error) {
-      console.log(error);
       switch (error.message) {
         case 'invalid token':
         case 'jwt malformed':

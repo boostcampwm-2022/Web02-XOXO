@@ -12,12 +12,12 @@ import {
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
-} from '../error/httpException';
-import ValidationPipe422 from '../validation';
-import Cookie from '../custom/customDecorator/cookie.decorator';
-import { AuthenticationService } from '../authentication/authentication.service';
-import { AccessAuthGuard } from '../common/accesstoken.guard';
-import { RefreshAuthGuard } from '../common/refreshtoken.guard';
+} from '@root/error/httpException';
+import ValidationPipe422 from '@root/validation';
+import Cookie from '@root/custom/customDecorator/cookie.decorator';
+import { AuthenticationService } from '@root/authentication/authentication.service';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
+import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
 import { UserReq } from './decorators/users.decorators';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
