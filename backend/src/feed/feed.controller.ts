@@ -8,14 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { DueDateGuard } from 'src/common/DueDate.guard';
 import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { AuthorizationGuard } from 'src/common/authorization.guard';
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import User from 'src/entities/User.entity';
 import { UserReq } from 'src/users/decorators/users.decorators';
-import ValidationPipe422 from 'src/validation';
+import CustomValidationPipe from 'src/customValidationPipe';
 import CreateFeedDto from './dto/create.feed.dto';
 import { FeedService } from './feed.service';
 
@@ -29,7 +27,7 @@ export class FeedController {
   @Post()
   async createFeed(
     @UserReq() user: User,
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const feedParam = await this.feedService.createFeed(createFeedDto, user.id);
@@ -39,7 +37,7 @@ export class FeedController {
   @Patch('/:feedId')
   async editFeed(
     @Param('feedId') encryptedFeedId: string,
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
@@ -54,7 +52,7 @@ export class FeedController {
   async createGroupFeed(
     @UserReq() user: User,
     @Body('memberIdList') memberIdList: number[],
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const encryuptedFeedID = await this.feedService.createGroupFeed(
@@ -70,7 +68,7 @@ export class FeedController {
     @UserReq() user: User,
     @Param('feedId') encryptedFeedId: string,
     @Body('memberIdList') memberIdList: number[],
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
