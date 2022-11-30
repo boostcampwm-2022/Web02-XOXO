@@ -10,11 +10,12 @@ import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
+import CustomValidationPipe from 'src/customValidationPipe';
 import configuration from '../configuration';
 import AppModule from '../src/app.module';
 import { ServerErrorHandlingFilter } from '../src/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '../src/http-exception.filter';
-import ValidationPipe422 from '../src/validation';
+
 import { RefreshAuthGuard } from '../src/common/refreshtoken.guard';
 
 describe('AppController (e2e)', () => {
@@ -83,7 +84,7 @@ describe('AppController (e2e)', () => {
       new ServerErrorHandlingFilter(),
       new HttpExceptionFilter(),
     );
-    app.useGlobalPipes(new ValidationPipe422());
+    app.useGlobalPipes(new CustomValidationPipe());
     await app.init();
   });
 

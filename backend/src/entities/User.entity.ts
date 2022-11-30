@@ -15,7 +15,7 @@ import { UserInterface } from './entityInterfaces/UserInterface';
 import Like from './Like.entity';
 import UserFeedMapping from './UserFeedMapping.entity';
 
-@Entity({ schema: 'xoxo', name: 'users' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'users' })
 export default class User implements UserInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()

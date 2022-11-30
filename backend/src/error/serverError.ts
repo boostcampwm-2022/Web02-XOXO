@@ -45,3 +45,10 @@ export class InvalidFKConstraintError extends Error {
     this.name = 'InvalidFKConstraintError';
   }
 }
+
+export class UnauthorizedError extends Error {
+  constructor() {
+    super('권한이 인증되지 않았습니다.'); // (1)
+    this.name = 'UnauthorizedError';
+  }
+}

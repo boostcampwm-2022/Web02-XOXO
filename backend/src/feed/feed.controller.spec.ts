@@ -8,14 +8,26 @@ import { ServerErrorHandlingFilter } from 'src/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from 'src/http-exception.filter';
 import { DataSource } from 'typeorm';
 import { Feed } from 'src/entities/Feed.entity';
+import { UserReq } from 'src/users/decorators/users.decorators';
+import { AccessAuthGuard } from 'src/common/accesstoken.guard';
+import { AuthorizationGuard } from 'src/common/authorization.guard';
+import { NonExistUserError } from 'src/error/serverError';
 import { FeedModule } from './feed.module';
 import { FeedService } from './feed.service';
 import { decrypt } from './feed.utils';
 
-describe('FeedController (e2e)', () => {
+describe('FeedController', () => {
   let app: INestApplication;
   let dataSource: DataSource;
   let feedService: FeedService;
+  const mockUser = {
+    id: 1,
+    nickname: '윤정민이지',
+    profile: 'http://naver.com',
+    kakaoId: 1121243,
+    deletedAt: null,
+    currentHashedRefreshToken: null,
+  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -31,7 +43,7 @@ describe('FeedController (e2e)', () => {
           port: 3306,
           username: process.env.DB_USERNAME,
           password: process.env.DB_PASSWORD,
-          database: process.env.DB_DATABASE,
+          database: 'xoxo_test',
           synchronize: false,
           logging: true,
           keepConnectionAlive: true,
@@ -39,7 +51,15 @@ describe('FeedController (e2e)', () => {
         }),
         FeedModule,
       ],
-    }).compile();
+    })
+      .useMocker((token) => {
+        if (token === UserReq) return mockUser;
+      })
+      .overrideGuard(AccessAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(AuthorizationGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalFilters(
@@ -55,9 +75,13 @@ describe('FeedController (e2e)', () => {
     await app.close();
   });
 
-  it('/feed 개인 피드 생성 : 정상 동작일 시 디비 삽입 확인', async () => {
+  afterEach(async () => {
+    dataSource.createQueryBuilder().delete().from(Feed).execute();
+  });
+
+  it('/feed 개인 피드 생성(unit) : 정상 동작일 시 디비 삽입 확인', async () => {
     const mockCreateFeedDto = {
-      name: '피드 이름 1',
+      name: '피드 이름 2',
       thumbnail: 'naver.com',
       description: '피드 1 설명',
       dueDate: new Date('2022-11-20'),
@@ -77,7 +101,7 @@ describe('FeedController (e2e)', () => {
     expect(res[0]).toEqual(expect.objectContaining(mockCreateFeedDto));
   });
 
-  it(`/feed 개인 피드 생성 : 피드 이름 유효성 검사`, () => {
+  it(`/feed 개인 피드 생성(e2e) : 피드 이름 유효성 검사`, async () => {
     const mockCreateFeedDto = {
       name: '피드 이름이 열자 이상 입니다용',
       thumbnail: 'naver.com',
@@ -94,21 +118,17 @@ describe('FeedController (e2e)', () => {
       });
   });
 
-  it(`/feed 개인 피드 생성 : 유효한 user_id인지 검사`, () => {
+  it(`/feed 개인 피드 생성(unit) : 유효한 user_id인지 검사`, async () => {
     const mockCreateFeedDto = {
       name: '피드 이름',
       thumbnail: 'naver.com',
       description: '피드 1 설명',
       dueDate: new Date(),
-      userId: 1000,
     };
 
-    return request(app.getHttpServer())
-      .post('/feed')
-      .send(mockCreateFeedDto)
-      .expect(HttpStatus.UNPROCESSABLE_ENTITY)
-      .expect((res) => {
-        expect(res.body.data.error).toBe('NonExistUserException');
-      });
+    const mockUserId = 1000;
+    await expect(async () => {
+      await feedService.createFeed(mockCreateFeedDto, mockUserId);
+    }).rejects.toThrowError(new NonExistUserError());
   });
 });
