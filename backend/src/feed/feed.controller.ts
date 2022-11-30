@@ -15,9 +15,9 @@ import User from '@root/entities/User.entity';
 import { UserReq } from '@users/decorators/users.decorators';
 
 import CreateFeedDto from '@feed/dto/create.feed.dto';
-import ValidationPipe422 from '../validation';
-import { FeedService } from './feed.service';
-import { decrypt } from './feed.utils';
+import ValidationPipe422 from '@root/validation';
+import { FeedService } from '@feed/feed.service';
+import { decrypt } from '@feed/feed.utils';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')

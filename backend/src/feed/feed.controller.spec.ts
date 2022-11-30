@@ -8,9 +8,9 @@ import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/http-exception.filter';
 import { DataSource } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
-import { FeedModule } from './feed.module';
-import { FeedService } from './feed.service';
-import { decrypt } from './feed.utils';
+import { FeedModule } from '@feed/feed.module';
+import { FeedService } from '@feed/feed.service';
+import { decrypt } from '@feed/feed.utils';
 
 describe('FeedController (e2e)', () => {
   let app: INestApplication;

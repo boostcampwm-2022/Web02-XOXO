@@ -6,8 +6,8 @@ import {
   DeleteDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { ImageInterface } from './entityInterfaces/ImageInterface';
-import { PostingInterface } from './entityInterfaces/PostingInterface';
+import { ImageInterface } from '@root/entities/entityInterfaces/ImageInterface';
+import { PostingInterface } from '@root/entities/entityInterfaces/PostingInterface';
 
 @Entity({ schema: 'xoxo', name: 'images' })
 export default class Image implements ImageInterface {

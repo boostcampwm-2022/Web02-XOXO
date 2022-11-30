@@ -8,9 +8,9 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { FeedInterface } from './entityInterfaces/FeedInterface';
-import { PostingInterface } from './entityInterfaces/PostingInterface';
-import UserFeedMapping from './UserFeedMapping.entity';
+import { FeedInterface } from '@root/entities/entityInterfaces/FeedInterface';
+import { PostingInterface } from '@root/entities/entityInterfaces/PostingInterface';
+import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 
 @Entity({ schema: 'xoxo', name: 'feeds' })
 export class Feed implements FeedInterface {

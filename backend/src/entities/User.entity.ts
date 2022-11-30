@@ -10,10 +10,10 @@ import {
 
 import { Exclude } from 'class-transformer';
 
-import { UserInterface } from './entityInterfaces/UserInterface';
+import { UserInterface } from '@root/entities/entityInterfaces/UserInterface';
 
-import Like from './Like.entity';
-import UserFeedMapping from './UserFeedMapping.entity';
+import Like from '@root/entities/Like.entity';
+import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 
 @Entity({ schema: 'xoxo', name: 'users' })
 export default class User implements UserInterface {
