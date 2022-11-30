@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState } from 'react'
 import './style.scss'
@@ -7,7 +8,7 @@ import Header from '@src/components/Header'
 import Input from '@src/components/Input'
 import GroupMember from './GroupMember'
 import { ISuggestion } from './types'
-import ImageCompressor from '@src/components/ImageCompressor'
+import { compressImage } from '@src/util/imageCompress'
 
 const CreateFeed = () => {
   const feedThumbnail = useRef<HTMLInputElement | null>(null)
@@ -18,15 +19,15 @@ const CreateFeed = () => {
 
   const [thumbnail, setThumbnail] = useState<File>()
   const [thumbnailSrc, setThumbnailSrc] = useState(defaultUserImage)
-  const onChangeFeedThumbnail = (e: any) => {
-    setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
-    setThumbnail(e.target.files[0])
-    console.log(thumbnail)
 
-    if (thumbnail != null) {
-      const imageURL = URL.createObjectURL(thumbnail)
-      setThumbnailSrc(imageURL)
-    }
+  const onChangeFeedThumbnail = async (e: any) => {
+    const compressedImage = await compressImage(e.target.files[0])
+    console.log(compressedImage)
+
+    setThumbnail(compressedImage)
+    if (thumbnailSrc !== defaultUserImage) URL.revokeObjectURL(thumbnailSrc)
+    const url = URL.createObjectURL(compressedImage)
+    setThumbnailSrc(url)
   }
 
   const onThumbnailUploadClicked = (e: any) => {
@@ -64,7 +65,6 @@ const CreateFeed = () => {
         <GroupMember members={members} setMembers={setMembers} />
         <button className="button-large">피드 생성하기</button>
       </div>
-      {thumbnail != null && <ImageCompressor file={thumbnail} setFile={setThumbnail} />}
     </div>
   )
 }
