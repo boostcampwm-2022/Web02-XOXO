@@ -84,6 +84,18 @@ export class InternalDBException extends HttpException {
   }
 }
 
+export class InternalServerException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InternalServerException',
+        message: '서버에 오류가 발생하였습니다.',
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
 export class InvalidFeedNameException extends HttpException {
   constructor() {
     super(
@@ -132,6 +144,18 @@ export class NonExistFeedIdException extends HttpException {
   }
 }
 
+export class NoFeedIdException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'NonExistFeedIdException',
+        message: `feedId가 없습니다.`,
+      },
+      404,
+    );
+  }
+}
+
 export class GroupFeedMemberListCountException extends HttpException {
   constructor() {
     super(
@@ -176,6 +200,54 @@ export class InvalidPostingId extends HttpException {
         message: `존재하지 않는 포스팅 입니다.`,
       },
       HttpStatus.FORBIDDEN,
+    );
+  }
+}
+
+export class InvalidTokenException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'InvalidToken',
+        message: `유효하지 않은 토큰입니다.`,
+      },
+      HttpStatus.UNAUTHORIZED,
+    );
+  }
+}
+
+export class ExpiredTokenException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'ExpiredTokenException',
+        message: `토큰이 만료되었습니다.`,
+      },
+      410,
+    );
+  }
+}
+
+export class NoExistTokenException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'NoExistTokenException',
+        message: `Token이 없습니다.`,
+      },
+      HttpStatus.UNAUTHORIZED,
+    );
+  }
+}
+
+export class UnauthorizedException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'UnauthorizedException',
+        message: `권한이 인증되지 않았습니다.`,
+      },
+      HttpStatus.UNAUTHORIZED,
     );
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, compare } from 'bcrypt';
 import { Repository } from 'typeorm';
@@ -7,9 +7,21 @@ import {
   DBError,
   DuplicateKakaoIdError,
   DuplicateNicknameError,
+<<<<<<< HEAD
 } from '@root/error/serverError';
 import FindUserDto from '@users/dto/find.user.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
+=======
+<<<<<<< HEAD
+} from '../error/serverError';
+=======
+  UnauthorizedError,
+} from 'src/error/serverError';
+import { Repository } from 'typeorm';
+>>>>>>> e128001dbee8a8e1c4b6e40e635462770260b602
+import FindUserDto from './dto/find.user.dto';
+import JoinRequestDto from './dto/join.request.dto';
+>>>>>>> main
 
 @Injectable()
 export default class UsersService {
@@ -68,6 +80,7 @@ export default class UsersService {
   }
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
+<<<<<<< HEAD
     let user;
     try {
       user = await this.userRepository.findOneBy({ id });
@@ -75,12 +88,15 @@ export default class UsersService {
       throw new DBError('DBError : findOneById 오류');
     }
     if (!user) throw new HttpException('권한이 인증되지 않았습니다.', 401);
+=======
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new UnauthorizedError();
+>>>>>>> e128001dbee8a8e1c4b6e40e635462770260b602
     const isRefreshTokenMatched = await compare(
       refreshtoken,
       user.currentHashedRefreshToken,
     );
-    if (!isRefreshTokenMatched)
-      throw new HttpException('권한이 인증되지 않았습니다.', 401);
+    if (!isRefreshTokenMatched) throw new UnauthorizedError();
     return user;
   }
 

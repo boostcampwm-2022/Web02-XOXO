@@ -10,7 +10,7 @@ import { CommentInterface } from '@root/entities/entityInterfaces/CommentInterfa
 import { PostingInterface } from '@root/entities/entityInterfaces/PostingInterface';
 import { UserInterface } from '@root/entities/entityInterfaces/UserInterface';
 
-@Entity({ schema: 'xoxo', name: 'comments' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'comments' })
 export default class Comment implements CommentInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
@@ -24,9 +24,9 @@ export default class Comment implements CommentInterface {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne('Posting', 'comments')
+  @ManyToOne('Posting', 'comments', { onDelete: 'CASCADE' })
   posting: PostingInterface;
 
-  @ManyToOne('User')
+  @ManyToOne('User', { onDelete: 'CASCADE' })
   writer: UserInterface;
 }

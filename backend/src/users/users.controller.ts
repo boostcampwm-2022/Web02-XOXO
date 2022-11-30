@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 import { Response } from 'express';
+=======
+import Cookie from 'src/custom/customDecorator/cookie.decorator';
+import {
+  FailedToLoginKakaoException,
+  FailedToRedirectKakaoException,
+} from 'src/error/httpException';
+import CustomValidationPipe from 'src/customValidationPipe';
+>>>>>>> e128001dbee8a8e1c4b6e40e635462770260b602
 import {
   Controller,
   Get,
@@ -112,7 +121,7 @@ export default class UsersController {
   @Post('join')
   async joinUser(
     @Body() joinNicknameDto: JoinNicknameDto,
-    @Cookie(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Cookie(new CustomValidationPipe({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
     @Res() res: Response,
   ) {
