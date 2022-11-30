@@ -26,10 +26,6 @@ import { decrypt } from './feed.utils';
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
-  @UseGuards(AuthorizationGuard)
-  @Get('test/:feedId')
-  test() {}
-
   @Post()
   async createPosting(
     @UserReq() user: User,
