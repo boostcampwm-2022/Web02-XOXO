@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash, compare } from 'bcrypt';
@@ -8,6 +8,7 @@ import {
   DBError,
   DuplicateKakaoIdError,
   DuplicateNicknameError,
+  UnauthorizedError,
 } from 'src/error/serverError';
 import { Repository } from 'typeorm';
 import FindUserDto from './dto/find.user.dto';
@@ -71,13 +72,12 @@ export default class UsersService {
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
     const user = await this.userRepository.findOneBy({ id });
-    if (!user) throw new HttpException('권한이 인증되지 않았습니다.', 401);
+    if (!user) throw new UnauthorizedError();
     const isRefreshTokenMatched = await compare(
       refreshtoken,
       user.currentHashedRefreshToken,
     );
-    if (!isRefreshTokenMatched)
-      throw new HttpException('권한이 인증되지 않았습니다.', 401);
+    if (!isRefreshTokenMatched) throw new UnauthorizedError();
     return user;
   }
 

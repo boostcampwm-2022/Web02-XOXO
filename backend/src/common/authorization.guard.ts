@@ -1,11 +1,12 @@
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-} from '@nestjs/common';
+  NoExistTokenException,
+  NoFeedIdException,
+  UnauthorizedException,
+} from 'src/error/httpException';
 
 import { FeedService } from 'src/feed/feed.service';
+import { decrypt } from 'src/feed/feed.utils';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
@@ -13,14 +14,14 @@ export class AuthorizationGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const { user } = request;
-    const { feedId } = request.params;
     // TODO : 로그인을 하지 않았다는 error
-    if (user === undefined)
-      throw new HttpException('로그인을 하지 않은 유저입니다.', 401);
+    if (!('user' in request)) throw new NoExistTokenException();
     // TODO : url 잘못되어있다는 error
-    if (feedId === undefined)
-      throw new HttpException('feedId가 없습니다.', 404);
+    if (!('feedId' in request.params)) throw new NoFeedIdException();
+
+    const { user } = request;
+    const feedId = decrypt(request.params.feedId);
+
     const ownerId = await this.validateUser(user, feedId);
     return ownerId;
   }
@@ -29,6 +30,6 @@ export class AuthorizationGuard implements CanActivate {
     const { id } = user;
     const owner = await this.feedService.checkFeedOwner(id, feedId);
     if (id === owner.userId) return id;
-    throw new HttpException('해당 피드에 대한 권한이 없습니다.', 401);
+    throw new UnauthorizedException();
   }
 }

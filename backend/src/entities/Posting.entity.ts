@@ -13,7 +13,7 @@ import { ImageInterface } from './entityInterfaces/ImageInterface';
 import { PostingInterface } from './entityInterfaces/PostingInterface';
 import { UserInterface } from './entityInterfaces/UserInterface';
 
-@Entity({ schema: 'xoxo', name: 'postings' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'postings' })
 export default class Posting implements PostingInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
@@ -32,10 +32,10 @@ export default class Posting implements PostingInterface {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne('User')
+  @ManyToOne('User', { onDelete: 'CASCADE' })
   sender: UserInterface;
 
-  @ManyToOne('Feed', 'postings')
+  @ManyToOne('Feed', 'postings', { onDelete: 'CASCADE' })
   feed: FeedInterface;
 
   @OneToMany('Image', 'posting')

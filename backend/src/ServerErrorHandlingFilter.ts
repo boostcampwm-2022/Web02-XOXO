@@ -14,6 +14,7 @@ import {
   InvalidFKConstraintException,
   NonExistFeedIdException,
   NonExistUserIdException,
+  UnauthorizedException,
 } from './error/httpException';
 
 @Catch()
@@ -51,6 +52,10 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
       case 'DuplicateKakaoIdError':
         exception = new DuplicateJoinException();
+        break;
+
+      case 'UnauthorizedError':
+        exception = new UnauthorizedException();
         break;
 
       default:

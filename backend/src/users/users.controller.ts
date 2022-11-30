@@ -3,7 +3,7 @@ import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
 } from 'src/error/httpException';
-import ValidationPipe422 from 'src/validation';
+import CustomValidationPipe from 'src/customValidationPipe';
 import {
   Controller,
   Get,
@@ -112,7 +112,7 @@ export default class UsersController {
   @Post('join')
   async joinUser(
     @Body() joinNicknameDto: JoinNicknameDto,
-    @Cookie(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Cookie(new CustomValidationPipe({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
     @Res() res: Response,
   ) {
