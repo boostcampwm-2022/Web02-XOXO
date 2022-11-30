@@ -11,10 +11,10 @@ export default class UserFeedMapping {
   @PrimaryColumn({ type: 'int' })
   feedId: number;
 
-  @ManyToOne('User', 'feeds')
+  @ManyToOne('User', 'feeds', { onDelete: 'CASCADE' })
   user: UserInterface;
 
-  @ManyToOne('Feed')
+  @ManyToOne('Feed', { onDelete: 'CASCADE' })
   feed: FeedInterface;
 
   @DeleteDateColumn()

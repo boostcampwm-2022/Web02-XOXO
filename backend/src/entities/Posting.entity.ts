@@ -32,10 +32,10 @@ export default class Posting implements PostingInterface {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne('User')
+  @ManyToOne('User', { onDelete: 'CASCADE' })
   sender: UserInterface;
 
-  @ManyToOne('Feed', 'postings')
+  @ManyToOne('Feed', 'postings', { onDelete: 'CASCADE' })
   feed: FeedInterface;
 
   @OneToMany('Image', 'posting')

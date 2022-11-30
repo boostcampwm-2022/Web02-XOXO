@@ -23,6 +23,6 @@ export default class Image implements ImageInterface {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne('Posting', 'images')
+  @ManyToOne('Posting', 'images', { onDelete: 'CASCADE' })
   posting: PostingInterface;
 }

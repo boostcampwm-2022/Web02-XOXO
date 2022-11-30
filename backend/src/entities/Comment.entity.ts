@@ -24,9 +24,9 @@ export default class Comment implements CommentInterface {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne('Posting', 'comments')
+  @ManyToOne('Posting', 'comments', { onDelete: 'CASCADE' })
   posting: PostingInterface;
 
-  @ManyToOne('User')
+  @ManyToOne('User', { onDelete: 'CASCADE' })
   writer: UserInterface;
 }
