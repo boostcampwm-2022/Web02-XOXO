@@ -10,7 +10,7 @@ import { CommentInterface } from './entityInterfaces/CommentInterface';
 import { PostingInterface } from './entityInterfaces/PostingInterface';
 import { UserInterface } from './entityInterfaces/UserInterface';
 
-@Entity({ schema: 'xoxo', name: 'comments' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'comments' })
 export default class Comment implements CommentInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()

@@ -3,7 +3,7 @@ import { Entity, DeleteDateColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { FeedInterface } from './entityInterfaces/FeedInterface';
 import { UserInterface } from './entityInterfaces/UserInterface';
 
-@Entity({ schema: 'xoxo', name: 'user_feed_mapping' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'user_feed_mapping' })
 export default class UserFeedMapping {
   @PrimaryColumn({ type: 'int' })
   userId: number;

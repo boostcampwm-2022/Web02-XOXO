@@ -9,7 +9,7 @@ import {
 import { ImageInterface } from './entityInterfaces/ImageInterface';
 import { PostingInterface } from './entityInterfaces/PostingInterface';
 
-@Entity({ schema: 'xoxo', name: 'images' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'images' })
 export default class Image implements ImageInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()

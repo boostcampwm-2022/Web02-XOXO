@@ -12,7 +12,7 @@ import { FeedInterface } from './entityInterfaces/FeedInterface';
 import { PostingInterface } from './entityInterfaces/PostingInterface';
 import UserFeedMapping from './UserFeedMapping.entity';
 
-@Entity({ schema: 'xoxo', name: 'feeds' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'feeds' })
 export class Feed implements FeedInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()
