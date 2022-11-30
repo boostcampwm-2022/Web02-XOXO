@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  INestApplication,
+} from '@nestjs/common';
+import { faker } from '@faker-js/faker';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,11 +15,29 @@ import AppModule from '../src/app.module';
 import { ServerErrorHandlingFilter } from '../src/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '../src/http-exception.filter';
 import ValidationPipe422 from '../src/validation';
-import UsersModule from '../src/users/users.module';
+import { RefreshAuthGuard } from '../src/common/refreshtoken.guard';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-
+  const user = {
+    id: 14,
+    nickname: '윤정민이지',
+    profile: 'http://naver.com',
+    kakaoId: 1121243,
+    deletedAt: null,
+    currentHashedRefreshToken: null,
+  };
+  const expected = [
+    expect.stringMatching(/^refreshToken/),
+    expect.stringMatching(/^accessToken/),
+  ];
+  const mockRefreshAuthGuard: CanActivate = {
+    canActivate: jest.fn((context: ExecutionContext) => {
+      const req = context.switchToHttp().getRequest();
+      req.user = user;
+      return true;
+    }),
+  };
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
@@ -49,11 +72,12 @@ describe('AppController (e2e)', () => {
           entities: [`${__dirname}/../src/entities/*.entity{.ts,.js}`],
         }),
         AppModule,
-        UsersModule,
       ],
-    }).compile();
+    })
+      .overrideGuard(RefreshAuthGuard)
+      .useValue(mockRefreshAuthGuard)
+      .compile();
     app = moduleFixture.createNestApplication();
-
     app.use(cookieParser());
     app.useGlobalFilters(
       new ServerErrorHandlingFilter(),
@@ -78,10 +102,13 @@ describe('AppController (e2e)', () => {
     expect(result.status).toEqual(302);
     expect(result.headers.location).toContain('http://localhost:3001');
   });
+
   it('회원가입을 잘 성공하면 cookie에 refresh token, access token을 담고 최종적으로 피드 페이지로 이동하는가', async () => {
-    const mockjoinNicknameDto = { nickname: '윤정민이지' };
+    const mockjoinNicknameDto = {
+      nickname: faker.name.middleName(),
+    };
     const mockjoinCookieDto = {
-      kakaoId: 1121243,
+      kakaoId: faker.datatype.number(),
       profilePicture: 'http://naver.com',
     };
     const result = await request(app.getHttpServer())
@@ -92,14 +119,23 @@ describe('AppController (e2e)', () => {
         `kakaoId=${mockjoinCookieDto.kakaoId}; profilePicture=${mockjoinCookieDto.profilePicture}`,
       );
 
-    const expected = [
-      expect.stringMatching(/^refreshToken/),
-      expect.stringMatching(/^accessToken/),
-    ];
     expect(result.status).toEqual(302);
     expect(result.headers.location).toContain('http://localhost:3000/feed');
     expect(result.headers['set-cookie']).toEqual(
       expect.arrayContaining(expected),
     );
+  });
+
+  it('refresh token이 유효하다면 새로운 at,rt 쌍을 발급하는가', async () => {
+    const result = await request(app.getHttpServer()).post('/users/refresh');
+
+    expect(result.status).toEqual(302);
+    expect(result.header.location).toContain('http://localhost:3001');
+    expect(result.headers['set-cookie']).toEqual(
+      expect.arrayContaining(expected),
+    );
+  });
+  afterAll(async () => {
+    await app.close();
   });
 });

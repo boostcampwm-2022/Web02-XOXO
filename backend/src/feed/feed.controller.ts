@@ -99,6 +99,7 @@ export class FeedController {
         thumbnail: f.feed.thumbnail,
       }),
     );
+
     return personalFeedList;
   }
 
