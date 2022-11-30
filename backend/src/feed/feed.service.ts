@@ -74,13 +74,7 @@ export class FeedService {
           .getRepository(UserFeedMapping)
           .insert({ feedId, userId });
       }
-      // await Promise.all(
-      //   memberIdList.map(async (userId) => {
-      //     await queryRunner.manager
-      //       .getRepository(UserFeedMapping)
-      //       .insert({ feedId, userId });
-      //   }),
-      // );
+
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
@@ -162,23 +156,6 @@ export class FeedService {
         }
       }
 
-      // Promise.all(
-      //   prevMemberIdList
-      //     .filter((userId) => !memberIdList.includes(userId))
-      //     .map(async (userId) => {
-      //       await queryRunner.manager
-      //         .getRepository(UserFeedMapping)
-      //         .delete({ userId, feedId });
-      //     }),
-      // );
-      // Promise.all(
-      //   memberIdList.map(async (userId) => {
-      //     await queryRunner.manager
-      //       .getRepository(UserFeedMapping)
-      //       .save({ feedId, userId });
-      //   }),
-      // );
-
       await queryRunner.commitTransaction();
     } catch (e) {
       const errorType = e.code;
@@ -224,6 +201,7 @@ export class FeedService {
 
   async getPersonalFeedList(userId: number) {
     try {
+      const personalFeedList = [];
       const feedList = await this.userFeedMappingRepository
         .createQueryBuilder('user_feed_mapping')
         .innerJoinAndSelect(
@@ -234,7 +212,15 @@ export class FeedService {
         )
         .andWhere('user_feed_mapping.userId = :userId', { userId })
         .getMany();
-      return feedList;
+
+      feedList.forEach((f) =>
+        personalFeedList.push({
+          id: f.feed.id,
+          name: f.feed.name,
+          thumbnail: f.feed.thumbnail,
+        }),
+      );
+      return personalFeedList;
     } catch (e) {
       throw new DBError('DB Error : getFeedList 오류');
     }

@@ -36,7 +36,6 @@ export class FeedController {
     return feedParam;
   }
 
-  @UseGuards(AuthorizationGuard)
   @Patch('/:feedId')
   async editFeed(
     @Param('feedId') encryptedFeedId: string,
@@ -44,7 +43,6 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-    console.log(feedId);
     await this.feedService.editFeed(createFeedDto, Number(feedId));
     return {
       success: true,
@@ -67,7 +65,6 @@ export class FeedController {
     return encryuptedFeedID;
   }
 
-  @UseGuards(AuthorizationGuard)
   @Patch('group/:feedId')
   async editGroupFeed(
     @UserReq() user: User,
@@ -93,20 +90,13 @@ export class FeedController {
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
-    const personalFeedList = [];
-    feedList.forEach((f) =>
-      personalFeedList.push({
-        id: f.feed.id,
-        name: f.feed.name,
-        thumbnail: f.feed.thumbnail,
-      }),
-    );
-    return personalFeedList;
+    return feedList;
   }
 
-  @Get('group/feedList')
+  @Get('group/list')
   async getGroupFeedList(@UserReq() user: User) {
-    const feedList = await this.feedService.getGroupFeedList(user.id);
+    const userId = user.id;
+    const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
   }
 }
