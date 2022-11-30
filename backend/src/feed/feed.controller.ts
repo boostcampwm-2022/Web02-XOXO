@@ -7,6 +7,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
+import { DueDateGuard } from 'src/common/DueDate.guard';
 import { AccessAuthGuard } from 'src/common/accesstoken.guard';
 import { AuthorizationGuard } from 'src/common/authorization.guard';
 

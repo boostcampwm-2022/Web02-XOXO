@@ -40,6 +40,7 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
+      console.log(e);
       const errorType = e.code;
       await queryRunner.rollbackTransaction();
 

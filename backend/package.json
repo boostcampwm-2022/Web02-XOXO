@@ -16,7 +16,7 @@
     "start:prod": "node dist/main",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" ",
-    "test": "jest",
+    "test": "jest --setupFiles dotenv/config",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -44,7 +44,9 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jest-mock": "^29.3.1",
     "joi": "^17.7.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
@@ -97,13 +99,16 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": "./",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
+    ],
+    "modulePaths": [
+      "<rootDir>"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

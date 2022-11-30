@@ -24,7 +24,6 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
     let exception: HttpException;
     const errorName = error.name;
-    console.log(error);
     switch (errorName) {
       case 'DBError':
         exception = new InternalDBException();
@@ -61,6 +60,10 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     }
 
     const response = (exception as HttpException).getResponse();
-    res.status((exception as HttpException).getStatus()).json(response);
+    res.status((exception as HttpException).getStatus()).json({
+      success: false,
+      code: exception.getStatus(),
+      data: response,
+    });
   }
 }
