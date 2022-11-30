@@ -9,14 +9,10 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
-import setApplication from 'setApplication';
-import * as cookieParser from 'cookie-parser';
+import AppModule from '@root/app.module';
+import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
 import configuration from '../configuration';
-import AppModule from '../src/app.module';
-import { ServerErrorHandlingFilter } from '../src/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from '../src/http-exception.filter';
-import ValidationPipe422 from '../src/validation';
-import { RefreshAuthGuard } from '../src/common/refreshtoken.guard';
+import { setApplication } from '../setApplication';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -70,7 +66,7 @@ describe('AppController (e2e)', () => {
           synchronize: false,
           logging: true,
           keepConnectionAlive: true,
-          entities: [`${__dirname}/../src/entities/*.entity{.ts,.js}`],
+          entities: [`${process.cwd()}/src/entities/*.entity{.ts,.js}`],
         }),
         AppModule,
       ],
@@ -114,7 +110,6 @@ describe('AppController (e2e)', () => {
         'cookie',
         `kakaoId=${mockjoinCookieDto.kakaoId}; profilePicture=${mockjoinCookieDto.profilePicture}`,
       );
-
     expect(result.status).toEqual(302);
     expect(result.headers.location).toContain('http://localhost:3000/feed');
     expect(result.headers['set-cookie']).toEqual(
@@ -124,7 +119,6 @@ describe('AppController (e2e)', () => {
 
   it('refresh token이 유효하다면 새로운 at,rt 쌍을 발급하는가', async () => {
     const result = await request(app.getHttpServer()).post('/users/refresh');
-
     expect(result.status).toEqual(302);
     expect(result.header.location).toContain('http://localhost:3001');
     expect(result.headers['set-cookie']).toEqual(

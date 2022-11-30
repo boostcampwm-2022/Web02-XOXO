@@ -1,8 +1,8 @@
-import cookieParser from 'cookie-parser';
+import * as cookieParser from 'cookie-parser';
 import { INestApplication } from '@nestjs/common';
-import { HttpExceptionFilter } from 'src/http-exception.filter';
-import { ServerErrorHandlingFilter } from 'src/ServerErrorHandlingFilter';
-import ValidationPipe422 from 'src/validation';
+import { HttpExceptionFilter } from '@root/http-exception.filter';
+import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
+import ValidationPipe422 from '@root/validation';
 
 export const setApplication = (app: INestApplication) => {
   app.use(cookieParser());
