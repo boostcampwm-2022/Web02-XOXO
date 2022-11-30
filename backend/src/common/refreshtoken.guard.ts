@@ -5,8 +5,8 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { AuthenticationService } from 'src/authentication/authentication.service';
-import UsersService from 'src/users/users.service';
+import { AuthenticationService } from '../authentication/authentication.service';
+import UsersService from '../users/users.service';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {

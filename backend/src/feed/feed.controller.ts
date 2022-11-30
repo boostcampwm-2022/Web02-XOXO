@@ -7,15 +7,13 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { AccessAuthGuard } from '../common/accesstoken.guard';
+import { AuthorizationGuard } from '../common/authorization.guard';
 
-import { DueDateGuard } from 'src/common/DueDate.guard';
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { AuthorizationGuard } from 'src/common/authorization.guard';
-
-import Feed from 'src/custom/customDecorator/feed.decorator';
-import User from 'src/entities/User.entity';
-import { UserReq } from 'src/users/decorators/users.decorators';
-import ValidationPipe422 from 'src/validation';
+import Feed from '../custom/customDecorator/feed.decorator';
+import User from '../entities/User.entity';
+import { UserReq } from '../users/decorators/users.decorators';
+import ValidationPipe422 from '../validation';
 import CreateFeedDto from './dto/create.feed.dto';
 import { FeedService } from './feed.service';
 
@@ -101,6 +99,7 @@ export class FeedController {
         thumbnail: f.feed.thumbnail,
       }),
     );
+
     return personalFeedList;
   }
 

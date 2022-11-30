@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Feed } from 'src/entities/Feed.entity';
-import User from 'src/entities/User.entity';
-import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
+import { DataSource, Repository } from 'typeorm';
+import { Feed } from '../entities/Feed.entity';
+import UserFeedMapping from '../entities/UserFeedMapping.entity';
 import {
   DBError,
   GroupFeedMemberListCountException,
   InvalidFKConstraintError,
   NonExistFeedError,
   NonExistUserError,
-} from 'src/error/serverError';
-import { DataSource, Repository } from 'typeorm';
+} from '../error/serverError';
 import CreateFeedDto from './dto/create.feed.dto';
 import { encrypt } from './feed.utils';
 

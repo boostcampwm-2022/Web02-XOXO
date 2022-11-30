@@ -1,7 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import configuration from 'configuration';
-import Feed from 'src/custom/customDecorator/feed.decorator';
 import { DataSource } from 'typeorm';
 import { FeedService } from './feed.service';
 

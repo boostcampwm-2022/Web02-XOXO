@@ -1,9 +1,4 @@
-import Cookie from 'src/custom/customDecorator/cookie.decorator';
-import {
-  FailedToLoginKakaoException,
-  FailedToRedirectKakaoException,
-} from 'src/error/httpException';
-import ValidationPipe422 from 'src/validation';
+import { Response } from 'express';
 import {
   Controller,
   Get,
@@ -14,10 +9,15 @@ import {
   UseGuards,
   Param,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { AuthenticationService } from 'src/authentication/authentication.service';
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { RefreshAuthGuard } from 'src/common/refreshtoken.guard';
+import {
+  FailedToLoginKakaoException,
+  FailedToRedirectKakaoException,
+} from '../error/httpException';
+import ValidationPipe422 from '../validation';
+import Cookie from '../custom/customDecorator/cookie.decorator';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { AccessAuthGuard } from '../common/accesstoken.guard';
+import { RefreshAuthGuard } from '../common/refreshtoken.guard';
 import { UserReq } from './decorators/users.decorators';
 import JoinNicknameDto from './dto/join.nickname.dto';
 import JoinRequestDto from './dto/join.request.dto';
@@ -77,8 +77,8 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-
-        return res.redirect('http://localhost:3000/signin/info');
+        return res.redirect('http://localhost:3001');
+        // return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =

@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthenticationService } from 'src/authentication/authentication.service';
-import { InvalidNickname } from 'src/custom/customValidators/nicknameValidate';
-import User from 'src/entities/User.entity';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { InvalidNickname } from '../custom/customValidators/nicknameValidate';
+import User from '../entities/User.entity';
 
-import { OauthModule } from 'src/oauth/oauth.module';
+import { OauthModule } from '../oauth/oauth.module';
 import UsersController from './users.controller';
 import UserFacade from './users.facade';
 import UsersService from './users.service';
