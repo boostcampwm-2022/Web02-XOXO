@@ -7,9 +7,9 @@ import { InvalidNickname } from '@root/custom/customValidators/nicknameValidate'
 import User from '@root/entities/User.entity';
 
 import { OauthModule } from '@root/oauth/oauth.module';
-import UsersController from './users.controller';
-import UserFacade from './users.facade';
-import UsersService from './users.service';
+import UsersController from '@users/users.controller';
+import UserFacade from '@users/users.facade';
+import UsersService from '@users/users.service';
 
 @Module({
   imports: [OauthModule, TypeOrmModule.forFeature([User])],

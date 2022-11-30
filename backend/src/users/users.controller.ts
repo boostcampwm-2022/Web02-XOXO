@@ -18,12 +18,12 @@ import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/accesstoken.guard';
 import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
-import { UserReq } from './decorators/users.decorators';
-import JoinNicknameDto from './dto/join.nickname.dto';
-import JoinRequestDto from './dto/join.request.dto';
-import UserFacade from './users.facade';
-import UsersService from './users.service';
-import JoinCookieDto from './dto/join.cookie.dto';
+import UsersService from '@users/users.service';
+import { UserReq } from '@users/decorators/users.decorators';
+import JoinNicknameDto from '@users/dto/join.nickname.dto';
+import JoinRequestDto from '@users/dto/join.request.dto';
+import UserFacade from '@users/users.facade';
+import JoinCookieDto from '@users/dto/join.cookie.dto';
 
 @Controller('users')
 export default class UsersController {

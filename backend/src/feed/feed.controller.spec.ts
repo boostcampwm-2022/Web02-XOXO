@@ -7,21 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/http-exception.filter';
 import { DataSource } from 'typeorm';
-<<<<<<< HEAD
 import { Feed } from '@root/entities/Feed.entity';
 import { FeedModule } from '@feed/feed.module';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
-=======
-import { Feed } from 'src/entities/Feed.entity';
-import { UserReq } from 'src/users/decorators/users.decorators';
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { AuthorizationGuard } from 'src/common/authorization.guard';
-import { NonExistUserError } from 'src/error/serverError';
-import { FeedModule } from './feed.module';
-import { FeedService } from './feed.service';
-import { decrypt } from './feed.utils';
->>>>>>> main
+import { UserReq } from '@root/users/decorators/users.decorators';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
+import { AuthorizationGuard } from '@root/common/authorization.guard';
+import { NonExistUserError } from '@root/error/serverError';
 
 describe('FeedController', () => {
   let app: INestApplication;

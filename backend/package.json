@@ -29,7 +29,6 @@
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync"
   },
   "dependencies": {
-    "@golevelup/ts-jest": "^0.3.4",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
@@ -64,6 +63,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
+    "@golevelup/ts-jest": "^0.3.4",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",

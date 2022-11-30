@@ -1,9 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import JoinRequestDto from '@users/dto/join.request.dto';
+import JoinNicknameDto from '@users/dto/join.nickname.dto';
+import JoinCookieDto from '@users/dto/join.cookie.dto';
+import UsersService from '@users/users.service';
 import { OauthService } from '../oauth/oauth.service';
-import JoinRequestDto from './dto/join.request.dto';
-import JoinNicknameDto from './dto/join.nickname.dto';
-import JoinCookieDto from './dto/join.cookie.dto';
-import UsersService from './users.service';
 
 interface JoinUserInterface {
   joinNicknameDto: JoinNicknameDto;
