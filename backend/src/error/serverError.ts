@@ -52,3 +52,10 @@ export class UnauthorizedError extends Error {
     this.name = 'UnauthorizedError';
   }
 }
+
+export class NonExistFKConstraintError extends Error {
+  constructor(message: string) {
+    super(message); // (1)
+    this.name = 'NonExistFKConstraintError';
+  }
+}

@@ -14,6 +14,7 @@ import {
   InternalDBException,
   InvalidFKConstraintException,
   NonExistFeedIdException,
+  NonExistFKException,
   NonExistUserIdException,
   UnauthorizedException,
 } from './error/httpException';
@@ -24,9 +25,9 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
-    console.log(error);
     let exception: HttpException;
     const errorName = error.name;
+    const errorMessage = error.message;
     switch (errorName) {
       case 'DBError':
         exception = new InternalDBException();
@@ -58,6 +59,10 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
       case 'UnauthorizedError':
         exception = new UnauthorizedException();
+        break;
+
+      case 'NonExistFKConstraintError':
+        exception = new NonExistFKException(errorMessage);
         break;
 
       default:
