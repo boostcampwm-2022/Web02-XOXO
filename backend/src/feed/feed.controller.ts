@@ -19,6 +19,7 @@ import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
+import { NonExistFeedIdException } from '@root/error/httpException';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
@@ -99,5 +100,11 @@ export class FeedController {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
+  }
+
+  @Get('info/:feedId')
+  async getFeedInfo(@Param('feedId') encryptedId: string) {
+    const feedInfo = await this.feedService.getFeedById(encryptedId);
+    return feedInfo;
   }
 }
