@@ -33,6 +33,12 @@ export default class UsersController {
     private readonly authenticationService: AuthenticationService,
   ) {}
 
+  @UseGuards(AccessAuthGuard)
+  @Get()
+  async checkLoginUser(@UserReq() user) {
+    return user;
+  }
+
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@UserReq() user, @Res() res: Response) {
