@@ -35,8 +35,8 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get()
-  async checkLoginUser(@UserReq() user) {
-    return user;
+  async checkLoginUser() {
+    return true;
   }
 
   @UseGuards(RefreshAuthGuard)
