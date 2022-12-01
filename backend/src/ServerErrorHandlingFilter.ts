@@ -24,6 +24,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
+    console.log(error);
     let exception: HttpException;
     const errorName = error.name;
     switch (errorName) {
