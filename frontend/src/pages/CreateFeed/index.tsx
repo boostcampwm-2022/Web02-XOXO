@@ -43,16 +43,18 @@ const CreateFeed = ({ path }: ICreateFeed) => {
 
   const onFeedBtnClicked = async () => {
     const [thumbnail] = await uploadImage()
+    console.log('thumbnail', thumbnail)
+
     const formData = {
       name: name.current,
-      thumbnail: thumbnail.current,
+      thumbnail,
       description: description.current,
       dueDate: dueDate.current
     }
 
     if (path === 'group') {
       const memberIdList = members.map(({ id }) => id)
-      formData.memberIdList = JSON.stringify(memberIdList)
+      // formData.memberIdList = memberIdList
     }
 
     if (path === 'personal') {
