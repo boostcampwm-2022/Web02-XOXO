@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsUrl } from 'class-validator';
-import IsValidFeedName from 'src/custom/customValidators/feedValidate';
 
 import {
   Entity,
@@ -8,11 +7,12 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { FeedInterface } from './entityInterfaces/FeedInterface';
-import { PostingInterface } from './entityInterfaces/PostingInterface';
-import UserFeedMapping from './UserFeedMapping.entity';
+import { FeedInterface } from '@root/entities/entityInterfaces/FeedInterface';
+import { PostingInterface } from '@root/entities/entityInterfaces/PostingInterface';
+import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
+import IsValidFeedName from '@root/custom/customValidators/feedValidate';
 
-@Entity({ schema: 'xoxo', name: 'feeds' })
+@Entity({ schema: process.env.DB_DATABASE, name: 'feeds' })
 export class Feed implements FeedInterface {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   @IsNotEmpty()

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import Posting from 'src/entities/Posting.entity';
-import { DBError } from 'src/error/serverError';
 import { Repository } from 'typeorm';
-import FindPostingDto from './dto/find.posting.dto';
+import Posting from '@root/entities/Posting.entity';
+import { DBError } from '@root/error/serverError';
+import FindPostingDto from '@posting/dto/find.posting.dto';
 
 @Injectable()
 export class PostingService {

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { Feed } from 'src/entities/Feed.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
-import { InvalidFeedName } from 'src/custom/customValidators/feedValidate';
-import UsersModule from 'src/users/users.module';
-import { AuthenticationService } from 'src/authentication/authentication.service';
 import { JwtService } from '@nestjs/jwt';
-import { FeedController } from './feed.controller';
-import { FeedService } from './feed.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Feed } from '@root/entities/Feed.entity';
+import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
+import { InvalidFeedName } from '@root/custom/customValidators/feedValidate';
+import UsersModule from '@users/users.module';
+import { AuthenticationService } from '@root/authentication/authentication.service';
+import { FeedController } from '@feed/feed.controller';
+import { FeedService } from '@feed/feed.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Feed, UserFeedMapping]), UsersModule],

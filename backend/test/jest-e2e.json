@@ -5,5 +5,11 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^@root/(.*)$": "<rootDir>/../src/$1",
+    "^@users/(.*)$": "<rootDir>/../src/users/$1",
+    "^@posting/(.*)$": "<rootDir>/../src/posting/$1",
+    "^@feed/(.*)$": "<rootDir>/../src/feed/$1"
   }
 }

@@ -25,6 +25,7 @@ import configuration from '../configuration';
           .valid('development', 'production', 'test')
           .required(),
         PORT: Joi.number().required(),
+        DB_HOST: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
@@ -36,7 +37,7 @@ import configuration from '../configuration';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: process.env.DB_HOST,
       port: 3306,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,

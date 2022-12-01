@@ -1,9 +1,5 @@
-import Cookie from 'src/custom/customDecorator/cookie.decorator';
-import {
-  FailedToLoginKakaoException,
-  FailedToRedirectKakaoException,
-} from 'src/error/httpException';
-import ValidationPipe422 from 'src/validation';
+import { Response } from 'express';
+import CustomValidationPipe from '@root/customValidationPipe';
 import {
   Controller,
   Get,
@@ -14,16 +10,20 @@ import {
   UseGuards,
   Param,
 } from '@nestjs/common';
-import { Response } from 'express';
-import { AuthenticationService } from 'src/authentication/authentication.service';
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { RefreshAuthGuard } from 'src/common/refreshtoken.guard';
-import { UserReq } from './decorators/users.decorators';
-import JoinNicknameDto from './dto/join.nickname.dto';
-import JoinRequestDto from './dto/join.request.dto';
-import UserFacade from './users.facade';
-import UsersService from './users.service';
-import JoinCookieDto from './dto/join.cookie.dto';
+import {
+  FailedToLoginKakaoException,
+  FailedToRedirectKakaoException,
+} from '@root/error/httpException';
+import Cookie from '@root/custom/customDecorator/cookie.decorator';
+import { AuthenticationService } from '@root/authentication/authentication.service';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
+import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
+import UsersService from '@users/users.service';
+import { UserReq } from '@users/decorators/users.decorators';
+import JoinNicknameDto from '@users/dto/join.nickname.dto';
+import JoinRequestDto from '@users/dto/join.request.dto';
+import UserFacade from '@users/users.facade';
+import JoinCookieDto from '@users/dto/join.cookie.dto';
 
 @Controller('users')
 export default class UsersController {
@@ -32,6 +32,12 @@ export default class UsersController {
     private readonly facade: UserFacade,
     private readonly authenticationService: AuthenticationService,
   ) {}
+
+  @UseGuards(AccessAuthGuard)
+  @Get()
+  async checkLoginUser(@UserReq() user) {
+    return user;
+  }
 
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
@@ -77,8 +83,8 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-
-        return res.redirect('http://localhost:3000/signin/info');
+        return res.redirect('http://localhost:3001');
+        // return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =
@@ -112,7 +118,7 @@ export default class UsersController {
   @Post('join')
   async joinUser(
     @Body() joinNicknameDto: JoinNicknameDto,
-    @Cookie(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Cookie(new CustomValidationPipe({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
     @Res() res: Response,
   ) {
