@@ -1,6 +1,6 @@
 import { Controller, Param, UseGuards, Get } from '@nestjs/common';
-import { DueDateGuard } from 'src/common/DueDate.guard';
-import { PostingService } from './posting.service';
+import { DueDateGuard } from '@root/common/DueDate.guard';
+import { PostingService } from '@posting/posting.service';
 
 @Controller('posting')
 export class PostingController {

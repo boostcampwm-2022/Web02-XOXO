@@ -7,18 +7,23 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
 
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
+import Feed from '@root/custom/customDecorator/feed.decorator';
+import User from '@root/entities/User.entity';
+import { UserReq } from '@users/decorators/users.decorators';
+
 
 import Feed from 'src/custom/customDecorator/feed.decorator';
 import User from 'src/entities/User.entity';
 import { UserReq } from 'src/users/decorators/users.decorators';
-import CustomValidationPipe from 'src/customValidationPipe';
 import { AuthorizationGuard } from 'src/common/authorization.guard';
-import CreateFeedDto from './dto/create.feed.dto';
-import { FeedService } from './feed.service';
 
-import { decrypt } from './feed.utils';
+import CreateFeedDto from '@feed/dto/create.feed.dto';
+import CustomValidationPipe from '@root/customValidationPipe';
+import { FeedService } from '@feed/feed.service';
+import { decrypt } from '@feed/feed.utils';
+
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')

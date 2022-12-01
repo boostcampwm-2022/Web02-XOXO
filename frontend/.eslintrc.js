@@ -16,6 +16,8 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/promise-function-async': 'off',
-    'multiline-ternary': ['error', 'always-multiline']
+    'multiline-ternary': ['error', 'always-multiline'],
+    '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off'
   }
 }

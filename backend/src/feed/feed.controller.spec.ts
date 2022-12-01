@@ -4,17 +4,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import configuration from 'configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ServerErrorHandlingFilter } from 'src/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from 'src/http-exception.filter';
+import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@root/http-exception.filter';
 import { DataSource } from 'typeorm';
-import { Feed } from 'src/entities/Feed.entity';
-import { UserReq } from 'src/users/decorators/users.decorators';
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { AuthorizationGuard } from 'src/common/authorization.guard';
-import { NonExistUserError } from 'src/error/serverError';
-import { FeedModule } from './feed.module';
-import { FeedService } from './feed.service';
-import { decrypt } from './feed.utils';
+import { Feed } from '@root/entities/Feed.entity';
+import { FeedModule } from '@feed/feed.module';
+import { FeedService } from '@feed/feed.service';
+import { decrypt } from '@feed/feed.utils';
+import { UserReq } from '@root/users/decorators/users.decorators';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
+import { AuthorizationGuard } from '@root/common/authorization.guard';
+import { NonExistUserError } from '@root/error/serverError';
 
 describe('FeedController', () => {
   let app: INestApplication;

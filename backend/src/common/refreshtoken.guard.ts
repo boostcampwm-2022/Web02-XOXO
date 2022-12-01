@@ -1,18 +1,14 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { AuthenticationService } from 'src/authentication/authentication.service';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+
+import { AuthenticationService } from '@root/authentication/authentication.service';
+import UsersService from '@users/users.service';
+
 import {
   ExpiredTokenException,
   InternalServerException,
   InvalidTokenException,
   NoExistTokenException,
-} from 'src/error/httpException';
-import UsersService from 'src/users/users.service';
+} from '@root/error/httpException';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {
@@ -32,10 +28,11 @@ export class RefreshAuthGuard implements CanActivate {
   async validateToken(token: string) {
     try {
       const user = await this.authenticationService.verifyToken(token);
-      return await this.usersService.getUserIfRefreshTokenMatches(
+      const result = await this.usersService.getUserIfRefreshTokenMatches(
         token,
         user.id,
       );
+      return result;
     } catch (error) {
       switch (error.message) {
         case 'invalid token':
