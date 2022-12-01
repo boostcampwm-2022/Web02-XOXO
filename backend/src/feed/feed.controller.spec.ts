@@ -54,6 +54,7 @@ describe('FeedController', () => {
     })
       .useMocker((token) => {
         if (token === UserReq) return mockUser;
+        return null;
       })
       .overrideGuard(AccessAuthGuard)
       .useValue({ canActivate: () => true })
@@ -130,5 +131,21 @@ describe('FeedController', () => {
     await expect(async () => {
       await feedService.createFeed(mockCreateFeedDto, mockUserId);
     }).rejects.toThrowError(new NonExistUserError());
+  });
+
+  describe('editFeed(개인 피드 수정) unit test', () => {
+    it(`/feed 개인 피드 생성(unit) : 유효한 user_id인지 검사`, async () => {
+      const mockCreateFeedDto = {
+        name: '피드 이름',
+        thumbnail: 'naver.com',
+        description: '피드 1 설명',
+        dueDate: new Date(),
+      };
+
+      const mockUserId = 1000;
+      await expect(async () => {
+        await feedService.createFeed(mockCreateFeedDto, mockUserId);
+      }).rejects.toThrowError(new NonExistUserError());
+    });
   });
 });
