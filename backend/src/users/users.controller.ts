@@ -154,4 +154,10 @@ export default class UsersController {
     const userList = await this.userService.getUserList(nickname, 10);
     return userList;
   }
+
+  @Get('check/:nickname')
+  async checkDuplicateNickname(@Param('nickname') nickname: string) {
+    const res = await this.userService.getUser({ nickname });
+    return !res;
+  }
 }
