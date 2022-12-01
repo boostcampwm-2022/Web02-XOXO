@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import {
   ArgumentsHost,
   Catch,
@@ -5,7 +6,7 @@ import {
   HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Response } from 'express';
+
 import {
   DuplicateJoinException,
   DuplicateNicknameException,

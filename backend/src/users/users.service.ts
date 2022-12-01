@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { hash, compare } from 'bcrypt';
-
-import User from 'src/entities/User.entity';
+import { Repository } from 'typeorm';
+import User from '@root/entities/User.entity';
 import {
   DBError,
   DuplicateKakaoIdError,
-  DuplicateNicknameError,
   UnauthorizedError,
-} from 'src/error/serverError';
-import { Repository } from 'typeorm';
-import FindUserDto from './dto/find.user.dto';
-import JoinRequestDto from './dto/join.request.dto';
+  DuplicateNicknameError,
+} from '@root/error/serverError';
+import FindUserDto from '@users/dto/find.user.dto';
+import JoinRequestDto from '@users/dto/join.request.dto';
 
 @Injectable()
 export default class UsersService {
@@ -82,8 +80,12 @@ export default class UsersService {
   }
 
   async removeRefreshToken(id: number) {
-    return this.userRepository.update(id, {
-      currentHashedRefreshToken: null,
-    });
+    try {
+      await this.userRepository.update(id, {
+        currentHashedRefreshToken: null,
+      });
+    } catch (e) {
+      throw new DBError('DBError: removeRefreshToken 오류');
+    }
   }
 }

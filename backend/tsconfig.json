@@ -17,5 +17,6 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "extends": "./tsconfig.paths.json"
 }

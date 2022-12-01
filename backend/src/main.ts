@@ -4,9 +4,8 @@ import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import AppModule from './app.module';
 import { HttpExceptionFilter } from './http-exception.filter';
-import { ServerErrorHandlingFilter } from './serverErrorHandlingFilter';
 import CustomValidationPipe from './customValidationPipe';
-
+import { ServerErrorHandlingFilter } from './ServerErrorHandlingFilter';
 declare const module: any;
 
 async function bootstrap() {

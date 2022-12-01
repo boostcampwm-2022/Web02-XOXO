@@ -2,12 +2,12 @@ import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ServerErrorHandlingFilter } from 'src/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from 'src/http-exception.filter';
-import { FeedService } from 'src/feed/feed.service';
+import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@root/http-exception.filter';
+import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
 import configuration from 'configuration';
-import { encrypt } from 'src/feed/feed.utils';
+import { encrypt } from '@feed/feed.utils';
 import {
   NoExistTokenException,
   NoFeedIdException,

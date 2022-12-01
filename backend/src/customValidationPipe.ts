@@ -8,7 +8,7 @@ import {
   NonExistUserIdException,
 } from './error/httpException';
 
-export default class ValidationPipe422 extends ValidationPipe {
+export default class CustomValidationPipe extends ValidationPipe {
   public createExceptionFactory() {
     return (validationErrors: ValidationError[] = []) => {
       validationErrors.forEach((validationError) => {
