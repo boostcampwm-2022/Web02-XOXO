@@ -7,43 +7,36 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
 
-import { DueDateGuard } from 'src/common/DueDate.guard';
-import { AccessAuthGuard } from 'src/common/accesstoken.guard';
-import { AuthorizationGuard } from 'src/common/authorization.guard';
+import Feed from '@root/custom/customDecorator/feed.decorator';
+import User from '@root/entities/User.entity';
+import { UserReq } from '@users/decorators/users.decorators';
 
-import Feed from 'src/custom/customDecorator/feed.decorator';
-import User from 'src/entities/User.entity';
-import { UserReq } from 'src/users/decorators/users.decorators';
-import ValidationPipe422 from 'src/validation';
-import CreateFeedDto from './dto/create.feed.dto';
-import { FeedService } from './feed.service';
-
-import { decrypt } from './feed.utils';
+import CreateFeedDto from '@feed/dto/create.feed.dto';
+import CustomValidationPipe from '@root/customValidationPipe';
+import { FeedService } from '@feed/feed.service';
+import { decrypt } from '@feed/feed.utils';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
-  @UseGuards(AuthorizationGuard)
-  @Get('test/:feedId')
-  test() {}
-
   @Post()
-  async createPosting(
-    @Body('userId') userId: number,
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+  async createFeed(
+    @UserReq() user: User,
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    const feedParam = await this.feedService.createFeed(createFeedDto, userId);
+    const feedParam = await this.feedService.createFeed(createFeedDto, user.id);
     return feedParam;
   }
 
   @Patch('/:feedId')
-  async editPosting(
+  async editFeed(
     @Param('feedId') encryptedFeedId: string,
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
@@ -55,32 +48,33 @@ export class FeedController {
   }
 
   @Post('group')
-  async createGroupPosting(
+  async createGroupFeed(
+    @UserReq() user: User,
     @Body('memberIdList') memberIdList: number[],
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const encryuptedFeedID = await this.feedService.createGroupFeed(
       createFeedDto,
-      memberIdList,
+      [...memberIdList, user.id],
     );
 
     return encryuptedFeedID;
   }
 
   @Patch('group/:feedId')
-  async editGroupPosting(
+  async editGroupFeed(
+    @UserReq() user: User,
     @Param('feedId') encryptedFeedId: string,
     @Body('memberIdList') memberIdList: number[],
-    @Feed(new ValidationPipe422({ validateCustomDecorators: true }))
+    @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-    await this.feedService.editGroupFeed(
-      createFeedDto,
-      Number(feedId),
-      memberIdList,
-    );
+    await this.feedService.editGroupFeed(createFeedDto, Number(feedId), [
+      ...memberIdList,
+      user.id,
+    ]);
 
     return {
       success: true,
@@ -93,21 +87,12 @@ export class FeedController {
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
-    const personalFeedList = [];
-    feedList.forEach((f) =>
-      personalFeedList.push({
-        id: f.feed.id,
-        name: f.feed.name,
-        thumbnail: f.feed.thumbnail,
-      }),
-    );
-    return personalFeedList;
+    return feedList;
   }
 
-  @Get('group/feedList/:userId')
-  async getGroupFeedList(@Param('userId') userId: number) {
-    console.log(userId);
-
+  @Get('group/list')
+  async getGroupFeedList(@UserReq() user: User) {
+    const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
   }

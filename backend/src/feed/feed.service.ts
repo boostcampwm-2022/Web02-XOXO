@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Feed } from 'src/entities/Feed.entity';
-import User from 'src/entities/User.entity';
-import UserFeedMapping from 'src/entities/UserFeedMapping.entity';
+import { DataSource, Repository } from 'typeorm';
+import { Feed } from '@root/entities/Feed.entity';
+import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
   DBError,
   GroupFeedMemberListCountException,
   InvalidFKConstraintError,
   NonExistFeedError,
   NonExistUserError,
-} from 'src/error/serverError';
-import { DataSource, Repository } from 'typeorm';
+} from '@root/error/serverError';
 import CreateFeedDto from './dto/create.feed.dto';
 import { encrypt } from './feed.utils';
 
@@ -33,6 +31,7 @@ export class FeedService {
       const feed = await queryRunner.manager
         .getRepository(Feed)
         .save({ ...createFeedDto, isGroupFeed: false });
+
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
@@ -40,7 +39,6 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
-      console.log(e);
       const errorType = e.code;
       await queryRunner.rollbackTransaction();
 
@@ -74,13 +72,7 @@ export class FeedService {
           .getRepository(UserFeedMapping)
           .insert({ feedId, userId });
       }
-      // await Promise.all(
-      //   memberIdList.map(async (userId) => {
-      //     await queryRunner.manager
-      //       .getRepository(UserFeedMapping)
-      //       .insert({ feedId, userId });
-      //   }),
-      // );
+
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
@@ -162,23 +154,6 @@ export class FeedService {
         }
       }
 
-      // Promise.all(
-      //   prevMemberIdList
-      //     .filter((userId) => !memberIdList.includes(userId))
-      //     .map(async (userId) => {
-      //       await queryRunner.manager
-      //         .getRepository(UserFeedMapping)
-      //         .delete({ userId, feedId });
-      //     }),
-      // );
-      // Promise.all(
-      //   memberIdList.map(async (userId) => {
-      //     await queryRunner.manager
-      //       .getRepository(UserFeedMapping)
-      //       .save({ feedId, userId });
-      //   }),
-      // );
-
       await queryRunner.commitTransaction();
     } catch (e) {
       const errorType = e.code;
@@ -224,6 +199,7 @@ export class FeedService {
 
   async getPersonalFeedList(userId: number) {
     try {
+      const personalFeedList = [];
       const feedList = await this.userFeedMappingRepository
         .createQueryBuilder('user_feed_mapping')
         .innerJoinAndSelect(
@@ -234,7 +210,15 @@ export class FeedService {
         )
         .andWhere('user_feed_mapping.userId = :userId', { userId })
         .getMany();
-      return feedList;
+
+      feedList.forEach((f) =>
+        personalFeedList.push({
+          id: f.feed.id,
+          name: f.feed.name,
+          thumbnail: f.feed.thumbnail,
+        }),
+      );
+      return personalFeedList;
     } catch (e) {
       throw new DBError('DB Error : getFeedList 오류');
     }

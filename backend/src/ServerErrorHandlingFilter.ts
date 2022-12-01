@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import {
   ArgumentsHost,
   Catch,
@@ -5,7 +6,7 @@ import {
   HttpException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Response } from 'express';
+
 import {
   DuplicateJoinException,
   DuplicateNicknameException,
@@ -14,6 +15,7 @@ import {
   InvalidFKConstraintException,
   NonExistFeedIdException,
   NonExistUserIdException,
+  UnauthorizedException,
 } from './error/httpException';
 
 @Catch()
@@ -51,6 +53,10 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
       case 'DuplicateKakaoIdError':
         exception = new DuplicateJoinException();
+        break;
+
+      case 'UnauthorizedError':
+        exception = new UnauthorizedException();
         break;
 
       default:

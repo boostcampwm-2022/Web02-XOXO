@@ -4,9 +4,8 @@ import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
 import AppModule from './app.module';
 import { HttpExceptionFilter } from './http-exception.filter';
-import { ServerErrorHandlingFilter } from './serverErrorHandlingFilter';
-import ValidationPipe422 from './validation';
-
+import CustomValidationPipe from './customValidationPipe';
+import { ServerErrorHandlingFilter } from './ServerErrorHandlingFilter';
 declare const module: any;
 
 async function bootstrap() {
@@ -16,7 +15,7 @@ async function bootstrap() {
     new ServerErrorHandlingFilter(),
     new HttpExceptionFilter(),
   );
-  app.useGlobalPipes(new ValidationPipe422());
+  app.useGlobalPipes(new CustomValidationPipe());
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
