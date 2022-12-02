@@ -13,17 +13,12 @@ import Feed from '@root/custom/customDecorator/feed.decorator';
 import User from '@root/entities/User.entity';
 import { UserReq } from '@users/decorators/users.decorators';
 
-
-import Feed from 'src/custom/customDecorator/feed.decorator';
-import User from 'src/entities/User.entity';
-import { UserReq } from 'src/users/decorators/users.decorators';
 import { AuthorizationGuard } from 'src/common/authorization.guard';
 
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
-
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
@@ -104,5 +99,11 @@ export class FeedController {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
+  }
+
+  @Get('info/:feedId')
+  async getFeedInfo(@Param('feedId') encryptedId: string) {
+    const feedInfo = await this.feedService.getFeedById(encryptedId);
+    return feedInfo;
   }
 }
