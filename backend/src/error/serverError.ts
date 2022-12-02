@@ -22,7 +22,7 @@ export class GroupFeedMemberListCountException extends Error {
 export class NonExistFeedError extends Error {
   constructor() {
     super('존재하지 않는 피드입니다.'); // (1)
-    this.name = 'NonExistUserError';
+    this.name = 'NonExistFeedError';
   }
 }
 

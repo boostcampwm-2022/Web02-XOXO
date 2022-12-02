@@ -100,4 +100,23 @@ export class FeedController {
     const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
   }
+
+  @Get('info/:feedId')
+  async getFeedInfo(@Param('feedId') encryptedId: string) {
+    const feedInfo = await this.feedService.getFeedById(encryptedId);
+    return feedInfo;
+  }
+
+  @Get('scroll/:feedId')
+  async getFeedPostingThumbnail(
+    @Param('feedId') encryptedId: string,
+    @Body('startPostingId')
+    startPostingId: number,
+  ) {
+    const postingThumbnailList = await this.feedService.getPostingThumbnails(
+      encryptedId,
+      startPostingId,
+    );
+    return postingThumbnailList;
+  }
 }
