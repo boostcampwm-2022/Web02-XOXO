@@ -17,17 +17,20 @@ XOXO를 통해 우리만의 추억을 공유해보세요 📷
 - **개인 피드**
 
    피드의 주인은 다른 사용자에게 링크를 공유할 수 있습니다.
+   
    공유받은 사용자는 포스팅을 추가할 수 있습니다.
+   
    공개일 이후에는 피드의 주인만 포스팅을 열람할 수 있습니다. 
 
 - **그룹 피드**
 
    피드의 주인은 그룹원 추가를 통해 피드의 주인을 추가할 수 있습니다. 
+   
    해당 그룹원 모두 다 공개일 이후 포스팅을 열람할 수 있습니다.
 
 ## 🔗 바로가기
 
-[🎨 Figma](https://www.figma.com/file/K0yjvdx9wh8zgwbCCp0m98/web02-xoxo?node-id=0%3A1&t=vBAEWgvNcUjFYlEv-0) / [📃 Wiki](https://github.com/boostcampwm-2022/Web02-XOXO/wiki)
+[**🎨 Figma**](https://www.figma.com/file/K0yjvdx9wh8zgwbCCp0m98/web02-xoxo?node-id=0%3A1&t=vBAEWgvNcUjFYlEv-0) / [**📃 Wiki**](https://github.com/boostcampwm-2022/Web02-XOXO/wiki) / [**💭 Notion**](https://www.notion.so/ebf0ede8ade04eb297fa9bb3697984bd)
 
 ## 🚊 #신분당선#자만추
 
