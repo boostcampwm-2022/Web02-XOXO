@@ -11,7 +11,7 @@ import {
   NonExistUserError,
 } from '@root/error/serverError';
 import CreateFeedDto from './dto/create.feed.dto';
-import { encrypt } from './feed.utils';
+import { decrypt, encrypt } from './feed.utils';
 
 @Injectable()
 export class FeedService {
@@ -21,6 +21,26 @@ export class FeedService {
     private userFeedMappingRepository: Repository<UserFeedMapping>,
     private dataSource: DataSource,
   ) {}
+
+  async getFeedById(encryptedFeedID: string) {
+    try {
+      const id = Number(decrypt(encryptedFeedID));
+      const feed = await this.dataSource.getRepository(Feed).find({
+        where: { id },
+        select: ['name', 'description', 'thumbnail', 'dueDate'],
+      });
+
+      if (!feed) throw new NonExistFeedError();
+      return feed;
+    } catch (e) {
+      if (
+        e instanceof NonExistFeedError ||
+        e.message.includes('digital envelope routines')
+      )
+        throw e;
+      throw new DBError('DBError: getUser 오류');
+    }
+  }
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
