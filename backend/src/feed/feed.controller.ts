@@ -100,4 +100,10 @@ export class FeedController {
     const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
   }
+
+  @Get('info/:feedId')
+  async getFeedInfo(@Param('feedId') encryptedId: string) {
+    const feedInfo = await this.feedService.getFeedById(encryptedId);
+    return feedInfo;
+  }
 }
