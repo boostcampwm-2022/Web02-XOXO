@@ -11,9 +11,18 @@ import GroupMember from './GroupMember'
 import { ISuggestion } from './types'
 import { compressImage } from '@src/util/imageCompress'
 import usePost from '@hooks/usePost'
+import { useNavigate } from 'react-router-dom'
 
 interface ICreateFeed {
   path: string
+}
+
+interface feedForm {
+  name: string
+  thumbnail: string
+  description: string
+  dueDate: string
+  memberIdList?: number[]
 }
 
 const CreateFeed = ({ path }: ICreateFeed) => {
@@ -29,6 +38,7 @@ const CreateFeed = ({ path }: ICreateFeed) => {
   const postImage = usePost('/image')
   const postPersonalFeed = usePost('/feed')
   const postGroupFeed = usePost('/feed/group')
+  const navigate = useNavigate()
 
   const onChangeFeedThumbnail = async (e: any) => {
     const compressedImage = await compressImage(e.target.files[0])
@@ -43,9 +53,8 @@ const CreateFeed = ({ path }: ICreateFeed) => {
 
   const onFeedBtnClicked = async () => {
     const [thumbnail] = await uploadImage()
-    console.log('thumbnail', thumbnail)
 
-    const formData = {
+    const formData: feedForm = {
       name: name.current,
       thumbnail,
       description: description.current,
@@ -53,17 +62,17 @@ const CreateFeed = ({ path }: ICreateFeed) => {
     }
 
     if (path === 'group') {
-      const memberIdList = members.map(({ id }) => id)
-      // formData.memberIdList = memberIdList
+      const memberIdList = members.map(({ id }) => Number(id))
+      formData.memberIdList = memberIdList
     }
 
     if (path === 'personal') {
       const response = await postPersonalFeed(formData)
-      console.log(response)
+      if (response?.status === 201) navigate('/feed')
     }
     if (path === 'group') {
       const response = await postGroupFeed(formData)
-      console.log(response)
+      if (response?.status === 201) navigate('/feed')
     }
   }
 
