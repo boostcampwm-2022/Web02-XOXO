@@ -11,16 +11,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import AppModule from '@root/app.module';
 import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
+import { AccessAuthGuard } from '@root/common/accesstoken.guard';
 import configuration from '../configuration';
 import { setApplication } from '../setApplication';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   const user = {
-    id: 14,
-    nickname: '윤정민이지',
+    id: 3,
+    nickname: 'sssss',
     profile: 'http://naver.com',
-    kakaoId: 1121243,
+    kakaoId: 9123123,
     deletedAt: null,
     currentHashedRefreshToken: null,
   };
@@ -35,6 +36,14 @@ describe('AppController (e2e)', () => {
       return true;
     }),
   };
+  const mockAccessAuthGuard: CanActivate = {
+    canActivate: jest.fn((context: ExecutionContext) => {
+      const req = context.switchToHttp().getRequest();
+      req.user = user;
+      return true;
+    }),
+  };
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
@@ -73,6 +82,8 @@ describe('AppController (e2e)', () => {
     })
       .overrideGuard(RefreshAuthGuard)
       .useValue(mockRefreshAuthGuard)
+      .overrideGuard(AccessAuthGuard)
+      .useValue(mockAccessAuthGuard)
       .compile();
     app = moduleFixture.createNestApplication();
     setApplication(app);
@@ -124,6 +135,15 @@ describe('AppController (e2e)', () => {
     expect(result.headers['set-cookie']).toEqual(
       expect.arrayContaining(expected),
     );
+  });
+  it('dummy user가 개인 피드를 생성할 수 있도록 한다.', async () => {
+    const mockFeed = {
+      name: 'feedName',
+      thumbnail: 'http://naver.com',
+      description: "this is feed's description",
+      dueDate: '2022-12-25',
+    };
+    await request(app.getHttpServer()).post('/feed').send(mockFeed);
   });
 
   afterAll(async () => {

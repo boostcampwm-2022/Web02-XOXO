@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards,
   Param,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   FailedToLoginKakaoException,
@@ -24,7 +25,9 @@ import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
+import TransformInterceptor from '@root/common/interceptors/transform.interceptor';
 
+@UseInterceptors(new TransformInterceptor())
 @Controller('users')
 export default class UsersController {
   constructor(
@@ -83,8 +86,8 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-        return res.redirect('http://localhost:3001');
-        // return res.redirect('http://localhost:3000/signin/info');
+
+        return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =
