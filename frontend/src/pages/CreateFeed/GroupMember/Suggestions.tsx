@@ -9,7 +9,7 @@ interface ISuggestions {
 }
 
 const Suggestions = ({ nickname, setMembers }: ISuggestions) => {
-  const { data, mutate } = useSWR<ISuggestion[]>(`users/search/${nickname}`, fetcher)
+  const { data, mutate } = useSWR<ISuggestion[]>(`/users/search/${nickname}`, fetcher)
 
   if (isEmpty(data)) {
     return null

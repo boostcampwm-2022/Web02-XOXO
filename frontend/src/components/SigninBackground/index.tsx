@@ -5,6 +5,7 @@ const SigninBackground = () => {
     <div className="signin-bg">
       {Array(100)
         .fill(0)
+        .map((x: number, y: number) => x + y)
         .map((n) => (
           <li key={n}></li>
         ))}

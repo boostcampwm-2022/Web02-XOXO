@@ -17,7 +17,10 @@ root.render(
       <Route path="/Write" element={<Write />} />
       <Route path="/SignIn/Info" element={<Info />} />
       <Route path="/SignIn" element={<SignIn />} />
-      <Route path="/createfeed" element={<CreateFeed />} />
+      <Route path="/createfeed">
+        <Route path="personal" element={<CreateFeed path="personal" />} />
+        <Route path="group" element={<CreateFeed path="group" />} />
+      </Route>
       <Route path="/posting" element={<Posting />} />
       <Route path="/feeds" element={<Feeds />} />
     </Routes>

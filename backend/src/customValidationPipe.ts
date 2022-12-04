@@ -25,7 +25,7 @@ export default class CustomValidationPipe extends ValidationPipe {
           case 'DuplicatKakaoId':
             throw new DuplicateJoinException();
           default:
-            throw new UnprocessableEntityException();
+            throw new UnprocessableEntityException(validationError.constraints);
         }
       });
     };
