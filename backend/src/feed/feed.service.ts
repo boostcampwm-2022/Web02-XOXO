@@ -12,6 +12,7 @@ import {
 } from '@root/error/serverError';
 import CreateFeedDto from './dto/create.feed.dto';
 import { decrypt, encrypt } from './feed.utils';
+import FindFeedDto from './dto/find.feed.dto';
 
 @Injectable()
 export class FeedService {
@@ -21,6 +22,7 @@ export class FeedService {
     private userFeedMappingRepository: Repository<UserFeedMapping>,
     private dataSource: DataSource,
   ) {}
+
 
   async getFeedById(encryptedFeedID: string) {
     try {
@@ -38,9 +40,28 @@ export class FeedService {
         e.message.includes('digital envelope routines')
       )
         throw e;
+        throw new DBError('DBError: getUser 오류');
+    }
+  }
+
+  async getFeed(findFeedReq: FindFeedDto & Record<string, unknown>) {
+    try {
+      const findFeedDto: FindFeedDto = { ...findFeedReq };
+      const encryptId = findFeedDto.encryptedId;
+      if (encryptId) {
+        delete findFeedDto.encryptedId;
+        findFeedDto.id = Number(decrypt(encryptId));
+      }
+
+      const feed = await this.dataSource
+        .getRepository(Feed)
+        .find({ where: findFeedDto });
+      return feed;
+    } catch (e) {
       throw new DBError('DBError: getUser 오류');
     }
   }
+
 
   async getPostingThumbnails(encryptedFeedID: string, startPostingId: number) {
     try {
@@ -72,6 +93,31 @@ export class FeedService {
       if (e.message.includes('digital envelope routines'))
         throw new NonExistFeedError();
       throw new DBError('DBError: getPostingThumbnails 오류');
+      }
+  }
+  
+  async getFeedById(encryptedFeedID: string) {
+    try {
+      const id = Number(decrypt(encryptedFeedID));
+      const feed = await this.dataSource
+        .getRepository(Feed)
+        .find({ where: { id } });
+
+      if (!feed) throw new NonExistFeedError();
+      return {
+        name: feed[0].name,
+        description: feed[0].description,
+        thumbnail: feed[0].thumbnail,
+        dueDate: feed[0].dueDate,
+      };
+    } catch (e) {
+      console.log(e);
+      if (
+        e instanceof NonExistFeedError ||
+        e.message.includes('digital envelope routines')
+      )
+        throw e;
+      throw new DBError('DBError: getUser 오류');
     }
   }
 

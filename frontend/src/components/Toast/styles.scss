@@ -1,17 +1,21 @@
 @import '@src/global';
-.Toastify__toast {
-  @include regular(3vw, $black);
-  @include vhcenter;
-  border-radius: 32px;
-  border: 1px solid $primary-3;
-  word-break: unset;
-  background-color: $white;
-  min-height: max-content;
-  &-body {
-    padding: 0;
-    margin: 0;
-  }
-  &-container {
-    width: max-content;
+.Toastify {
+  &__toast {
+    @include regular(3vw, $black);
+    border-radius: 32px;
+    border: 1px solid $primary-3;
+    word-break: unset;
+    background-color: $white;
+    min-height: max-content;
+    &-body {
+      padding: 0;
+      margin: 0;
+    }
+    &-container {
+      width: max-content;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 3vw;
+    }
   }
 }

@@ -19,6 +19,7 @@ import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
+import { NonExistFeedIdException } from '@root/error/httpException';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
