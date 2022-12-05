@@ -1,14 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-
-import { AuthenticationService } from '@root/authentication/authentication.service';
-import UsersService from '@users/users.service';
-
 import {
   ExpiredTokenException,
   InternalServerException,
   InvalidTokenException,
   NoExistTokenException,
 } from '@root/customError/httpException';
+
+import { AuthenticationService } from '@root/authentication/authentication.service';
+import UsersService from '@users/users.service';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {
@@ -37,7 +36,6 @@ export class RefreshAuthGuard implements CanActivate {
       );
       return result;
     } catch (error) {
-      console.log(error);
       switch (error.message) {
         case 'invalid token':
         case 'jwt malformed':

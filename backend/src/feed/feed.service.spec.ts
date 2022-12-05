@@ -1,8 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import configuration from 'configuration';
 import { DataSource } from 'typeorm';
 import { FeedService } from '@feed/feed.service';
+import configuration from '../../configuration';
 
 describe('FeedService', () => {
   let feedService: FeedService;

@@ -13,8 +13,8 @@ import {
   NoFeedIdException,
   UnauthorizedException,
 } from '@root/customError/httpException';
+import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
 import configuration from '../../configuration';
-import { AuthorizationGuard } from './authorization.guard';
 
 describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
   let app: INestApplication;
@@ -60,7 +60,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     const encryptedFeedId = encrypt('1');
@@ -83,7 +83,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     const encryptedFeedId = encrypt('1');
@@ -121,7 +121,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     Object.assign(req, { user: mockUser });

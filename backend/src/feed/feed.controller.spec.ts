@@ -2,7 +2,6 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import configuration from 'configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/http-exception.filter';
@@ -12,9 +11,10 @@ import { FeedModule } from '@feed/feed.module';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
 import { UserReq } from '@root/users/decorators/users.decorators';
-import { AccessAuthGuard } from '@root/common/accesstoken.guard';
-import { AuthorizationGuard } from '@root/common/authorization.guard';
+import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
+import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
 import { NonExistUserError } from '@root/customError/serverError';
+import configuration from '../../configuration';
 
 describe('FeedController', () => {
   let app: INestApplication;
@@ -26,7 +26,7 @@ describe('FeedController', () => {
     profile: 'http://naver.com',
     kakaoId: 1121243,
     deletedAt: null,
-    currentHashedRefreshToken: null,
+    currentRefreshToken: null,
   };
 
   beforeAll(async () => {
