@@ -20,6 +20,7 @@ import CustomValidationPipe from '@root/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
 import ResponseEntity from '@root/common/response/response.entity';
+import { NonExistFeedIdException } from '@root/error/httpException';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')

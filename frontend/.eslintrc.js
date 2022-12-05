@@ -10,7 +10,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./tsconfig.json']
+    project: ['./tsconfig.json', './react-app-env.d.ts']
   },
   plugins: ['react'],
   rules: {
@@ -18,6 +18,7 @@ module.exports = {
     '@typescript-eslint/promise-function-async': 'off',
     'multiline-ternary': ['error', 'always-multiline'],
     '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off'
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/strict-boolean-expressions': 'warn'
   }
 }
