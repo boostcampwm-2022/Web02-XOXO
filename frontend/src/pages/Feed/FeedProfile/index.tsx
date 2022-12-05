@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './style.scss'
 import { ReactComponent as ShareIcon } from '@assets/shareIcon.svg'
 import { ReactComponent as EditIcon } from '@assets/editIcon.svg'
@@ -7,6 +7,16 @@ import DefaultUserImage from '@assets/defaultUserImage.svg'
 const FeedProfile = () => {
   // 테스트 데이터
   const feedInfo = { name: '테스트', image: '', description: '가시밭길 위로 riding, you made me boost up (ah-ah-ah-ah) 거짓으로 가득 찬 party 가렵지도 않아 내 뒤에 말들이 많아', postingNum: 15, remainTime: '14일 4시간' }
+  const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_JAVASCRIPT_KEY
+  const kakaoMessageTemplate = Number(process.env.REACT_APP_KAKAO_MESSAGE_TEMPLATE)
+  useEffect(() => {
+    window.Kakao.init(kakaoJavascriptKey)
+  }, [])
+  const sendKakaoMessage = () => {
+    window.Kakao.Share.sendCustom({
+      templateId: kakaoMessageTemplate
+    })
+  }
   return (
     <div>
         <div className="feed-profile-header">
@@ -19,17 +29,17 @@ const FeedProfile = () => {
                 </div>
             </div>
             <div className="feed-profile-info-wrapper">
-            <span className="feed-profile-description">
-                {feedInfo.description}
-            </span>
-            <div className="feed-profile-status">
-                <span className="feed-post-number">게시물 수 <span className="bold">{feedInfo.postingNum}</span></span>
-                <span className="line"></span>
-                <span className="feed-remaining-time">남은 시간 <span className="bold">{feedInfo.remainTime}</span></span>
+                <span className="feed-profile-description">
+                    {feedInfo.description}
+                </span>
+                <div className="feed-profile-status">
+                    <span className="feed-post-number">게시물 수 <span className="bold">{feedInfo.postingNum}</span></span>
+                    <span className="line"></span>
+                    <span className="feed-remaining-time">남은 시간 <span className="bold">{feedInfo.remainTime}</span></span>
+                </div>
             </div>
-            </div>
-            </div>
-            <button className='feed-share-button'>
+        </div>
+        <button className='feed-share-button' onClick={sendKakaoMessage}>
             <div>
                 <ShareIcon/>
                 <span>내 피드 공유하기</span>

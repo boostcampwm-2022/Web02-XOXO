@@ -144,6 +144,18 @@ export class NonExistFeedIdException extends HttpException {
   }
 }
 
+export class NonExistFKException extends HttpException {
+  constructor(message) {
+    super(
+      {
+        error: 'NonExistFKException',
+        message,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
+
 export class NoFeedIdException extends HttpException {
   constructor() {
     super(
