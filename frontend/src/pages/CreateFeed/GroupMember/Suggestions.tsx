@@ -1,15 +1,15 @@
 import React from 'react'
 import useSWR from 'swr'
 import fetcher from '@src/util/fetcher'
-import { ISuggestion } from '../types'
 import { isEmpty } from 'lodash'
+import { ISuggestion } from '@src/types'
 interface ISuggestions {
   nickname: string
   setMembers: (s: ISuggestion) => void
 }
 
 const Suggestions = ({ nickname, setMembers }: ISuggestions) => {
-  const { data, mutate } = useSWR<ISuggestion[]>(`users/search/${nickname}`, fetcher)
+  const { data, mutate } = useSWR<ISuggestion[]>(`/users/search/${nickname}`, fetcher)
 
   if (isEmpty(data)) {
     return null

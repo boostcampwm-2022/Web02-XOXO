@@ -1,8 +1,9 @@
 import { debounce, isEmpty } from 'lodash'
-import React, { useState } from 'react'
-import { ISuggestion } from '../types'
+import React, { useRef, useState } from 'react'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
 import Suggestions from './Suggestions'
+import Input from '@src/components/Input'
+import { ISuggestion } from '@src/types'
 
 interface IGroupMember {
   members: ISuggestion[]
@@ -10,6 +11,7 @@ interface IGroupMember {
 }
 
 const GroupMember = ({ members, setMembers }: IGroupMember) => {
+  const nicknameRef = useRef<HTMLInputElement>(null)
   const [nickname, setNickname] = useState('')
   const debouncedSearch = debounce((value: string) => {
     setNickname(value)
@@ -18,25 +20,19 @@ const GroupMember = ({ members, setMembers }: IGroupMember) => {
     if (members.every(({ id }) => id !== newMember.id)) {
       setMembers([...members, newMember])
     }
-    setNickname('')
-    const input = document.getElementById('nickname') as HTMLInputElement
-    if (input != null) input.value = ''
+    if (!isEmpty(nicknameRef.current)) {
+      nicknameRef.current.value = ''
+      setNickname(nicknameRef.current.value)
+    }
   }
   return (
     <div>
-      <div className="form-wrapper">
-        <label className="form-label" htmlFor="userId">
-          그룹원 추가
-        </label>
-        <input
-          type="text"
-          id="nickname"
-          placeholder="그룹원의 카카오 이메일을 입력해주세요"
-          onChange={(e) => {
-            debouncedSearch(e.target.value)
-          }}
-        />
-      </div>
+      <Input
+        label="그룹원 추가"
+        bind={nicknameRef}
+        placeholder="그룹원의 카카오 이메일을 입력해주세요"
+        onChangeCb={debouncedSearch}
+      />
       {!isEmpty(nickname) && <Suggestions nickname={nickname} setMembers={handleSuggestionClick} />}
       <label className="form-label" htmlFor="">
         그룹원 목록
@@ -48,7 +44,6 @@ const GroupMember = ({ members, setMembers }: IGroupMember) => {
         ) : (
           <div className="form-members-wrapper">
             {members.map(({ nickname, id }) => (
-              // eslint-disable-next-line react/jsx-key
               <button
                 key={id}
                 className="form-member"

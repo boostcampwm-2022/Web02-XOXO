@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { bindValue } from '@util/index'
 import './style.scss'
 import { ReactComponent as WarningIcon } from '@assets/warningIcon.svg'
 
@@ -7,16 +6,24 @@ interface IInput {
   label?: string
   placeholder?: string
   type?: string
-  bind: React.MutableRefObject<string>
+  bind: React.RefObject<HTMLInputElement>
   validate?: (str: string) => string
+  onChangeCb?: (str: string) => void
 }
-const Input = ({ label = '', placeholder = '', type = 'text', bind, validate = (str: string) => '' }: IInput) => {
-  const [warningText, setWarningText] = useState(validate(bind.current))
+const Input = ({
+  label = '',
+  placeholder = '',
+  type = 'text',
+  bind,
+  validate = (str: string) => '',
+  onChangeCb = (str: string) => {}
+}: IInput) => {
+  const [warningText, setWarningText] = useState('')
 
   const handleEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-    bindValue(e, bind)
     const text = validate(e.target.value)
     setWarningText(text)
+    onChangeCb(e.target.value)
   }
 
   return (
@@ -28,7 +35,7 @@ const Input = ({ label = '', placeholder = '', type = 'text', bind, validate = (
           <span>{warningText}</span>
         </div>
       )}
-      <input type={type} placeholder={placeholder} onChange={handleEvent} />
+      <input type={type} placeholder={placeholder} onChange={handleEvent} ref={bind} />
     </div>
   )
 }
