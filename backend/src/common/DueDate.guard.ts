@@ -3,7 +3,7 @@ import {
   AccessAfterDueDateException,
   AccessBeforeDueDateException,
   InvalidPostingId,
-} from '@root/error/httpException';
+} from '@root/customError/httpException';
 import { PostingService } from '@posting/posting.service';
 
 @Injectable()

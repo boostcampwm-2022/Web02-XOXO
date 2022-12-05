@@ -9,7 +9,7 @@ import {
   InvalidFKConstraintError,
   NonExistFeedError,
   NonExistUserError,
-} from '@root/error/serverError';
+} from '@root/customError/serverError';
 import CreateFeedDto from './dto/create.feed.dto';
 import { decrypt, encrypt } from './feed.utils';
 

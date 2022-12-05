@@ -8,7 +8,7 @@ import {
   InternalServerException,
   InvalidTokenException,
   NoExistTokenException,
-} from '@root/error/httpException';
+} from '@root/customError/httpException';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {
