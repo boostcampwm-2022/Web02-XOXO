@@ -272,26 +272,18 @@ export class FeedService {
 
   async getPersonalFeedList(userId: number) {
     try {
-      const personalFeedList = [];
       const feedList = await this.userFeedMappingRepository
         .createQueryBuilder('user_feed_mapping')
-        .innerJoinAndSelect(
-          'user_feed_mapping.feed',
-          'feeds',
-          'feeds.isGroupFeed = :isGroupFeed',
-          { isGroupFeed: 0 },
-        )
+        .innerJoin('user_feed_mapping.feed', 'feeds')
+        .select([
+          'feeds.id as id',
+          'feeds.name as name',
+          'feeds.thumbnail as thumbnail',
+        ])
+        .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
         .andWhere('user_feed_mapping.userId = :userId', { userId })
-        .getMany();
-
-      feedList.forEach((f) =>
-        personalFeedList.push({
-          id: f.feed.id,
-          name: f.feed.name,
-          thumbnail: f.feed.thumbnail,
-        }),
-      );
-      return personalFeedList;
+        .getRawMany();
+      return feedList;
     } catch (e) {
       throw new DBError('DB Error : getFeedList 오류');
     }
