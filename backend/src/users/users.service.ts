@@ -78,11 +78,6 @@ export default class UsersService {
       await this.userRepository.update(id, { currentHashedRefreshToken: null });
       throw new UnauthorizedError();
     }
-    const isRefreshTokenMatched = await compare(
-      refreshtoken,
-      user.currentHashedRefreshToken,
-    );
-    if (!isRefreshTokenMatched) throw new UnauthorizedError();
     return user;
   }
 
