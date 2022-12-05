@@ -93,7 +93,7 @@ describe('AppController (e2e)', () => {
   it('logout을 요청하면 302 상태코드와 함께 홈페이지로 잘 이동하는가', async () => {
     const result = await request(app.getHttpServer()).post('/users/logout');
     expect(result.status).toEqual(302);
-    expect(result.headers.location).toContain('http://localhost:3001');
+    expect(result.headers.location).toContain('http://localhost:3000');
   });
 
   it('회원가입을 잘 성공하면 cookie에 refresh token, access token을 담고 최종적으로 피드 페이지로 이동하는가', async () => {
