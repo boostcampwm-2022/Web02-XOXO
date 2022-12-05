@@ -19,7 +19,10 @@ export class RefreshAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
+    const response = context.switchToHttp().getResponse();
     const { refreshToken } = request.cookies;
+    response.clearCookie('refreshToken');
+    response.clearCookie('accessToken');
     if (refreshToken === undefined) throw new NoExistTokenException();
     request.user = await this.validateToken(refreshToken);
     return true;
