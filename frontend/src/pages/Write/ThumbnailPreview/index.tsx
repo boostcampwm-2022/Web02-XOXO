@@ -13,7 +13,6 @@ const ThumbnailPreview = ({ isModalOpen, setModalOpen, imageSrc }: propsInterfac
   const handleClickOutModal = (e: MouseEvent) => {
     if (modalRef.current === null || !isModalOpen) return
     if (!modalRef.current.contains(e.target as Node)) {
-      console.log('handleClickOutModal')
       setModalOpen(false)
     }
   }
@@ -25,18 +24,18 @@ const ThumbnailPreview = ({ isModalOpen, setModalOpen, imageSrc }: propsInterfac
   })
   return (
     <>
-    <div className='dimd'></div>
-    <div className='modal' ref={modalRef}>
+      <div className="dimd"></div>
+      <div className="modal" ref={modalRef}>
         <div className="thumbnail-image">
-            <ImagePixelated
-                src={imageSrc}
-                width={window.innerWidth * 0.15}
-                height={window.innerWidth * 0.15}
-                pixelSize={8}
-                fillTransparencyColor={'#ffffff'}
-            />
+          <ImagePixelated
+            src={imageSrc}
+            width={window.innerWidth * 0.15}
+            height={window.innerWidth * 0.15}
+            pixelSize={8}
+            fillTransparencyColor={'#ffffff'}
+          />
         </div>
-    </div>
+      </div>
     </>
   )
 }

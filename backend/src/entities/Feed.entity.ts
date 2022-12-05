@@ -19,7 +19,6 @@ export class Feed implements FeedInterface {
   id: number;
 
   @IsNotEmpty()
-  @IsValidFeedName()
   @Column({ type: 'varchar', length: 15, nullable: false })
   name: string;
 

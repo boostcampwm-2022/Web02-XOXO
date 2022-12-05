@@ -37,6 +37,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
               return { userId: 1 };
             },
           };
+        return null;
       })
       .compile();
 

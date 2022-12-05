@@ -13,6 +13,8 @@ import Feed from '@root/custom/customDecorator/feed.decorator';
 import User from '@root/entities/User.entity';
 import { UserReq } from '@users/decorators/users.decorators';
 
+import { AuthorizationGuard } from 'src/common/authorization.guard';
+
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
@@ -33,6 +35,7 @@ export class FeedController {
     return feedParam;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Patch('/:feedId')
   async editFeed(
     @Param('feedId') encryptedFeedId: string,
@@ -54,14 +57,15 @@ export class FeedController {
     @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    const encryuptedFeedID = await this.feedService.createGroupFeed(
+    const encryptedFeedID = await this.feedService.createGroupFeed(
       createFeedDto,
       [...memberIdList, user.id],
     );
 
-    return encryuptedFeedID;
+    return encryptedFeedID;
   }
 
+  @UseGuards(AuthorizationGuard)
   @Patch('group/:feedId')
   async editGroupFeed(
     @UserReq() user: User,
@@ -95,5 +99,11 @@ export class FeedController {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
     return feedList;
+  }
+
+  @Get('info/:feedId')
+  async getFeedInfo(@Param('feedId') encryptedId: string) {
+    const feedInfo = await this.feedService.getFeedById(encryptedId);
+    return feedInfo;
   }
 }
