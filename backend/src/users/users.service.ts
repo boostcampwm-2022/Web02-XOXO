@@ -63,20 +63,53 @@ export default class UsersService {
   }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
-    await this.userRepository.update(id, { currentRefreshToken: refreshtoken });
+    try {
+      await this.userRepository.update(id, {
+        currentRefreshToken: refreshtoken,
+      });
+    } catch (e) {
+      throw new DBError('DBError: setCurrentRefreshToken error');
+    }
+  }
+
+  async getLastVisitedFeed(id: number) {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) return user.lastVistedFeed;
+      throw new UnauthorizedError();
+    } catch (e) {
+      console.log(e.type);
+      switch (e.type) {
+        case 'UnauthorizedError':
+          throw new UnauthorizedError();
+        default:
+          throw new DBError('DBError: getLastVisitedFeed error');
+      }
+    }
   }
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
-    const user = await this.userRepository.findOneBy({
-      currentRefreshToken: refreshtoken,
-    });
-    if (!user) {
-      const hackedUser = await this.userRepository.findOneBy({ id });
-      if (!hackedUser) throw new UnauthorizedError();
-      await this.userRepository.update(id, { currentRefreshToken: null });
-      throw new UnauthorizedError();
+    try {
+      const user = await this.userRepository.findOneBy({
+        currentRefreshToken: refreshtoken,
+      });
+      if (!user) {
+        const hackedUser = await this.userRepository.findOneBy({ id });
+
+        if (!hackedUser) throw new UnauthorizedError();
+        await this.userRepository.update(id, { currentRefreshToken: null });
+        throw new UnauthorizedError();
+      }
+      return user;
+    } catch (e) {
+      console.log(e.type);
+      switch (e.type) {
+        case 'UnauthorizedError':
+          throw new UnauthorizedError();
+        default:
+          throw new DBError('DBError: getLastVisitedFeed error');
+      }
     }
-    return user;
   }
 
   async removeRefreshToken(id: number) {

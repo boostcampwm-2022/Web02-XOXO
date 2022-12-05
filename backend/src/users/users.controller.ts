@@ -162,4 +162,6 @@ export default class UsersController {
     const res = await this.userService.getUser({ nickname });
     return !res;
   }
+
+  async getLastVisitedFeed() {}
 }
