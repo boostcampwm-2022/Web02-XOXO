@@ -20,7 +20,6 @@ export class DueDateGuard implements CanActivate {
     const posting = await this.postingService.getPosting({ id: postingId });
     if (!posting) throw new InvalidPostingId();
 
-    console.log(posting[0].feed.dueDate);
     if (isCreatePostingApi) {
       if (posting[0].feed.dueDate > new Date()) return true;
       throw new AccessAfterDueDateException();
