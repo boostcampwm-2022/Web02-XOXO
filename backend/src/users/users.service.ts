@@ -48,15 +48,16 @@ export default class UsersService {
     }
   }
 
-  async getUserList(nickname: string, maxRecord: number) {
+  async getUserList(nickname: string, maxRecord: number, reqClientId: number) {
     try {
+      console.log(reqClientId);
       const userList = await this.userRepository
         .createQueryBuilder()
         .select(['id', 'nickname'])
         .where(`MATCH(nickname) AGAINST ('+${nickname}*' IN BOOLEAN MODE)`)
         .limit(maxRecord)
         .execute();
-      return userList;
+      return userList.filter((user) => user.id !== reqClientId);
     } catch (e) {
       throw new DBError('DBError: getUserList 오류');
     }
