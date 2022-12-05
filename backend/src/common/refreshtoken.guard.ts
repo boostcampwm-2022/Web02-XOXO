@@ -37,6 +37,7 @@ export class RefreshAuthGuard implements CanActivate {
       );
       return result;
     } catch (error) {
+      console.log(error);
       switch (error.message) {
         case 'invalid token':
         case 'jwt malformed':

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hash, compare } from 'bcrypt';
 import { Repository } from 'typeorm';
 import User from '@root/entities/User.entity';
 import {
@@ -64,18 +63,17 @@ export default class UsersService {
   }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
-    const currentHashedRefreshToken = await hash(refreshtoken, 10);
-    await this.userRepository.update(id, { currentHashedRefreshToken });
+    await this.userRepository.update(id, { currentRefreshToken: refreshtoken });
   }
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
     const user = await this.userRepository.findOneBy({
-      currentHashedRefreshToken: refreshtoken,
+      currentRefreshToken: refreshtoken,
     });
     if (!user) {
       const hackedUser = await this.userRepository.findOneBy({ id });
       if (!hackedUser) throw new UnauthorizedError();
-      await this.userRepository.update(id, { currentHashedRefreshToken: null });
+      await this.userRepository.update(id, { currentRefreshToken: null });
       throw new UnauthorizedError();
     }
     return user;
@@ -84,10 +82,12 @@ export default class UsersService {
   async removeRefreshToken(id: number) {
     try {
       await this.userRepository.update(id, {
-        currentHashedRefreshToken: null,
+        currentRefreshToken: null,
       });
     } catch (e) {
       throw new DBError('DBError: removeRefreshToken 오류');
     }
   }
 }
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwibmlja25hbWUiOiLsnKTsoJXrr7wzIiwidG9rZW5UeXBlIjoicmVmcmVzaFRva2VuIiwiaWF0IjoxNjcwMjA1ODg2LCJleHAiOjIyNzUwMDU4ODZ9.AaxlLpgvQPcvrk-B0A4WSJMnPaLgLdiYtv2vO0BZWnc

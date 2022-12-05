@@ -23,7 +23,7 @@ describe('AppController (e2e)', () => {
     profile: 'http://naver.com',
     kakaoId: 9123123,
     deletedAt: null,
-    currentHashedRefreshToken: null,
+    currentRefreshToken: null,
   };
   const expected = [
     expect.stringMatching(/^refreshToken/),
