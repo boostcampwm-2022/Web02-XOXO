@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import {
+  AccessAfterDueDateException,
   AccessBeforeDueDateException,
   InvalidPostingId,
 } from '@root/error/httpException';
@@ -13,11 +14,18 @@ export class DueDateGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const { postingId } = req.params;
 
+    const isCreatePostingApi =
+      req.route.path === '/posting/:feedId' && req.route.methods.post;
+
     const posting = await this.postingService.getPosting({ id: postingId });
     if (!posting) throw new InvalidPostingId();
 
-    if (posting[0].feed.dueDate < new Date()) return true;
-
-    throw new AccessBeforeDueDateException();
+    if (isCreatePostingApi) {
+      if (posting[0].feed.dueDate > new Date()) return true;
+      throw new AccessAfterDueDateException();
+    } else {
+      if (posting[0].feed.dueDate < new Date()) return true;
+      throw new AccessBeforeDueDateException();
+    }
   }
 }
