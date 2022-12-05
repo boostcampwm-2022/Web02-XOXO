@@ -1,0 +1,17 @@
+@import '@src/global';
+.error-page{
+  @include vhcenter;
+  height: 70vh;
+}
+.text-container{
+  @include vhcenter;
+  width: 100%;
+  flex-direction: column;
+  .error-title{
+    margin: 0;
+    @include bold(20vw, $white);
+  }
+  .error-desc{
+    @include bold(4vw, $grey-font);
+  }
+}
