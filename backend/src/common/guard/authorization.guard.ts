@@ -3,7 +3,7 @@ import {
   NoExistTokenException,
   NoFeedIdException,
   UnauthorizedException,
-} from '@root/customError/httpException';
+} from '@root/custom/customError/httpException';
 
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';

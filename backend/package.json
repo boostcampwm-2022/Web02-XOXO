@@ -125,7 +125,9 @@
       "^@root/(.*)$": "<rootDir>/src/$1",
       "^@users/(.*)$": "<rootDir>/src/users/$1",
       "^@posting/(.*)$": "<rootDir>/src/posting/$1",
-      "^@feed/(.*)$": "<rootDir>/src/feed/$1"
+      "^@feed/(.*)$": "<rootDir>/src/feed/$1",
+      "^@common/(.*)$": "<rootDir>/src/common/$1",
+      "^@custom/(.*)$": "<rootDir>/src/custom/$1"
     }
   }
 }

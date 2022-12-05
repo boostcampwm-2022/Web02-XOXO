@@ -7,7 +7,7 @@ import {
   DuplicateKakaoIdError,
   UnauthorizedError,
   DuplicateNicknameError,
-} from '@root/customError/serverError';
+} from '@root/custom/customError/serverError';
 import FindUserDto from '@users/dto/find.user.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 

@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import CustomValidationPipe from '@root/customValidationPipe';
+import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import {
   Controller,
   Get,
@@ -13,7 +13,7 @@ import {
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
-} from '@root/customError/httpException';
+} from '@root/custom/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
