@@ -12,7 +12,7 @@ import {
   NoExistTokenException,
   NoFeedIdException,
   UnauthorizedException,
-} from '@root/customError/httpException';
+} from '@root/custom/customError/httpException';
 import configuration from '../../configuration';
 import { AuthorizationGuard } from './authorization.guard';
 

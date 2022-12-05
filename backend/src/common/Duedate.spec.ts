@@ -7,7 +7,7 @@ import FindPostingDto from '@posting/dto/find.posting.dto';
 import {
   AccessAfterDueDateException,
   AccessBeforeDueDateException,
-} from '@root/customError/httpException';
+} from '@root/custom/customError/httpException';
 import { HttpExceptionFilter } from '../http-exception.filter';
 import { ServerErrorHandlingFilter } from '../ServerErrorHandlingFilter';
 import { PostingService } from '../posting/posting.service';

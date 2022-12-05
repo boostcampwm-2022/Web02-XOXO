@@ -14,7 +14,7 @@ import { decrypt } from '@feed/feed.utils';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import { AccessAuthGuard } from '@root/common/accesstoken.guard';
 import { AuthorizationGuard } from '@root/common/authorization.guard';
-import { NonExistUserError } from '@root/customError/serverError';
+import { NonExistUserError } from '@root/custom/customError/serverError';
 
 describe('FeedController', () => {
   let app: INestApplication;

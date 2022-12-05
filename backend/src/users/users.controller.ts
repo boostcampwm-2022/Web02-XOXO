@@ -14,7 +14,7 @@ import {
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
-} from '@root/customError/httpException';
+} from '@root/custom/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/accesstoken.guard';
@@ -28,7 +28,6 @@ import JoinCookieDto from '@users/dto/join.cookie.dto';
 import TransformInterceptor from '@root/common/interceptors/transform.interceptor';
 
 import User from '@root/entities/User.entity';
-
 
 @UseInterceptors(new TransformInterceptor())
 @Controller('users')
