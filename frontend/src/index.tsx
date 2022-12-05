@@ -8,6 +8,7 @@ import SignIn from '@pages/SignIn'
 import Posting from '@pages/Posting'
 import Feeds from '@pages/Feeds'
 import Info from '@pages/Info'
+import Error from '@pages/Error'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -23,6 +24,7 @@ root.render(
       </Route>
       <Route path="/posting" element={<Posting />} />
       <Route path="/feeds" element={<Feeds />} />
+      <Route path="/*" element={<Error />} />
     </Routes>
   </BrowserRouter>
 )
