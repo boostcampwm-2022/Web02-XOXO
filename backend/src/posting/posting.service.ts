@@ -49,7 +49,7 @@ export class PostingService {
       }
 
       await queryRunner.commitTransaction();
-      return encrypt(posting.id.toString());
+      return posting.id;
     } catch (e) {
       const errorType = e.code;
       await queryRunner.rollbackTransaction();
