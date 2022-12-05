@@ -4,7 +4,7 @@ config:
     faker:
       locale: en
   phases:
-    - duration: 60
+    - duration: 30
       arrivalRate: 30
   defaults:
     headers:
@@ -13,13 +13,24 @@ config:
   variables:
     kakaoId: '$faker.datatype.number'
     nickname: '$faker.name.middleName'
+    accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsIm5pY2tuYW1lIjoiYmFuYW5hIiwidG9rZW5UeXBlIjoiYWNjZXNzVG9rZW4iLCJpYXQiOjE2NzAyNDQyMTYsImV4cCI6MTY3MjA0NDIxNn0.po2pIoHZdmcWOGU7D2jWotqi_CtqIm0PsgRS658_O0c'
+    refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsIm5pY2tuYW1lIjoiYmFuYW5hIiwidG9rZW5UeXBlIjoicmVmcmVzaFRva2VuIiwiaWF0IjoxNjcwMjQ0MjE2LCJleHAiOjIyNzUwNDQyMTZ9.7cKy9oH90ggHN2Xxff2ofrXc7zJ_Zeyiz1OdcJTDo-o'
+    feedId: 'e590b90ed1ec55737585af1cf1c3404c'
 scenarios:
-  - name: '피드 리스트 조회'
+  - name: '피드 조회와  posting 올리기'
     flow:
-      - post:
-          url: '/users/join'
+      - get:
+          url: '/feed/info/{{feedId}}'
           cookie:
-            profilePicture: 'http://naver.com'
-            kakaoId: '{{kakaoId}}'
+            refreshToken: '{{refreshToken}}'
+            accessToken: '{{accessToken}}'
+      - post:
+          url: '/posting/{{feedId}}'
+          cookie:
+            refreshToken: '{{refreshToken}}'
+            accessToken: '{{accessToken}}'
           json:
-            nickname: '{{nickname}}'
+            letter: '이건 피드에 포스팅을 잘 올릴 수 있는지를 테스트하는 중'
+            thumbnail: 'http://naver.com'
+            senderId: 4
+            images: ['http://naver.com']
