@@ -7,9 +7,10 @@ import {
   NonExistFKConstraintError,
 } from '@root/custom/customError/serverError';
 import FindPostingDto from '@posting/dto/find.posting.dto';
-import { decrypt, encrypt } from '@root/feed/feed.utils';
+import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
+import LookingPostingDto from './dto/looking.posting.dto';
 
 @Injectable()
 export class PostingService {
@@ -34,9 +35,14 @@ export class PostingService {
     try {
       const posting = await this.postingRepository.find({
         where: { id: postindId },
+        relations: ['images', 'sender'],
+        select: {
+          images: { url: true },
+          sender: { nickname: true, profile: true },
+        },
       });
 
-      return posting[0];
+      return LookingPostingDto.createLookingPostingDto(posting[0]);
     } catch (e) {
       throw new DBError('DBError: getUser 오류');
     }
