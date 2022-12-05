@@ -14,7 +14,7 @@ import {
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
-} from '@root/error/httpException';
+} from '@root/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/accesstoken.guard';

@@ -6,7 +6,7 @@ import {
   InvalidFeedNameException,
   InvalidNicknameException,
   NonExistUserIdException,
-} from './error/httpException';
+} from './customError/httpException';
 
 export default class CustomValidationPipe extends ValidationPipe {
   public createExceptionFactory() {

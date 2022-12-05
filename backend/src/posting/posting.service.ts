@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import Posting from '@root/entities/Posting.entity';
-import { DBError, NonExistFKConstraintError } from '@root/error/serverError';
+import {
+  DBError,
+  NonExistFKConstraintError,
+} from '@root/customError/serverError';
 import FindPostingDto from '@posting/dto/find.posting.dto';
 import { decrypt, encrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
