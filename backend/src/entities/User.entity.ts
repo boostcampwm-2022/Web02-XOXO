@@ -52,4 +52,7 @@ export default class User implements UserInterface {
   @Column({ nullable: true })
   @Exclude()
   currentRefreshToken?: string;
+
+  @Column({ nullable: true })
+  lastVistedFeed?: number;
 }
