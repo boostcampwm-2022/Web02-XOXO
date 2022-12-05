@@ -144,6 +144,18 @@ export class NonExistFeedIdException extends HttpException {
   }
 }
 
+export class NonExistPostingIdException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'NonExistPostingIdException',
+        message: `존재하지 않는 포스팅 입니다.`,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
+
 export class NonExistFKException extends HttpException {
   constructor(message) {
     super(

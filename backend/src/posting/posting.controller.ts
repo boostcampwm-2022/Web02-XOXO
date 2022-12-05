@@ -4,6 +4,7 @@ import { PostingService } from '@posting/posting.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
+import { NonExistPostingError } from '@root/custom/customError/serverError';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
 
 @UseGuards(AccessAuthGuard)
@@ -11,6 +12,7 @@ import { CreatePostingReqDto } from './dto/create.posting.dto';
 export class PostingController {
   constructor(private readonly postingService: PostingService) {}
 
+  @UseGuards(DueDateGuard)
   @Post('/:feedId')
   async createPosting(
     @UserReq() user: User,
@@ -29,9 +31,11 @@ export class PostingController {
     return res;
   }
 
-  @Get('test/:postingId')
+  @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
   testFunction(@Param('postingId') postingId: number) {
-    return postingId;
+    const res = this.postingService.getOnlyPostingById(postingId);
+    if (!res) throw new NonExistPostingError();
+    return res;
   }
 }

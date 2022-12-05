@@ -30,6 +30,18 @@ export class PostingService {
     }
   }
 
+  async getOnlyPostingById(postindId: number) {
+    try {
+      const posting = await this.postingRepository.find({
+        where: { id: postindId },
+      });
+
+      return posting[0];
+    } catch (e) {
+      throw new DBError('DBError: getUser 오류');
+    }
+  }
+
   async createPosting(
     { letter, thumbnail, senderId, encryptedFeedId }: CreatePostingDto,
     imageUrlList: string[],
