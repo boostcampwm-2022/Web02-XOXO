@@ -2,8 +2,8 @@ import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from '@root/http-exception.filter';
+import { ServerErrorHandlingFilter } from '@root/common/filter/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@root/common/filter/http-exception.filter';
 import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
 import { encrypt } from '@feed/feed.utils';
@@ -13,8 +13,8 @@ import {
   NoFeedIdException,
   UnauthorizedException,
 } from '@root/custom/customError/httpException';
+import { AuthorizationGuard } from '@common/guard/authorization.guard';
 import configuration from '../../configuration';
-import { AuthorizationGuard } from './authorization.guard';
 
 describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
   let app: INestApplication;

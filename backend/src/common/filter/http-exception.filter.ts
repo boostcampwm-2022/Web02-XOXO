@@ -5,7 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Response } from 'express';
-import JoinNicknameDto from './users/dto/join.nickname.dto';
+import JoinNicknameDto from '@users/dto/join.nickname.dto';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {

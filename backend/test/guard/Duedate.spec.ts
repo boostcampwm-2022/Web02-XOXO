@@ -8,10 +8,10 @@ import {
   AccessAfterDueDateException,
   AccessBeforeDueDateException,
 } from '@root/custom/customError/httpException';
-import { HttpExceptionFilter } from '../http-exception.filter';
-import { ServerErrorHandlingFilter } from '../ServerErrorHandlingFilter';
-import { PostingService } from '../posting/posting.service';
-import { DueDateGuard } from './DueDate.guard';
+import { DueDateGuard } from '@common/guard/DueDate.guard';
+import { PostingService } from '@root/posting/posting.service';
+import { ServerErrorHandlingFilter } from '@common/filter/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@common/filter/http-exception.filter';
 import configuration from '../../configuration';
 
 describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {

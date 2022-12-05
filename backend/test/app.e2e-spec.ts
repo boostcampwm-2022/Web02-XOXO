@@ -10,8 +10,8 @@ import * as Joi from 'joi';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import AppModule from '@root/app.module';
-import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
-import { AccessAuthGuard } from '@root/common/accesstoken.guard';
+import { RefreshAuthGuard } from '@root/common/guard/refreshtoken.guard';
+import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import configuration from '../configuration';
 import { setApplication } from '../setApplication';
 

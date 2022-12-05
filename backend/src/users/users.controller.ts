@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import CustomValidationPipe from '@root/customValidationPipe';
+import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import {
   Controller,
   Get,
@@ -17,8 +17,8 @@ import {
 } from '@root/custom/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
-import { AccessAuthGuard } from '@root/common/accesstoken.guard';
-import { RefreshAuthGuard } from '@root/common/refreshtoken.guard';
+import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
+import { RefreshAuthGuard } from '@root/common/guard/refreshtoken.guard';
 import UsersService from '@users/users.service';
 import { UserReq } from '@users/decorators/users.decorators';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
