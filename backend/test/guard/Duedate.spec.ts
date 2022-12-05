@@ -10,8 +10,8 @@ import {
 } from '@root/custom/customError/httpException';
 import { DueDateGuard } from '@common/guard/DueDate.guard';
 import { PostingService } from '@root/posting/posting.service';
-import { ServerErrorHandlingFilter } from '@common/filter/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from '@common/filter/http-exception.filter';
+import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
 import configuration from '../../configuration';
 
 describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {

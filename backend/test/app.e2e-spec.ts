@@ -91,19 +91,9 @@ describe('AppController (e2e)', () => {
   });
 
   it('logout을 요청하면 302 상태코드와 함께 홈페이지로 잘 이동하는가', async () => {
-    const refreshToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywibmlja25hbWUiOiJoc3NzIiwidG9rZW5UeXBlIjoicmVmcmVzaFRva2VuIiwiaWF0IjoxNjY5NzI3MDQ3LCJleHAiOjIyNzQ1MjcwNDd9.h5XGmNt5_ZeysDDPmRks5WtXPdxEzOKsZjexioVNeO4';
-    const accessToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywibmlja25hbWUiOiJoc3NzIiwidG9rZW5UeXBlIjoiYWNjZXNzVG9rZW4iLCJpYXQiOjE2Njk3MjcwNDcsImV4cCI6MTY3MTUyNzA0N30.55Az0IWv9mrCpgb8SEJ7GccUKgnuYFaKb-sIHXud9jc';
-
-    const result = await request(app.getHttpServer())
-      .post('/users/logout')
-      .set(
-        'cookie',
-        `accessToken=${accessToken}; refreshToken=${refreshToken}`,
-      );
+    const result = await request(app.getHttpServer()).post('/users/logout');
     expect(result.status).toEqual(302);
-    expect(result.headers.location).toContain('http://localhost:3001');
+    expect(result.headers.location).toContain('http://localhost:3000');
   });
 
   it('회원가입을 잘 성공하면 cookie에 refresh token, access token을 담고 최종적으로 피드 페이지로 이동하는가', async () => {

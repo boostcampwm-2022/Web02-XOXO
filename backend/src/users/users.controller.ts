@@ -9,7 +9,6 @@ import {
   Res,
   UseGuards,
   Param,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   FailedToLoginKakaoException,
@@ -25,11 +24,8 @@ import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
-import TransformInterceptor from '@root/common/interceptors/transform.interceptor';
+import ResponseEntity from '@root/common/response/response.entity';
 
-import User from '@root/entities/User.entity';
-
-@UseInterceptors(new TransformInterceptor())
 @Controller('users')
 export default class UsersController {
   constructor(
@@ -41,7 +37,7 @@ export default class UsersController {
   @UseGuards(AccessAuthGuard)
   @Get()
   async checkLoginUser() {
-    return true;
+    return ResponseEntity.OK_WITH_DATA(true);
   }
 
   @UseGuards(RefreshAuthGuard)
@@ -156,9 +152,9 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
-  async serachUser(@Param('nickname') nickname: string, @UserReq() user: User) {
-    const userList = await this.userService.getUserList(nickname, 10, user.id);
-    return userList;
+  async serachUser(@Param('nickname') nickname: string) {
+    const userList = await this.userService.getUserList(nickname, 10, 10);
+    return ResponseEntity.OK_WITH_DATA(userList);
   }
 
   @Get('check/:nickname')

@@ -106,6 +106,12 @@
       "ts"
     ],
     "rootDir": ".",
+    "moduleNameMapper": {
+      "^@root/(.*)$": "<rootDir>/src/$1",
+      "^@users/(.*)$": "<rootDir>/src/users/$1",
+      "^@posting/(.*)$": "<rootDir>/src/posting/$1",
+      "^@feed/(.*)$": "<rootDir>/src/feed/$1"
+    },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

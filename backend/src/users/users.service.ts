@@ -50,7 +50,6 @@ export default class UsersService {
 
   async getUserList(nickname: string, maxRecord: number, reqClientId: number) {
     try {
-      console.log(reqClientId);
       const userList = await this.userRepository
         .createQueryBuilder()
         .select(['id', 'nickname'])
@@ -90,5 +89,3 @@ export default class UsersService {
     }
   }
 }
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Niwibmlja25hbWUiOiLsnKTsoJXrr7wzIiwidG9rZW5UeXBlIjoicmVmcmVzaFRva2VuIiwiaWF0IjoxNjcwMjA1ODg2LCJleHAiOjIyNzUwMDU4ODZ9.AaxlLpgvQPcvrk-B0A4WSJMnPaLgLdiYtv2vO0BZWnc

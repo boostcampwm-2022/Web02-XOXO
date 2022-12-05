@@ -2,8 +2,8 @@ import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ServerErrorHandlingFilter } from '@root/common/filter/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from '@root/common/filter/http-exception.filter';
+import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
 import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
 import { encrypt } from '@feed/feed.utils';
@@ -14,6 +14,7 @@ import {
   UnauthorizedException,
 } from '@root/custom/customError/httpException';
 import { AuthorizationGuard } from '@common/guard/authorization.guard';
+
 import configuration from '../../configuration';
 
 describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
@@ -60,7 +61,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     const encryptedFeedId = encrypt('1');
@@ -83,7 +84,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     const encryptedFeedId = encrypt('1');
@@ -121,7 +122,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     Object.assign(req, { user: mockUser });

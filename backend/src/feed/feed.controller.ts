@@ -19,6 +19,7 @@ import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
+import ResponseEntity from '@root/common/response/response.entity';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
@@ -32,7 +33,7 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedParam = await this.feedService.createFeed(createFeedDto, user.id);
-    return feedParam;
+    return ResponseEntity.CREATED_WITH_DATA(feedParam);
   }
 
   @UseGuards(AuthorizationGuard)
@@ -44,10 +45,7 @@ export class FeedController {
   ) {
     const feedId = decrypt(encryptedFeedId);
     await this.feedService.editFeed(createFeedDto, Number(feedId));
-    return {
-      success: true,
-      code: 200,
-    };
+    return ResponseEntity.OK();
   }
 
   @Post('group')
@@ -62,7 +60,7 @@ export class FeedController {
       [...memberIdList, user.id],
     );
 
-    return encryptedFeedID;
+    return ResponseEntity.CREATED_WITH_DATA(encryptedFeedID);
   }
 
   @UseGuards(AuthorizationGuard)
@@ -80,10 +78,7 @@ export class FeedController {
       user.id,
     ]);
 
-    return {
-      success: true,
-      code: 200,
-    };
+    return ResponseEntity.OK();
   }
 
   @Get('list')
@@ -91,20 +86,20 @@ export class FeedController {
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
-    return feedList;
+    return ResponseEntity.OK_WITH_DATA(feedList);
   }
 
   @Get('group/list')
   async getGroupFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
-    return feedList;
+    return ResponseEntity.OK_WITH_DATA(feedList);
   }
 
   @Get('info/:feedId')
   async getFeedInfo(@Param('feedId') encryptedId: string) {
     const feedInfo = await this.feedService.getFeedById(encryptedId);
-    return feedInfo;
+    return ResponseEntity.OK_WITH_DATA(feedInfo);
   }
 
   @Get('scroll/:feedId')
