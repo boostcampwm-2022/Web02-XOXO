@@ -5,6 +5,7 @@ import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
 import { NonExistPostingError } from '@root/custom/customError/serverError';
+import ResponseEntity from '@root/common/response/response.entity';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
 
 @UseGuards(AccessAuthGuard)
@@ -33,9 +34,9 @@ export class PostingController {
 
   @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
-  testFunction(@Param('postingId') postingId: number) {
-    const res = this.postingService.getOnlyPostingById(postingId);
+  async testFunction(@Param('postingId') postingId: number) {
+    const res = await this.postingService.getOnlyPostingById(postingId);
     if (!res) throw new NonExistPostingError();
-    return res;
+    return ResponseEntity.OK_WITH_DATA(res);
   }
 }
