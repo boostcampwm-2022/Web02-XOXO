@@ -6,13 +6,14 @@ import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/http-exception.filter';
 import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
-import configuration from 'configuration';
 import { encrypt } from '@feed/feed.utils';
+
 import {
   NoExistTokenException,
   NoFeedIdException,
   UnauthorizedException,
-} from 'src/error/httpException';
+} from '@root/customError/httpException';
+import configuration from '../../configuration';
 import { AuthorizationGuard } from './authorization.guard';
 
 describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {

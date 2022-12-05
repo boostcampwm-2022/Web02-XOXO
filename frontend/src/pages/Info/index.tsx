@@ -6,15 +6,16 @@ import usePost from '@hooks/usePost'
 import XoxoIcon from '@assets/xoxoIcon.svg'
 import Input from '@components/Input'
 import SigninBackground from '@components/SigninBackground'
-import { containsKO, longer } from '@util/validation/bool'
 import { useNavigate } from 'react-router-dom'
+import { getWarningNickname } from '@src/util/validation'
 
 const Info = () => {
-  const userNickname = useRef('')
+  const userNickname = useRef<HTMLInputElement>(null)
   const postNickname = usePost('/users/join')
   const navigate = useNavigate()
   const handleNicknameForm = async () => {
-    const response = await postNickname({ nickname: userNickname.current })
+    if (userNickname.current === null) return
+    const response = await postNickname({ nickname: userNickname.current.value })
     if (response && response.statusText === 'Created') navigate('/feed')
   }
   return (
@@ -26,13 +27,11 @@ const Info = () => {
           label="닉네임"
           placeholder="닉네임을 입력해주세요. ( 조합 10자리 이하)"
           bind={userNickname}
-          validate={(str: string) => {
-            if (longer(10)(str)) return '닉네임은 10자리 이하입니다.'
-            if (containsKO(str)) return '한국어를 포함하고 있습니다.'
-            return ''
-          }}
+          validate={getWarningNickname}
         />
-        <button className="form-button" onClick={handleNicknameForm}>시작하기</button>
+        <button className="form-button" onClick={handleNicknameForm}>
+          시작하기
+        </button>
       </div>
     </div>
   )

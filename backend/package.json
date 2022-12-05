@@ -21,7 +21,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
+    "test:e2e": "cross-env NODE_ENV=development jest --config ./test/jest-e2e.json",
     "db:create": "ts-node  -r tsconfig-paths/register  ./node_modules/typeorm-extension/dist/cli/index.js db:create -d ./dataSource.ts",
     "db:drop": " ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d ./dataSource.ts",
     "seed": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js seed -d ./dataSource.ts",
@@ -78,11 +78,14 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "artillery": "^2.0.0-27",
+    "artillery-plugin-faker": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.0.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "faker": "^6.6.6",
     "jest": "28.1.3",
     "prettier": "^2.3.2",
     "run-script-webpack-plugin": "^0.1.1",
@@ -111,6 +114,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@root/(.*)$": "<rootDir>/src/$1",
+      "^@users/(.*)$": "<rootDir>/src/users/$1",
+      "^@posting/(.*)$": "<rootDir>/src/posting/$1",
+      "^@feed/(.*)$": "<rootDir>/src/feed/$1"
+    }
   }
 }

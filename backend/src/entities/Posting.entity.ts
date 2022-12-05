@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsString, IsUrl } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -31,6 +31,16 @@ export default class Posting implements PostingInterface {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @IsNotEmpty()
+  @IsNumberString()
+  @Column({ type: 'int' })
+  senderId: number;
+
+  @IsNotEmpty()
+  @IsNumberString()
+  @Column({ type: 'int' })
+  feedId: number;
 
   @ManyToOne('User', { onDelete: 'CASCADE' })
   sender: UserInterface;

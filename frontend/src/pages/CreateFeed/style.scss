@@ -30,6 +30,7 @@
   }
   .form-label {
     @include medium(4.375vw, $black);
+    display: block;
   }
   .form-no-member {
     @include regular(3.75vw, $grey);

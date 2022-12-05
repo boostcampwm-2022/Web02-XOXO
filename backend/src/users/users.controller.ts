@@ -9,11 +9,12 @@ import {
   Res,
   UseGuards,
   Param,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   FailedToLoginKakaoException,
   FailedToRedirectKakaoException,
-} from '@root/error/httpException';
+} from '@root/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/accesstoken.guard';
@@ -24,7 +25,12 @@ import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
+import TransformInterceptor from '@root/common/interceptors/transform.interceptor';
 
+import User from '@root/entities/User.entity';
+
+
+@UseInterceptors(new TransformInterceptor())
 @Controller('users')
 export default class UsersController {
   constructor(
@@ -35,8 +41,8 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get()
-  async checkLoginUser(@UserReq() user) {
-    return user;
+  async checkLoginUser() {
+    return true;
   }
 
   @UseGuards(RefreshAuthGuard)
@@ -83,8 +89,8 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-        return res.redirect('http://localhost:3001');
-        // return res.redirect('http://localhost:3000/signin/info');
+
+        return res.redirect('http://localhost:3000/signin/info');
       }
 
       const { accessToken, ...accessTokenOption } =
@@ -149,9 +155,16 @@ export default class UsersController {
     return res.redirect('http://localhost:3000/feed');
   }
 
+  @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
-  async serachUser(@Param('nickname') nickname: string) {
-    const userList = await this.userService.getUserList(nickname, 10);
+  async serachUser(@Param('nickname') nickname: string, @UserReq() user: User) {
+    const userList = await this.userService.getUserList(nickname, 10, user.id);
     return userList;
+  }
+
+  @Get('check/:nickname')
+  async checkDuplicateNickname(@Param('nickname') nickname: string) {
+    const res = await this.userService.getUser({ nickname });
+    return !res;
   }
 }

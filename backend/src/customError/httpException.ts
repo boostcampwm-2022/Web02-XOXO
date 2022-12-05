@@ -144,6 +144,18 @@ export class NonExistFeedIdException extends HttpException {
   }
 }
 
+export class NonExistFKException extends HttpException {
+  constructor(message) {
+    super(
+      {
+        error: 'NonExistFKException',
+        message,
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+}
+
 export class NoFeedIdException extends HttpException {
   constructor() {
     super(
@@ -186,6 +198,18 @@ export class AccessBeforeDueDateException extends HttpException {
       {
         error: 'AccessBeforeDueDateException',
         message: `피드 공개일 이전에는 포스팅에 접근할 수 없습니다.`,
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+}
+
+export class AccessAfterDueDateException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'AccessAfterDueDateException',
+        message: `피드 공개일 후에는 포스팅을 작성할 수 없습니다.`,
       },
       HttpStatus.FORBIDDEN,
     );
