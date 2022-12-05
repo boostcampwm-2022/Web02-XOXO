@@ -69,8 +69,15 @@ export default class UsersService {
   }
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) throw new UnauthorizedError();
+    const user = await this.userRepository.findOneBy({
+      currentHashedRefreshToken: refreshtoken,
+    });
+    if (!user) {
+      const hackedUser = await this.userRepository.findOneBy({ id });
+      if (!hackedUser) throw new UnauthorizedError();
+      await this.userRepository.update(id, { currentHashedRefreshToken: null });
+      throw new UnauthorizedError();
+    }
     const isRefreshTokenMatched = await compare(
       refreshtoken,
       user.currentHashedRefreshToken,
