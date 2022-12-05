@@ -19,7 +19,6 @@ import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
-import { NonExistFeedIdException } from '@root/error/httpException';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
@@ -106,5 +105,18 @@ export class FeedController {
   async getFeedInfo(@Param('feedId') encryptedId: string) {
     const feedInfo = await this.feedService.getFeedById(encryptedId);
     return feedInfo;
+  }
+
+  @Get('scroll/:feedId')
+  async getFeedPostingThumbnail(
+    @Param('feedId') encryptedId: string,
+    @Body('startPostingId')
+    startPostingId: number,
+  ) {
+    const postingThumbnailList = await this.feedService.getPostingThumbnails(
+      encryptedId,
+      startPostingId,
+    );
+    return postingThumbnailList;
   }
 }

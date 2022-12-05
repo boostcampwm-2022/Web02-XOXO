@@ -23,6 +23,27 @@ export class FeedService {
     private dataSource: DataSource,
   ) {}
 
+  async getFeedById(encryptedFeedID: string) {
+    try {
+      const id = Number(decrypt(encryptedFeedID));
+      const feed = await this.dataSource.getRepository(Feed).find({
+        where: { id },
+        select: ['name', 'description', 'thumbnail', 'dueDate'],
+      });
+
+      if (!feed) throw new NonExistFeedError();
+      return feed[0];
+    } catch (e) {
+      if (
+        e instanceof NonExistFeedError ||
+        e.message.includes('digital envelope routines')
+      )
+        throw e;
+
+      throw new DBError('DBError: getUser 오류');
+    }
+  }
+
   async getFeed(findFeedReq: FindFeedDto & Record<string, unknown>) {
     try {
       const findFeedDto: FindFeedDto = { ...findFeedReq };
@@ -41,28 +62,36 @@ export class FeedService {
     }
   }
 
-  async getFeedById(encryptedFeedID: string) {
+  async getPostingThumbnails(encryptedFeedID: string, startPostingId: number) {
     try {
-      const id = Number(decrypt(encryptedFeedID));
-      const feed = await this.dataSource
-        .getRepository(Feed)
-        .find({ where: { id } });
+      const postingCount = 15;
 
-      if (!feed) throw new NonExistFeedError();
-      return {
-        name: feed[0].name,
-        description: feed[0].description,
-        thumbnail: feed[0].thumbnail,
-        dueDate: feed[0].dueDate,
-      };
+      const id = Number(decrypt(encryptedFeedID));
+      const postingThumbnailList = await this.dataSource
+        .getRepository(Feed)
+        .createQueryBuilder('feed')
+        .innerJoin('feed.postings', 'posting')
+        .select(['posting.id as id', 'posting.thumbnail as thumbanil'])
+        .where('feed.id = :id', { id })
+        .andWhere('posting.id > :startPostingId', { startPostingId })
+        .limit(postingCount)
+        .getRawMany();
+
+      // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교
+      // const postingThumbnailList2 = await this.dataSource
+      //   .getRepository(Feed)
+      //   .find({
+      //     select: { postings: { id: true, thumbnail: true } },
+      //     relations: ['postings'],
+      //     where: { id, postings: { id: MoreThan(startPostingId) } },
+      //     take: postingCount,
+      //   });
+
+      return postingThumbnailList;
     } catch (e) {
-      console.log(e);
-      if (
-        e instanceof NonExistFeedError ||
-        e.message.includes('digital envelope routines')
-      )
-        throw e;
-      throw new DBError('DBError: getUser 오류');
+      if (e.message.includes('digital envelope routines'))
+        throw new NonExistFeedError();
+      throw new DBError('DBError: getPostingThumbnails 오류');
     }
   }
 
