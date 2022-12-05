@@ -39,6 +39,7 @@ export class FeedService {
         e.message.includes('digital envelope routines')
       )
         throw e;
+
       throw new DBError('DBError: getUser 오류');
     }
   }
