@@ -1,8 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
-import TransformInterceptor from '@root/common/interceptors/transform.interceptor';
 import AppModule from './app.module';
 import { HttpExceptionFilter } from './http-exception.filter';
 import CustomValidationPipe from './customValidationPipe';
@@ -17,8 +17,8 @@ async function bootstrap() {
     new ServerErrorHandlingFilter(),
     new HttpExceptionFilter(),
   );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(new CustomValidationPipe());
-  app.useGlobalInterceptors(new TransformInterceptor());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   const config = new DocumentBuilder()

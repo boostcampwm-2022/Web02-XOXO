@@ -6,14 +6,14 @@ import { ServerErrorHandlingFilter } from '@root/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/http-exception.filter';
 import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
-import configuration from 'configuration';
 import { encrypt } from '@feed/feed.utils';
 import {
   NoExistTokenException,
   NoFeedIdException,
   UnauthorizedException,
-} from 'src/error/httpException';
-import { AuthorizationGuard } from './authorization.guard';
+} from '@root/error/httpException';
+import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
+import configuration from '../../configuration';
 
 describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
   let app: INestApplication;
@@ -59,7 +59,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     const encryptedFeedId = encrypt('1');
@@ -82,7 +82,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     const encryptedFeedId = encrypt('1');
@@ -120,7 +120,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
       profile: 'http://naver.com',
       kakaoId: 1121243,
       deletedAt: null,
-      currentHashedRefreshToken: null,
+      currentRefreshToken: null,
     };
 
     Object.assign(req, { user: mockUser });
