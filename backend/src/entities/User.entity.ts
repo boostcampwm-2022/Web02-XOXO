@@ -51,5 +51,5 @@ export default class User implements UserInterface {
 
   @Column({ nullable: true })
   @Exclude()
-  currentHashedRefreshToken?: string;
+  currentRefreshToken?: string;
 }

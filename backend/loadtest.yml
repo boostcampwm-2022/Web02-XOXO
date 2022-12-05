@@ -1,0 +1,25 @@
+config:
+  target: 'http://localhost:3001'
+  plugins:
+    faker:
+      locale: en
+  phases:
+    - duration: 60
+      arrivalRate: 30
+  defaults:
+    headers:
+      content-type: application/json
+      accepts: application/json
+  variables:
+    kakaoId: '$faker.datatype.number'
+    nickname: '$faker.name.middleName'
+scenarios:
+  - name: '피드 리스트 조회'
+    flow:
+      - post:
+          url: '/users/join'
+          cookie:
+            profilePicture: 'http://naver.com'
+            kakaoId: '{{kakaoId}}'
+          json:
+            nickname: '{{nickname}}'
