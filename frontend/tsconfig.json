@@ -17,5 +17,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "craco.config.js"]
+  "include": ["src", "craco.config.js", "react-app-env.d.ts"]
 }
