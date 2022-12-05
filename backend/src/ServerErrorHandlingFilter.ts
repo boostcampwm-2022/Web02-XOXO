@@ -17,7 +17,7 @@ import {
   NonExistFKException,
   NonExistUserIdException,
   UnauthorizedException,
-} from './error/httpException';
+} from './customError/httpException';
 
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {

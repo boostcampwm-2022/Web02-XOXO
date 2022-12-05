@@ -204,6 +204,18 @@ export class AccessBeforeDueDateException extends HttpException {
   }
 }
 
+export class AccessAfterDueDateException extends HttpException {
+  constructor() {
+    super(
+      {
+        error: 'AccessAfterDueDateException',
+        message: `피드 공개일 후에는 포스팅을 작성할 수 없습니다.`,
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+}
+
 export class InvalidPostingId extends HttpException {
   constructor() {
     super(

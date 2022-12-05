@@ -13,7 +13,7 @@ import { decrypt } from '@feed/feed.utils';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
-import { NonExistUserError } from '@root/error/serverError';
+import { NonExistUserError } from '@root/customError/serverError';
 import configuration from '../../configuration';
 
 describe('FeedController', () => {

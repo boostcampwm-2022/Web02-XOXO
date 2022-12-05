@@ -7,11 +7,12 @@ import { HttpExceptionFilter } from '@root/http-exception.filter';
 import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
 import { encrypt } from '@feed/feed.utils';
+
 import {
   NoExistTokenException,
   NoFeedIdException,
   UnauthorizedException,
-} from '@root/error/httpException';
+} from '@root/customError/httpException';
 import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
 import configuration from '../../configuration';
 

@@ -4,7 +4,7 @@ import {
   InternalServerException,
   InvalidTokenException,
   NoExistTokenException,
-} from '@root/error/httpException';
+} from '@root/customError/httpException';
 
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import UsersService from '@users/users.service';
