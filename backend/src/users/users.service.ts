@@ -102,9 +102,9 @@ export default class UsersService {
       }
       return user;
     } catch (e) {
-      console.log(e.type);
-      switch (e.type) {
+      switch (e.name) {
         case 'UnauthorizedError':
+          console.log('service', e.name);
           throw new UnauthorizedError();
         default:
           throw new DBError('DBError: getLastVisitedFeed error');

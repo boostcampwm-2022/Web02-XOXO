@@ -8,6 +8,10 @@ import {
 
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import UsersService from '@users/users.service';
+import {
+  DBError,
+  UnauthorizedError,
+} from '@root/custom/customError/serverError';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {
@@ -36,13 +40,15 @@ export class RefreshAuthGuard implements CanActivate {
       );
       return result;
     } catch (error) {
-      switch (error.message) {
-        case 'invalid token':
-        case 'jwt malformed':
-        case 'invalid signature':
+      switch (error.name) {
+        case 'JsonWebTokenError':
           throw new InvalidTokenException();
-        case 'jwt expired':
+        case 'TokenExpiredError':
           throw new ExpiredTokenException();
+        case 'UnauthorizedError':
+          throw new UnauthorizedError();
+        case 'DBError':
+          throw new DBError('DBError 발생');
         default:
           throw new InternalServerException();
       }

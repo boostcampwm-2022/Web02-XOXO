@@ -28,6 +28,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     let exception: HttpException;
     const errorName = error.name;
     const errorMessage = error.message;
+    console.log(errorName, 'filter');
     switch (errorName) {
       case 'DBError':
         exception = new InternalDBException();
