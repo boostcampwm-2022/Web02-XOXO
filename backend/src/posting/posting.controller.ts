@@ -1,7 +1,7 @@
-import { Controller, Param, UseGuards, Get } from '@nestjs/common';
+import { Controller, Param, UseGuards, Get, Post, Body } from '@nestjs/common';
 import { DueDateGuard } from '@root/common/guard/DueDate.guard';
 import { PostingService } from '@posting/posting.service';
-import { AccessAuthGuard } from '@root/common/accesstoken.guard';
+import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
