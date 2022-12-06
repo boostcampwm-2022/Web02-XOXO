@@ -14,14 +14,11 @@ import { FeedService } from '@root/feed/feed.service';
 
 @Injectable()
 export class DueDateGuard implements CanActivate {
-  constructor(
-    private readonly postingService: PostingService,
-    @Inject(FeedService) private readonly feedService: FeedService,
-  ) {}
+  constructor(@Inject(FeedService) private readonly feedService: FeedService) {}
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
-    const { postingId, feedId } = req.params;
+    const { feedId } = req.params;
 
     const isCreatePostingApi =
       req.route.path === '/posting/:feedId' && req.route.methods.post;

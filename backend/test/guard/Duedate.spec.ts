@@ -35,16 +35,6 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
         const yesterday = new Date(today.setDate(today.getDate() - 1));
         const tomorrow = new Date(today.setDate(today.getDate() + 2));
 
-        if (token === PostingService)
-          return {
-            getPosting: (
-              findPostingDto: FindPostingDto & Record<string, unknown>,
-            ) => {
-              if (findPostingDto.id === 1)
-                return [{ feed: { dueDate: yesterday } }];
-              return [{ feed: { dueDate: tomorrow } }];
-            },
-          };
         if (token === FeedService)
           return {
             getFeedById: (feedId: number) => {
@@ -75,7 +65,6 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       Object.assign(req, { route: mockRoute });
       Object.assign(req, { params: mockParam });
 
-      console.log(dueDateGuard.canActivate(mockContext));
       expect(dueDateGuard.canActivate(mockContext)).resolves.toBe(true);
     });
 
@@ -98,7 +87,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
     it('피드 공개일 후 접근 가능', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
-      const mockParam = { postingId: 1 };
+      const mockParam = { feedId: 1 };
 
       Object.assign(req, { params: mockParam });
 
@@ -108,7 +97,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
     it('피드 공개일 전 접근 불가(AccessBeforeDueDateException)', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
-      const mockParam = { postingId: 2 };
+      const mockParam = { feedId: 2 };
 
       Object.assign(req, { params: mockParam });
 
