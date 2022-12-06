@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
 import axios from 'axios'
+import { isEmpty } from 'lodash'
 
 const usePost = (url: string) => {
-  const post = useCallback(async (data: object, options?: object) => {
+  const post = useCallback(async (body: object, options?: object) => {
     try {
-      const response = await axios.post(url, data, { ...options, withCredentials: true })
-      return response
+      const response = await axios.post(url, body, { ...options, withCredentials: true })
+      const { status, data, success } = response.data
+      if (isEmpty(success)) console.log(status)
+      return data
     } catch (err) {
-      let message
-      if (err instanceof Error) message = err.message
-      else message = String(err)
-      alert(message)
+      console.log(err)
     }
   }, [url])
 
