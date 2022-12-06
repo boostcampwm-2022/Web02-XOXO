@@ -13,8 +13,8 @@ interface IFeed {
 }
 
 const Feeds = () => {
-  const { data: personalFeeds } = useSWR<IFeed[]>('/feed/list', fetcher)
-  const { data: groupFeeds } = useSWR<IFeed[]>('/feed/group/list', fetcher)
+  const { data: personalFeeds } = useSWR('/feed/list', fetcher)
+  const { data: groupFeeds } = useSWR('/feed/group/list', fetcher)
   const feed = ({ id, name, thumbnail }: IFeed) => (
     <Link className="feeds-card" to={`/Feed/${id}`}>
       <div className="feeds-card-circle basic">

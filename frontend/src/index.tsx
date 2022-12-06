@@ -15,7 +15,7 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/Feed" element={<Feed />} />
-      <Route path="/Write" element={<Write />} />
+      <Route path="/Write/:feedId" element={<Write />} />
       <Route path="/SignIn/Info" element={<Info />} />
       <Route path="/SignIn" element={<SignIn />} />
       <Route path="/createfeed">

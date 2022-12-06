@@ -5,6 +5,7 @@ import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
+import ResponseEntity from '@root/common/response/response.entity';
 
 @UseGuards(AccessAuthGuard)
 @Controller('posting')
@@ -17,7 +18,7 @@ export class PostingController {
     @Param('feedId') encryptedFeedId: string,
     @Body() createPostingReq: CreatePostingReqDto,
   ) {
-    const res = await this.postingService.createPosting(
+    const postingId = await this.postingService.createPosting(
       {
         letter: createPostingReq.letter,
         thumbnail: createPostingReq.thumbnail,
@@ -26,7 +27,7 @@ export class PostingController {
       },
       createPostingReq.images,
     );
-    return res;
+    return ResponseEntity.CREATED_WITH_DATA(postingId);
   }
 
   @Get('test/:postingId')

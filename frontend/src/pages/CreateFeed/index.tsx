@@ -110,14 +110,15 @@ const CreateFeed = ({ path }: ICreateFeed) => {
         toast(getWarningMembers(members))
       }
     }
+    console.log(formData)
 
     if (path === 'personal') {
-      const response = await postPersonalFeed(formData)
-      if (response?.status === 201) navigate('/feed')
+      const { success } = await postPersonalFeed(formData)
+      if (success === true) navigate('/feed')
     }
     if (path === 'group') {
-      const response = await postGroupFeed(formData)
-      if (response?.status === 201) navigate('/feed')
+      const { success } = await postGroupFeed(formData)
+      if (success === true) navigate('/feed')
     }
   }
 
@@ -125,8 +126,9 @@ const CreateFeed = ({ path }: ICreateFeed) => {
     const formData = new FormData()
     if (isEmpty(thumbnail)) return ''
     formData.append('image', thumbnail)
-    const response = await postImage(formData)
-    if (!isEmpty(response)) return response.data
+    const { success, data } = await postImage(formData)
+    if (success === false) toast('이미지 업로드 중 문제가 발생했습니다.')
+    return data
   }
   return (
     <div className="createfeed-page">
