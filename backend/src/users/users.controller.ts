@@ -25,6 +25,7 @@ import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
+import { createHash } from 'crypto';
 
 @Controller('users')
 export default class UsersController {
@@ -159,7 +160,9 @@ export default class UsersController {
 
   @Get('check/:nickname')
   async checkDuplicateNickname(@Param('nickname') nickname: string) {
-    const res = await this.userService.getUser({ nickname });
+    const res = await this.userService.getUser({
+      hashedNickname: createHash('md5').update(nickname).digest('hex'),
+    });
     return !res;
   }
 }
