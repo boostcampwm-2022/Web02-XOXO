@@ -4,8 +4,8 @@ config:
     faker:
       locale: en
   phases:
-    - duration: 30
-      arrivalRate: 30
+    - duration: 60
+      arrivalRate: 100
   defaults:
     headers:
       content-type: application/json
@@ -13,17 +13,21 @@ config:
   variables:
     kakaoId: '$faker.datatype.number'
     nickname: '$faker.name.middleName'
-    accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsIm5pY2tuYW1lIjoiYmFuYW5hIiwidG9rZW5UeXBlIjoiYWNjZXNzVG9rZW4iLCJpYXQiOjE2NzAyNDQyMTYsImV4cCI6MTY3MjA0NDIxNn0.po2pIoHZdmcWOGU7D2jWotqi_CtqIm0PsgRS658_O0c'
-    refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsIm5pY2tuYW1lIjoiYmFuYW5hIiwidG9rZW5UeXBlIjoicmVmcmVzaFRva2VuIiwiaWF0IjoxNjcwMjQ0MjE2LCJleHAiOjIyNzUwNDQyMTZ9.7cKy9oH90ggHN2Xxff2ofrXc7zJ_Zeyiz1OdcJTDo-o'
-    feedId: 'e590b90ed1ec55737585af1cf1c3404c'
+    accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsIm5pY2tuYW1lIjoi67OE7J20NSIsInRva2VuVHlwZSI6ImFjY2Vzc1Rva2VuIiwiaWF0IjoxNjcwMjkwNjI2LCJleHAiOjE2NzIwOTA2MjZ9.ybxZ27FPzF1BnYcNDQ1gJrmHHRTfpIunlK11Q98HYDQ'
+    refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsIm5pY2tuYW1lIjoi67OE7J20NSIsInRva2VuVHlwZSI6InJlZnJlc2hUb2tlbiIsImlhdCI6MTY3MDI5MDYyNiwiZXhwIjoyMjc1MDkwNjI2fQ.l6r0cc9P6x4C0CVCuSNnPZXhRPcHe5ajBT1yLaS2lHI'
+    feedId: '0f2b9b89d4fe64634b6c597793f7daca'
 scenarios:
-  - name: '피드 조회와  posting 올리기'
+  - name: '피드 조회'
+    weight: 6
     flow:
       - get:
           url: '/feed/info/{{feedId}}'
           cookie:
             refreshToken: '{{refreshToken}}'
             accessToken: '{{accessToken}}'
+  - name: 'posting 올리기'
+    weight: 4
+    flow:
       - post:
           url: '/posting/{{feedId}}'
           cookie:

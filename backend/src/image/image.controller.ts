@@ -6,6 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import ResponseEntity from '@root/common/response/response.entity';
 import { ImageService } from './image.service';
 
 @Controller('image')
@@ -21,6 +22,6 @@ export class ImageController {
   @UseInterceptors(FilesInterceptor('image', 10))
   async uploadImage(@UploadedFiles() files: Array<Express.Multer.File>) {
     const imagePathList = await this.ImageService.uploadImage(files);
-    return imagePathList;
+    return ResponseEntity.OK_WITH_DATA(imagePathList);
   }
 }
