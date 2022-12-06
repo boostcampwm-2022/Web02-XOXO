@@ -27,7 +27,7 @@ export default class LookingPostingDto extends PickType(Posting, [
   getSender(postingSender) {
     this.sender = {
       nickname: postingSender.nickname,
-      thumbnail: postingSender.thumbnail,
+      thumbnail: postingSender.profile,
     };
   }
 

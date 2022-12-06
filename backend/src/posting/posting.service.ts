@@ -31,14 +31,15 @@ export class PostingService {
     }
   }
 
-  async getOnlyPostingById(postindId: number) {
+  async getOnlyPostingById(postindId: number, encryptedFeedId: string) {
     try {
+      const feedId = Number(decrypt(encryptedFeedId));
       const posting = await this.postingRepository.find({
-        where: { id: postindId },
-        relations: ['images', 'sender'],
+        where: { id: postindId, feed: { id: feedId } },
+        relations: ['images', 'sender', 'feed'],
         select: {
           images: { url: true },
-          sender: { nickname: true, profile: true },
+          // sender: { nickname: true, profile: true },
         },
       });
 

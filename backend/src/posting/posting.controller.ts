@@ -34,8 +34,11 @@ export class PostingController {
 
   @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
-  async testFunction(@Param('postingId') postingId: number) {
-    const res = await this.postingService.getOnlyPostingById(postingId);
+  async testFunction(
+    @Param('postingId') postingId: number,
+    @Param('feedId') feedId: string,
+  ) {
+    const res = await this.postingService.getOnlyPostingById(postingId, feedId);
     if (!res) throw new NonExistPostingError();
     return ResponseEntity.OK_WITH_DATA(res);
   }
