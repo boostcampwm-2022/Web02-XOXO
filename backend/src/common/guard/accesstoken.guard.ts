@@ -11,7 +11,7 @@ import {
   ExpiredTokenException,
   InternalServerException,
   NoExistTokenException,
-} from '@root/customError/httpException';
+} from '@root/custom/customError/httpException';
 
 @Injectable()
 export class AccessAuthGuard implements CanActivate {

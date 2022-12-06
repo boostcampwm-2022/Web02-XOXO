@@ -5,7 +5,7 @@ import Posting from '@root/entities/Posting.entity';
 import {
   DBError,
   NonExistFKConstraintError,
-} from '@root/customError/serverError';
+} from '@root/custom/customError/serverError';
 import FindPostingDto from '@posting/dto/find.posting.dto';
 import { decrypt, encrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';

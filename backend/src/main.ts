@@ -3,10 +3,10 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import * as cookieParser from 'cookie-parser';
+import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
+import CustomValidationPipe from '@common/pipes/customValidationPipe';
+import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
 import AppModule from './app.module';
-import { HttpExceptionFilter } from './http-exception.filter';
-import CustomValidationPipe from './customValidationPipe';
-import { ServerErrorHandlingFilter } from './ServerErrorHandlingFilter';
 
 declare const module: any;
 

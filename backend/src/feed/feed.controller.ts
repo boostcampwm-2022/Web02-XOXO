@@ -16,7 +16,7 @@ import { UserReq } from '@users/decorators/users.decorators';
 import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
 
 import CreateFeedDto from '@feed/dto/create.feed.dto';
-import CustomValidationPipe from '@root/customValidationPipe';
+import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
 import ResponseEntity from '@root/common/response/response.entity';
