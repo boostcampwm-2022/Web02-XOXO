@@ -1,7 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { NonExistFeedError } from '@root/custom/customError/serverError';
 import { Feed } from '@root/entities/Feed.entity';
-import { NumberSelectionBehavior } from 'aws-sdk/clients/chime';
 
 export default class FeedInfoDto extends PickType(Feed, [
   'name',

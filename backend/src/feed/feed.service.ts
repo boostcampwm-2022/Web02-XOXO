@@ -3,13 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
-import {
-  DBError,
-  GroupFeedMemberListCountException,
-  InvalidFKConstraintError,
-  NonExistFeedError,
-  NonExistUserError,
-} from '@root/custom/customError/serverError';
+import { GroupFeedMembersCountError } from '@root/custom/customError/serverError';
 import CreateFeedDto from './dto/create.feed.dto';
 import { decrypt, encrypt } from './feed.utils';
 import FindFeedDto from './dto/find.feed.dto';
@@ -26,82 +20,71 @@ export class FeedService {
   ) {}
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
-    try {
-      const id = Number(decrypt(encryptedFeedID));
-      const feed = await this.dataSource.getRepository(Feed).find({
-        where: { id },
-        relations: ['postings', 'users'],
-        select: {
-          postings: { id: true },
-          users: { userId: true },
-          name: true,
-          description: true,
-          thumbnail: true,
-          dueDate: true,
-        },
-      });
+    const id = Number(decrypt(encryptedFeedID));
+    const feed = await this.dataSource.getRepository(Feed).find({
+      where: { id },
+      relations: ['postings', 'users'],
+      select: {
+        postings: { id: true },
+        users: { userId: true },
+        name: true,
+        description: true,
+        thumbnail: true,
+        dueDate: true,
+      },
+    });
 
-      return FeedInfoDto.createFeedInfoDto(feed[0], userId);
-    } catch (e) {
-      if (
-        e instanceof NonExistFeedError ||
-        e.message.includes('digital envelope routines')
-      )
-        throw e;
+    return FeedInfoDto.createFeedInfoDto(feed[0], userId);
+  }
 
-      throw new DBError('DBError: getUser 오류');
-    }
+  async getFeedById(encryptedFeedID: string) {
+    const id = Number(decrypt(encryptedFeedID));
+    const feed = await this.dataSource.getRepository(Feed).find({
+      where: { id },
+    });
+
+    return feed[0];
   }
 
   async getFeed(findFeedReq: FindFeedDto & Record<string, unknown>) {
-    try {
-      const findFeedDto: FindFeedDto = { ...findFeedReq };
-      const encryptId = findFeedDto.encryptedId;
-      if (encryptId) {
-        delete findFeedDto.encryptedId;
-        findFeedDto.id = Number(decrypt(encryptId));
-      }
-
-      const feed = await this.dataSource
-        .getRepository(Feed)
-        .find({ where: findFeedDto });
-      return feed;
-    } catch (e) {
-      throw new DBError('DBError: getUser 오류');
+    const findFeedDto: FindFeedDto = { ...findFeedReq };
+    const encryptId = findFeedDto.encryptedId;
+    if (encryptId) {
+      delete findFeedDto.encryptedId;
+      findFeedDto.id = Number(decrypt(encryptId));
     }
+
+    const feed = await this.dataSource
+      .getRepository(Feed)
+      .find({ where: findFeedDto });
+    return feed[0];
   }
 
   async getPostingThumbnails(encryptedFeedID: string, startPostingId: number) {
-    try {
-      const postingCount = 15;
+    const postingCount = 15;
 
-      const id = Number(decrypt(encryptedFeedID));
-      const postingThumbnailList = await this.dataSource
-        .getRepository(Feed)
-        .createQueryBuilder('feed')
-        .innerJoin('feed.postings', 'posting')
-        .select(['posting.id as id', 'posting.thumbnail as thumbanil'])
-        .where('feed.id = :id', { id })
-        .andWhere('posting.id > :startPostingId', { startPostingId })
-        .limit(postingCount)
-        .getRawMany();
+    const id = Number(decrypt(encryptedFeedID));
+    const postingThumbnailList = await this.dataSource
+      .getRepository(Feed)
+      .createQueryBuilder('feed')
+      .innerJoin('feed.postings', 'posting')
+      .select(['posting.id as id', 'posting.thumbnail as thumbanil'])
+      .where('feed.id = :id', { id })
+      .andWhere('posting.id > :startPostingId', { startPostingId })
+      .limit(postingCount)
+      .getRawMany();
 
-      // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교
-      // const postingThumbnailList2 = await this.dataSource
-      //   .getRepository(Feed)
-      //   .find({
-      //     select: { postings: { id: true, thumbnail: true } },
-      //     relations: ['postings'],
-      //     where: { id, postings: { id: MoreThan(startPostingId) } },
-      //     take: postingCount,
-      //   });
+    // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교
+    // const postingThumbnailList2 = await this.dataSource
+    //   .getRepository(Feed)
+    //   .find({
+    //     select: { postings: { id: true, thumbnail: true } },
+    //     relations: ['postings'],
+    //     where: { id, postings: { id: MoreThan(startPostingId) } },
+    //     take: postingCount,
+    //   });
 
-      return postingThumbnailList;
-    } catch (e) {
-      if (e.message.includes('digital envelope routines'))
-        throw new NonExistFeedError();
-      throw new DBError('DBError: getPostingThumbnails 오류');
-    }
+    return postingThumbnailList;
   }
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
@@ -121,12 +104,8 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {
-      const errorType = e.code;
       await queryRunner.rollbackTransaction();
-
-      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistUserError();
-
-      throw new DBError('DBError: createFeed 오류');
+      throw e;
     } finally {
       await queryRunner.release();
     }
@@ -135,7 +114,7 @@ export class FeedService {
   async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
     // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
     if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
-      throw new GroupFeedMemberListCountException();
+      throw new GroupFeedMembersCountError();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -158,12 +137,8 @@ export class FeedService {
       await queryRunner.commitTransaction();
       return encrypt(feedId.toString());
     } catch (e) {
-      const errorType = e.code;
       await queryRunner.rollbackTransaction();
-
-      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistUserError();
-
-      throw new DBError('DBError: createGroupFeed 오류');
+      throw e;
     } finally {
       await queryRunner.release();
     }
@@ -181,12 +156,8 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
-      const errorType = e.code;
       await queryRunner.rollbackTransaction();
-
-      if (errorType === 'ER_NO_REFERENCED_ROW_2') throw new NonExistFeedError();
-
-      throw new DBError('DBError: editFeed 오류');
+      throw e;
     } finally {
       await queryRunner.release();
     }
@@ -199,7 +170,7 @@ export class FeedService {
   ) {
     // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
     if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
-      throw new GroupFeedMemberListCountException();
+      throw new GroupFeedMembersCountError();
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -238,77 +209,54 @@ export class FeedService {
 
       await queryRunner.commitTransaction();
     } catch (e) {
-      const errorType = e.code;
       await queryRunner.rollbackTransaction();
-
-      if (errorType === 'ER_NO_REFERENCED_ROW_2')
-        throw new InvalidFKConstraintError();
-
-      throw new DBError('DBError: editGroupFeed 오류');
+      throw e;
     } finally {
       await queryRunner.release();
     }
   }
 
   async getGroupFeedList(userId: number) {
-    try {
-      const subQuery = this.dataSource
-        .createQueryBuilder()
-        .select('feedId')
-        .from(UserFeedMapping, 'user_feed_mapping')
-        .where('user_feed_mapping.feedId = feeds.id')
-        .andWhere('user_feed_mapping.userId = :userId', { userId });
+    const subQuery = await this.dataSource
+      .createQueryBuilder()
+      .select('feedId')
+      .from(UserFeedMapping, 'user_feed_mapping')
+      .where('user_feed_mapping.feedId = feeds.id')
+      .andWhere('user_feed_mapping.userId = :userId', { userId });
 
-      const feedList = await this.dataSource
-        .createQueryBuilder()
-        .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
-        .from(Feed, 'feeds')
-        .where(`EXISTS (${subQuery.getQuery()})`)
-        .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
-        .setParameters(subQuery.getParameters())
-        .execute();
-      if (!feedList) throw new NonExistFeedError();
-      return FeedResponseDto.makeFeedResponseArray(feedList);
-    } catch (e) {
-      const errorType = e.code;
+    const feedList = await this.dataSource
+      .createQueryBuilder()
+      .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
+      .from(Feed, 'feeds')
+      .where(`EXISTS (${subQuery.getQuery()})`)
+      .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
+      .setParameters(subQuery.getParameters())
+      .execute();
 
-      if (errorType === 'ER_NO_REFERENCED_ROW_2')
-        throw new InvalidFKConstraintError();
-
-      throw new DBError('DBError: editGroupFeed 오류');
-    }
+    return feedList;
   }
 
   async getPersonalFeedList(userId: number) {
-    try {
-      const feedList = await this.userFeedMappingRepository
-        .createQueryBuilder('user_feed_mapping')
-        .innerJoin('user_feed_mapping.feed', 'feeds')
-        .select([
-          'feeds.id as id',
-          'feeds.name as name',
-          'feeds.thumbnail as thumbnail',
-        ])
-        .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
-        .andWhere('user_feed_mapping.userId = :userId', { userId })
-        .getRawMany();
-      if (!feedList) throw new NonExistFeedError();
-      return FeedResponseDto.makeFeedResponseArray(feedList);
-    } catch (e) {
-      throw new DBError('DB Error : getFeedList 오류');
-    }
+    const feedList = await this.userFeedMappingRepository
+      .createQueryBuilder('user_feed_mapping')
+      .innerJoin('user_feed_mapping.feed', 'feeds')
+      .select([
+        'feeds.id as id',
+        'feeds.name as name',
+        'feeds.thumbnail as thumbnail',
+      ])
+      .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
+      .andWhere('user_feed_mapping.userId = :userId', { userId })
+      .getRawMany();
+    return feedList;
   }
 
   async checkFeedOwner(id: number, feedId: string) {
-    try {
-      const owner = await this.userFeedMappingRepository
-        .createQueryBuilder('user_feed_mapping')
-        .where('user_feed_mapping.userId = :userId', { userId: id })
-        .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
-        .getOne();
-      return owner;
-    } catch (e) {
-      throw new DBError('DB Error : checkFeedOwner 오류 ');
-    }
+    const owner = await this.userFeedMappingRepository
+      .createQueryBuilder('user_feed_mapping')
+      .where('user_feed_mapping.userId = :userId', { userId: id })
+      .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
+      .getOne();
+    return owner;
   }
 }

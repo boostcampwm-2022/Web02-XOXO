@@ -5,11 +5,10 @@ import {
   Inject,
 } from '@nestjs/common';
 import {
-  AccessAfterDueDateException,
-  AccessBeforeDueDateException,
-  InvalidPostingId,
-} from '@root/custom/customError/httpException';
-import { PostingService } from '@posting/posting.service';
+  AccessAfterDueDateError,
+  AccessBeforeDueDateError,
+  NonExistFeedError,
+} from '@root/custom/customError/serverError';
 import { FeedService } from '@root/feed/feed.service';
 
 @Injectable()
@@ -24,14 +23,17 @@ export class DueDateGuard implements CanActivate {
       req.route.path === '/posting/:feedId' && req.route.methods.post;
     const feed = await this.feedService.getFeedById(feedId);
 
+
+    if (!feed) throw new NonExistFeedError();
+
     // 포스팅 생성 api
     if (isCreatePostingApi) {
       if (feed.dueDate > new Date()) return true;
-      throw new AccessAfterDueDateException();
+      throw new AccessAfterDueDateError();
     }
 
     // 비 포스팅 생성 api
     if (feed.dueDate < new Date()) return true;
-    throw new AccessBeforeDueDateException();
+    throw new AccessBeforeDueDateError();
   }
 }

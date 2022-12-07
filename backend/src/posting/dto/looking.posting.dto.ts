@@ -1,4 +1,5 @@
 import { PickType } from '@nestjs/swagger';
+import { NonExistPostingError } from '@root/custom/customError/serverError';
 import Posting from '@root/entities/Posting.entity';
 import { IsArray, IsUrl } from 'class-validator';
 
@@ -32,7 +33,7 @@ export default class LookingPostingDto extends PickType(Posting, [
   }
 
   static createLookingPostingDto(posting) {
-    if (!posting) return null;
+    if (!posting) throw new NonExistPostingError();
     return new LookingPostingDto(posting);
   }
 }

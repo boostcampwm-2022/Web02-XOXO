@@ -8,13 +8,13 @@ import { FeedService } from '@feed/feed.service';
 import { ConfigModule } from '@nestjs/config';
 import { encrypt } from '@feed/feed.utils';
 
-import {
-  NoExistTokenException,
-  NoFeedIdException,
-  UnauthorizedException,
-} from '@root/custom/customError/httpException';
 import { AuthorizationGuard } from '@common/guard/authorization.guard';
 
+import {
+  NonExistFeedError,
+  NonExistTokenError,
+  UnauthorizedError,
+} from '@root/custom/customError/serverError';
 import configuration from '../../configuration';
 
 describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
@@ -94,7 +94,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
     Object.assign(req, { params: mockParam });
 
     expect(authorizationGuard.canActivate(mockContext)).rejects.toThrowError(
-      new UnauthorizedException(),
+      new UnauthorizedError(),
     );
   });
 
@@ -108,7 +108,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
     Object.assign(req, { params: mockParam });
 
     expect(authorizationGuard.canActivate(mockContext)).rejects.toThrowError(
-      new NoExistTokenException(),
+      new NonExistTokenError(),
     );
   });
 
@@ -128,7 +128,7 @@ describe('권한 부여 가드(AuthorizationGuard) 동작 unit test', () => {
     Object.assign(req, { user: mockUser });
 
     expect(authorizationGuard.canActivate(mockContext)).rejects.toThrowError(
-      new NoFeedIdException(),
+      new NonExistFeedError(),
     );
   });
 });
