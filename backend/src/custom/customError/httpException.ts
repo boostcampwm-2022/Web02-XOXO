@@ -1,29 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class FailedToRedirectKakaoException extends HttpException {
-  constructor() {
-    super(
-      {
-        error: 'FailedToRedirectKakao',
-        message: '카카오톡 인가코드 리다이렉트에 실패하였습니다.',
-      },
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
-  }
-}
-
-export class FailedToLoginKakaoException extends HttpException {
-  constructor() {
-    super(
-      {
-        error: 'FailedToLoginKakao',
-        message: '카카오톡 로그인에 실패하였습니다.',
-      },
-      HttpStatus.UNAUTHORIZED,
-    );
-  }
-}
-
 export class InvalidNicknameException extends HttpException {
   constructor() {
     super(
