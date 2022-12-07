@@ -4,6 +4,8 @@ import { PostingService } from '@posting/posting.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
+import { NonExistPostingError } from '@root/custom/customError/serverError';
+import ResponseEntity from '@root/common/response/response.entity';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
 import ResponseEntity from '@root/common/response/response.entity';
 
@@ -12,6 +14,7 @@ import ResponseEntity from '@root/common/response/response.entity';
 export class PostingController {
   constructor(private readonly postingService: PostingService) {}
 
+  @UseGuards(DueDateGuard)
   @Post('/:feedId')
   async createPosting(
     @UserReq() user: User,
@@ -30,9 +33,14 @@ export class PostingController {
     return ResponseEntity.CREATED_WITH_DATA(postingId);
   }
 
-  @Get('test/:postingId')
+  @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
-  testFunction(@Param('postingId') postingId: number) {
-    return postingId;
+  async lookingPosting(
+    @Param('postingId') postingId: number,
+    @Param('feedId') feedId: string,
+  ) {
+    const res = await this.postingService.getOnlyPostingById(postingId, feedId);
+    if (!res) throw new NonExistPostingError();
+    return ResponseEntity.OK_WITH_DATA(res);
   }
 }

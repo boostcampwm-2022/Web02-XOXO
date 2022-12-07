@@ -13,5 +13,6 @@ import { FeedService } from '@feed/feed.service';
   imports: [TypeOrmModule.forFeature([Feed, UserFeedMapping]), UsersModule],
   providers: [FeedService, InvalidFeedName, AuthenticationService, JwtService],
   controllers: [FeedController],
+  exports: [FeedService],
 })
 export class FeedModule {}
