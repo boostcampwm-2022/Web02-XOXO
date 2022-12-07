@@ -27,6 +27,9 @@ export class FeedService {
   ) {}
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       const id = Number(decrypt(encryptedFeedID));
       const feed = await this.dataSource.getRepository(Feed).find({
@@ -44,6 +47,7 @@ export class FeedService {
 
       return FeedInfoDto.createFeedInfoDto(feed[0], userId);
     } catch (e) {
+      await queryRunner.rollbackTransaction();
       if (
         e instanceof NonExistFeedError ||
         e.message.includes('digital envelope routines')
