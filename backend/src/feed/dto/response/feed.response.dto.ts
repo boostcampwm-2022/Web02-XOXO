@@ -1,5 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { Feed } from '@root/entities/Feed.entity';
+import { FeedService } from '@root/feed/feed.service';
 import { encrypt } from '@root/feed/feed.utils';
 
 export default class FeedResponseDto extends PickType(Feed, [
@@ -17,5 +18,11 @@ export default class FeedResponseDto extends PickType(Feed, [
 
   static makeFeedResponseDto(feed: Feed) {
     return new FeedResponseDto(feed);
+  }
+
+  static makeFeedResponseArray(feeds: Feed[]) {
+    const feedResponseArray = [];
+    feeds.forEach((feed) => feedResponseArray.push(new FeedResponseDto(feed)));
+    return feedResponseArray;
   }
 }

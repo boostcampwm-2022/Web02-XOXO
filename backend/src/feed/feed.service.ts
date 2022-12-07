@@ -267,8 +267,7 @@ export class FeedService {
         .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
         .setParameters(subQuery.getParameters())
         .execute();
-      feedList.map((feed: Feed) => FeedResponseDto.makeFeedResponseDto(feed));
-      return feedList;
+      return FeedResponseDto.makeFeedResponseArray(feedList);
     } catch (e) {
       const errorType = e.code;
 
@@ -292,8 +291,7 @@ export class FeedService {
         .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
         .andWhere('user_feed_mapping.userId = :userId', { userId })
         .getRawMany();
-      feedList.map((feed: Feed) => FeedResponseDto.makeFeedResponseDto(feed));
-      return feedList;
+      return FeedResponseDto.makeFeedResponseArray(feedList);
     } catch (e) {
       throw new DBError('DB Error : getFeedList 오류');
     }
