@@ -14,7 +14,12 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/Feed" element={<Feed />} />
+        <Route path="/Feed">
+          <Route path=":feedId" element={<Feed />} />
+          <Route path=":feedId">
+            <Route path=":postingId" element={<Posting />} />
+          </Route>
+        </Route>
       <Route path="/Write/:feedId" element={<Write />} />
       <Route path="/SignIn/Info" element={<Info />} />
       <Route path="/SignIn" element={<SignIn />} />

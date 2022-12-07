@@ -13,6 +13,7 @@ import { isEmpty } from 'lodash'
 import { ImagePixelated } from 'react-pixelate'
 import { compressImage } from '@src/util/imageCompress'
 import { useNavigate, useParams } from 'react-router-dom'
+import { cropImg } from '@src/util/cropImg'
 
 interface IImage {
   originalImage: File
@@ -36,8 +37,12 @@ const Write = () => {
   const { feedId } = useParams()
   const postPosting = usePost(`/posting/${feedId!}`)
   const navigate = useNavigate()
+  const [croppedURL, setCroppedURL] = useState('')
 
   useEffect(() => {
+    if (!isEmpty(images)) {
+      cropImg(images[0].originalImage, setCroppedURL)
+    }
     const canvas = document.querySelector('canvas')
     canvas?.toBlob(
       (blob) => {
@@ -138,7 +143,7 @@ const Write = () => {
               <p className="desc">아래 버튼을 눌러 사진을 추가해주세요!</p>
             </button>
           ) : (
-            images.map(({ originalImage, thumbnailSrc, compressedImage }, id) => (
+            images.map(({ originalImage, thumbnailSrc, compressedImage }: IImage) => (
               <div className="image-holder" key={thumbnailSrc}>
                 <div>
                   <img
@@ -189,9 +194,9 @@ const Write = () => {
         </button>
         <Toast />
       </div>
-      {!isEmpty(images) && (
+      {!isEmpty(croppedURL) && (
         <ImagePixelated
-          src={URL.createObjectURL(images[0].originalImage)}
+          src={croppedURL}
           width={240}
           height={240}
           pixelSize={12}

@@ -70,7 +70,7 @@
     "@nestjs/testing": "^9.2.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.13",
-    "@types/jest": "28.1.8",
+    "@types/jest": "^28.1.8",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.7",
@@ -106,12 +106,6 @@
       "ts"
     ],
     "rootDir": ".",
-    "moduleNameMapper": {
-      "^@root/(.*)$": "<rootDir>/src/$1",
-      "^@users/(.*)$": "<rootDir>/src/users/$1",
-      "^@posting/(.*)$": "<rootDir>/src/posting/$1",
-      "^@feed/(.*)$": "<rootDir>/src/feed/$1"
-    },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

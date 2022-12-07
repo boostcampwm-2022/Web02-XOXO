@@ -23,6 +23,7 @@ export class DueDateGuard implements CanActivate {
       req.route.path === '/posting/:feedId' && req.route.methods.post;
     const feed = await this.feedService.getFeedById(feedId);
 
+
     if (!feed) throw new NonExistFeedError();
 
     // 포스팅 생성 api
