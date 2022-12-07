@@ -12,6 +12,7 @@ import {
 } from '@root/custom/customError/serverError';
 import { QueryFailedError } from 'typeorm';
 
+
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {
   catch(error: Error, host: ArgumentsHost) {
@@ -19,6 +20,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
+
 
     let statusCode: HttpStatus;
     let message: string;
@@ -36,6 +38,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     } else {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       message = '서버에서 에러가 발생했습니다. 관리자에게 문의하십시오.';
+
     }
 
     res.status(statusCode).json({

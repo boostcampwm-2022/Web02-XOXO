@@ -8,6 +8,7 @@ import CreateFeedDto from './dto/create.feed.dto';
 import { decrypt, encrypt } from './feed.utils';
 import FindFeedDto from './dto/find.feed.dto';
 import FeedInfoDto from './dto/info.feed.dto';
+import FeedResponseDto from './dto/response/feed.response.dto';
 
 @Injectable()
 export class FeedService {
@@ -101,7 +102,7 @@ export class FeedService {
         .save({ feedId: feed.id, userId });
 
       await queryRunner.commitTransaction();
-      return encrypt(feed.id.toString());
+      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;

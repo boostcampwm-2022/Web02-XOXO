@@ -2,16 +2,15 @@ import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import FindPostingDto from '@posting/dto/find.posting.dto';
 
 import {
   AccessAfterDueDateException,
   AccessBeforeDueDateException,
 } from '@root/custom/customError/httpException';
 import { DueDateGuard } from '@common/guard/DueDate.guard';
-import { PostingService } from '@root/posting/posting.service';
 import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
+import { FeedService } from '@root/feed/feed.service';
 import configuration from '../../configuration';
 
 describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
@@ -30,18 +29,15 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       providers: [DueDateGuard],
     })
       .useMocker((token) => {
-        if (token === PostingService)
-          return {
-            getPosting: (
-              findPostingDto: FindPostingDto & Record<string, unknown>,
-            ) => {
-              const today = new Date();
-              const yesterday = new Date(today.setDate(today.getDate() - 1));
-              const tomorrow = new Date(today.setDate(today.getDate() + 2));
+        const today = new Date();
+        const yesterday = new Date(today.setDate(today.getDate() - 1));
+        const tomorrow = new Date(today.setDate(today.getDate() + 2));
 
-              if (findPostingDto.id === 1)
-                return [{ feed: { dueDate: yesterday } }];
-              return [{ feed: { dueDate: tomorrow } }];
+        if (token === FeedService)
+          return {
+            getFeedById: (feedId: number) => {
+              if (feedId === 1) return { dueDate: yesterday };
+              return { dueDate: tomorrow };
             },
           };
         return null;
@@ -61,7 +57,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
     it('피드 공개일 전 접근 가능', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
-      const mockParam = { postingId: 2 };
+      const mockParam = { feedId: 2 };
       const mockRoute = { path: '/posting/:feedId', methods: { post: true } };
 
       Object.assign(req, { route: mockRoute });
@@ -73,7 +69,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
     it('피드 공개일 이후 접근 불가(AccessAfterDueDateException)', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
-      const mockParam = { postingId: 1 };
+      const mockParam = { feedId: 1 };
       const mockRoute = { path: '/posting/:feedId', methods: { post: true } };
 
       Object.assign(req, { route: mockRoute });
@@ -89,7 +85,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
     it('피드 공개일 후 접근 가능', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
-      const mockParam = { postingId: 1 };
+      const mockParam = { feedId: 1 };
 
       Object.assign(req, { params: mockParam });
 
@@ -99,7 +95,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
     it('피드 공개일 전 접근 불가(AccessBeforeDueDateException)', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
-      const mockParam = { postingId: 2 };
+      const mockParam = { feedId: 2 };
 
       Object.assign(req, { params: mockParam });
 
