@@ -127,12 +127,11 @@ export class FeedService {
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
-      console.log(feed.id);
       await queryRunner.manager
         .getRepository(User)
         .update({ id: userId }, { lastVistedFeed: feed.id });
       await queryRunner.commitTransaction();
-      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
+      return FeedResponseDto.makeFeedResponseDto(feed, false).encryptedId;
     } catch (e) {
       const errorType = e.code;
       await queryRunner.rollbackTransaction();
@@ -281,7 +280,7 @@ export class FeedService {
         .setParameters(subQuery.getParameters())
         .execute();
       if (!feedList) throw new NonExistFeedError();
-      return FeedResponseDto.makeFeedResponseArray(feedList);
+      return FeedResponseDto.makeFeedResponseArray(feedList, true);
     } catch (e) {
       const errorType = e.code;
 
@@ -306,7 +305,7 @@ export class FeedService {
         .andWhere('user_feed_mapping.userId = :userId', { userId })
         .getRawMany();
       if (!feedList) throw new NonExistFeedError();
-      return FeedResponseDto.makeFeedResponseArray(feedList);
+      return FeedResponseDto.makeFeedResponseArray(feedList, false);
     } catch (e) {
       throw new DBError('DB Error : getFeedList 오류');
     }
