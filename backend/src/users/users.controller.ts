@@ -25,6 +25,7 @@ import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
+
 import { createHash } from 'crypto';
 import User from '@root/entities/User.entity';
 
@@ -43,8 +44,8 @@ export default class UsersController {
   }
 
   @UseGuards(RefreshAuthGuard)
-  @Post('refresh')
-  async refreshToken(@UserReq() user, @Res() res: Response) {
+  @Get('refresh')
+  async refreshToken(@UserReq() user: User, @Res() res: Response) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
         user.nickname,
@@ -61,12 +62,8 @@ export default class UsersController {
     return res.redirect('http://localhost:3001');
   }
 
-  // todo : 환경변수 유효성 검사 controller에서 제거
   @Get('kakao')
   redirectToKakao(@Res() res: Response) {
-    if (!process.env.KAKAO_CLIENT_ID || !process.env.KAKAO_REDIRECT_URL)
-      throw new FailedToRedirectKakaoException();
-
     res.redirect(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_CLIENT_ID}&redirect_uri=${process.env.KAKAO_REDIRECT_URL}&response_type=code`,
     );
@@ -86,7 +83,6 @@ export default class UsersController {
           httpOnly: true,
           maxAge: 60 * 60 * 1000,
         });
-
         return res.redirect('http://localhost:3000/signin/info');
       }
 
@@ -111,7 +107,7 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Post('logout')
-  async logoutUser(@UserReq() user, @Res() res: Response) {
+  async logoutUser(@UserReq() user: User, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);

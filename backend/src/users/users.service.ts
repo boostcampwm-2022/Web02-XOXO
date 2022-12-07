@@ -26,6 +26,7 @@ export default class UsersService {
         .into(User)
         .values(user)
         .execute();
+      console.log(userId);
       return userId;
     } catch (e) {
       const errorType = e.code;
