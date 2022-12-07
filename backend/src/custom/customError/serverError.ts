@@ -26,6 +26,13 @@ export class NonExistFeedError extends Error {
   }
 }
 
+export class NonExistPostingError extends Error {
+  constructor() {
+    super('존재하지 않는 포스팅입니다.'); // (1)
+    this.name = 'NonExistPostingError';
+  }
+}
+
 export class DuplicateNicknameError extends Error {
   constructor() {
     super('중복된 닉네임 입니다.'); // (1)

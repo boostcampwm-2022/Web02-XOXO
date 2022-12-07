@@ -15,6 +15,7 @@ import {
   InvalidFKConstraintException,
   NonExistFeedIdException,
   NonExistFKException,
+  NonExistPostingIdException,
   NonExistUserIdException,
   UnauthorizedException,
 } from '@root/custom/customError/httpException';
@@ -25,6 +26,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
+    console.log(error);
     let exception: HttpException;
     const errorName = error.name;
     const errorMessage = error.message;
@@ -48,6 +50,10 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
 
       case 'NonExistFeedError':
         exception = new NonExistFeedIdException();
+        break;
+
+      case 'NonExistPostingError':
+        exception = new NonExistPostingIdException();
         break;
 
       case 'GroupFeedMemberListCountException':

@@ -1,76 +1,82 @@
-@import "@src/global";
+@import '@src/global';
 
-.write-page{
-    @include page;
+.write-page {
+  @include page;
 }
-.write-body{
-    @include body;
+.write-body {
+  @include body;
 }
 .image-input {
-    display: none;
+  display: none;
 }
 .image-list {
-    @include vcenter;
-    flex-direction: row;
-    height: calc(100vw - 16px);
-    width: calc(100vw - 16px);
-    overflow-x: scroll;
-    z-index: 2;
-    .image-holder{
-        position: relative;
-        border-radius: 8px;
-        width: 80vw;
-        height: 80vw;
-        @include vhcenter;
-        margin-right: 32px;
-        background-color: #000;
-        img {
-            display: block;
-            margin: 0;
-            padding: 0;
-            object-fit: contain;
-        }
-        .image-delete-button{
-            @include circle(6vw);
-            position: absolute;
-            right: -3vw;
-            top: -3vw;
-            background-color: $primary-3;
-        }
+  @include vcenter;
+  flex-direction: row;
+  height: calc(100vw - 16px);
+  width: calc(100vw - 16px);
+  overflow-x: scroll;
+  z-index: 2;
+  .image-holder {
+    position: relative;
+    border-radius: 8px;
+    width: 80vw;
+    height: 80vw;
+    @include vhcenter;
+    margin-right: 32px;
+    background-color: #000;
+    img {
+      display: block;
+      margin: 0;
+      padding: 0;
+      object-fit: contain;
     }
-    .text-container{   
-        @include vhcenter;
-        width: 100%;
-        flex-direction: column;
-        line-height: 0;
-        .title {
-            @include medium(4.38vw)
-        }
-        .desc {
-            @include regular(3.13vw, $grey-font)
-        }
+    .image-delete-button {
+      @include circle(6vw);
+      position: absolute;
+      right: -3vw;
+      top: -3vw;
+      background-color: $primary-3;
     }
+  }
+  .text-container {
+    @include vhcenter;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    line-height: 0;
+    .title {
+      @include medium(4.38vw);
+    }
+    .desc {
+      @include regular(3.13vw, $grey-font);
+    }
+  }
 }
 .write-button {
-    @include button-large;
+  @include button-large;
 }
 .button-bar-wrapper {
-    @include vcenter;
-    justify-content: space-between;
-    padding: 0 3.75vw;
-    height: 12.5vw;
-    border-top: solid 1px $grey;
-    border-bottom: solid 1px $grey;
-    .thumbnail-preview{
-        @include bold(3.13vw);
-        &:disabled{
-            @include bold(3.13vw, $grey-font);
-        }
+  @include vcenter;
+  justify-content: space-between;
+  padding: 0 3.75vw;
+  height: 12.5vw;
+  border-top: solid 1px $grey;
+  border-bottom: solid 1px $grey;
+  .thumbnail-preview {
+    @include bold(3.13vw);
+    &:disabled {
+      @include bold(3.13vw, $grey-font);
     }
+  }
 }
-.text-area{
-    width: 80vw;
-    padding: 5vw;
-    border: 0;
-    @include regular(3.13vw)
+.text-area {
+  width: 80vw;
+  padding: 5vw;
+  border: 0;
+  @include regular(3.13vw);
+}
+canvas {
+  width: 200px;
+  height: 200px;
+  display: none;
 }
