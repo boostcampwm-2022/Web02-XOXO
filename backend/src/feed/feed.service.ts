@@ -14,6 +14,7 @@ import CreateFeedDto from './dto/create.feed.dto';
 import { decrypt, encrypt } from './feed.utils';
 import FindFeedDto from './dto/find.feed.dto';
 import FeedInfoDto from './dto/info.feed.dto';
+import FeedResponseDto from './dto/response/feed.response.dto';
 
 @Injectable()
 export class FeedService {
@@ -118,7 +119,7 @@ export class FeedService {
         .save({ feedId: feed.id, userId });
 
       await queryRunner.commitTransaction();
-      return encrypt(feed.id.toString());
+      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {
       const errorType = e.code;
       await queryRunner.rollbackTransaction();
@@ -251,7 +252,7 @@ export class FeedService {
 
   async getGroupFeedList(userId: number) {
     try {
-      const subQuery = await this.dataSource
+      const subQuery = this.dataSource
         .createQueryBuilder()
         .select('feedId')
         .from(UserFeedMapping, 'user_feed_mapping')

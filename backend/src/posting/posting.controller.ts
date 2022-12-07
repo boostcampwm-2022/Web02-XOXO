@@ -7,7 +7,6 @@ import User from '@root/entities/User.entity';
 import { NonExistPostingError } from '@root/custom/customError/serverError';
 import ResponseEntity from '@root/common/response/response.entity';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
-import ResponseEntity from '@root/common/response/response.entity';
 
 @UseGuards(AccessAuthGuard)
 @Controller('posting')
