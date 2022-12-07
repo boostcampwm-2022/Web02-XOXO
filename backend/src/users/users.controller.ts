@@ -26,6 +26,7 @@ import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
 import { createHash } from 'crypto';
+import User from '@root/entities/User.entity';
 
 @Controller('users')
 export default class UsersController {
@@ -166,5 +167,11 @@ export default class UsersController {
     return !res;
   }
 
-  async getLastVisitedFeed() {}
+  @UseGuards(AccessAuthGuard)
+  @Get('recent')
+  async getLastVistiedFeed(@UserReq() user: User) {
+    const { id } = user;
+    const lastVisitedFeed = await this.userService.getLastVisitedFeed(id);
+    return lastVisitedFeed;
+  }
 }

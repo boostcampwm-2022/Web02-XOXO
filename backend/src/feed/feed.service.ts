@@ -10,10 +10,11 @@ import {
   NonExistFeedError,
   NonExistUserError,
 } from '@root/custom/customError/serverError';
-import CreateFeedDto from './dto/create.feed.dto';
-import { decrypt, encrypt } from './feed.utils';
-import FindFeedDto from './dto/find.feed.dto';
-import FeedInfoDto from './dto/info.feed.dto';
+import User from '@root/entities/User.entity';
+import CreateFeedDto from '@feed/dto/create.feed.dto';
+import { decrypt, encrypt } from '@feed/feed.utils';
+import FindFeedDto from '@feed/dto/find.feed.dto';
+import FeedInfoDto from '@feed/dto/info.feed.dto';
 import FeedResponseDto from './dto/response/feed.response.dto';
 
 @Injectable()
@@ -117,7 +118,10 @@ export class FeedService {
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
-
+      console.log(feed.id);
+      await queryRunner.manager
+        .getRepository(User)
+        .update({ id: userId }, { lastVistedFeed: feed.id });
       await queryRunner.commitTransaction();
       return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {

@@ -7,6 +7,7 @@ import {
   DuplicateKakaoIdError,
   UnauthorizedError,
   DuplicateNicknameError,
+  NonExistFeedError,
 } from '@root/custom/customError/serverError';
 import FindUserDto from '@users/dto/find.user.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
@@ -75,13 +76,13 @@ export default class UsersService {
   async getLastVisitedFeed(id: number) {
     try {
       const user = await this.userRepository.findOneBy({ id });
-      if (!user) return user.lastVistedFeed;
-      throw new UnauthorizedError();
+      const { lastVistedFeed } = user;
+      if (!lastVistedFeed) throw new NonExistFeedError();
+      return lastVistedFeed;
     } catch (e) {
-      console.log(e.type);
-      switch (e.type) {
-        case 'UnauthorizedError':
-          throw new UnauthorizedError();
+      switch (e.name) {
+        case 'NonExistFeedError':
+          throw new NonExistFeedError();
         default:
           throw new DBError('DBError: getLastVisitedFeed error');
       }
