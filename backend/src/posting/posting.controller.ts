@@ -34,7 +34,7 @@ export class PostingController {
 
   @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
-  async testFunction(
+  async lookingPosting(
     @Param('postingId') postingId: number,
     @Param('feedId') feedId: string,
   ) {
