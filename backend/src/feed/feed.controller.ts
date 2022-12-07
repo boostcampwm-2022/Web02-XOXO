@@ -33,7 +33,8 @@ export class FeedController {
     @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    const feedParam = await this.feedService.createFeed(createFeedDto, 1);
+    const userId = user.id;
+    const feedParam = await this.feedService.createFeed(createFeedDto, userId);
     return ResponseEntity.CREATED_WITH_DATA(feedParam);
   }
 
