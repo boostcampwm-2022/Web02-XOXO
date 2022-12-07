@@ -25,9 +25,9 @@ import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
+import User from '@root/entities/User.entity';
 
 import { createHash } from 'crypto';
-import User from '@root/entities/User.entity';
 
 @Controller('users')
 export default class UsersController {
