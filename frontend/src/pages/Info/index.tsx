@@ -15,8 +15,8 @@ const Info = () => {
   const navigate = useNavigate()
   const handleNicknameForm = async () => {
     if (userNickname.current === null) return
-    const response = await postNickname({ nickname: userNickname.current.value })
-    if (response && response.statusText === 'Created') navigate('/feed')
+    const { Success } = await postNickname({ nickname: userNickname.current.value })
+    if (Success) navigate('/feeds')
   }
   return (
     <div className="signin-page">
