@@ -24,6 +24,12 @@ export class NonExistFeedError extends CustomError {
   }
 }
 
+export class NonExistPostingError extends CustomError {
+  constructor() {
+    super('존재하지 않는 포스팅입니다.', HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+}
+
 // Validation Error
 export class GroupFeedMembersCountError extends CustomError {
   constructor() {
@@ -87,5 +93,11 @@ export class UnauthorizedError extends CustomError {
 export class NonExistTokenError extends CustomError {
   constructor() {
     super('Token이 없습니다.', HttpStatus.UNAUTHORIZED);
+  }
+}
+
+export class FailedToLogin extends CustomError {
+  constructor() {
+    super('로그인에 싪패하였습니다.', HttpStatus.FORBIDDEN);
   }
 }
