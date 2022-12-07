@@ -13,6 +13,7 @@ import {
 import CreateFeedDto from './dto/create.feed.dto';
 import { decrypt, encrypt } from './feed.utils';
 import FindFeedDto from './dto/find.feed.dto';
+import FeedInfoDto from './dto/info.feed.dto';
 
 @Injectable()
 export class FeedService {
@@ -28,11 +29,18 @@ export class FeedService {
       const id = Number(decrypt(encryptedFeedID));
       const feed = await this.dataSource.getRepository(Feed).find({
         where: { id },
-        select: ['name', 'description', 'thumbnail', 'dueDate'],
+        relations: ['postings'],
+        select: {
+          postings: { id: true },
+          name: true,
+          description: true,
+          thumbnail: true,
+          dueDate: true,
+        },
       });
 
       if (!feed) throw new NonExistFeedError();
-      return feed[0];
+      return new FeedInfoDto(feed[0]);
     } catch (e) {
       if (
         e instanceof NonExistFeedError ||
