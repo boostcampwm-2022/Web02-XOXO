@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
+import { Cache } from 'cache-manager';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
   DBError,
@@ -21,11 +22,16 @@ export class FeedService {
     @InjectRepository(UserFeedMapping)
     private userFeedMappingRepository: Repository<UserFeedMapping>,
     private dataSource: DataSource,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async getFeedById(encryptedFeedID: string) {
     try {
       const id = Number(decrypt(encryptedFeedID));
+      const cachedResult = await this.cacheManager.get(`${id}`);
+      if (cachedResult) {
+        return cachedResult;
+      }
       const feed = await this.dataSource.getRepository(Feed).find({
         where: { id },
         select: ['name', 'description', 'thumbnail', 'dueDate'],
@@ -109,6 +115,7 @@ export class FeedService {
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
 
+      await this.cacheManager.set(`${feed.id}`, createFeedDto);
       await queryRunner.commitTransaction();
       return encrypt(feed.id.toString());
     } catch (e) {
@@ -169,7 +176,7 @@ export class FeedService {
       await queryRunner.manager
         .getRepository(Feed)
         .update({ id: feedId }, createFeedDto);
-
+      await this.cacheManager.set(`${feedId}`, createFeedDto);
       await queryRunner.commitTransaction();
     } catch (e) {
       const errorType = e.code;

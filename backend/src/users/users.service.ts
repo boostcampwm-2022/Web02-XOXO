@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from '@root/entities/User.entity';
@@ -63,7 +63,13 @@ export default class UsersService {
   }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
-    await this.userRepository.update(id, { currentRefreshToken: refreshtoken });
+    try {
+      await this.userRepository.update(id, {
+        currentRefreshToken: refreshtoken,
+      });
+    } catch (e) {
+      throw new DBError('DBError: setCurrentRefreshToken 오류');
+    }
   }
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {

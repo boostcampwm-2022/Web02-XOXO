@@ -37,10 +37,13 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.3",
     "@nestjs/typeorm": "^9.0.1",
+    "@types/cache-manager-ioredis": "^2.0.3",
     "@types/uuid": "^8.3.4",
     "aws-sdk": "^2.1264.0",
     "axios": "^1.1.3",
     "bcrypt": "^5.1.0",
+    "cache-manager": "^5.1.4",
+    "cache-manager-ioredis": "^2.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
@@ -120,12 +123,6 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "^@root/(.*)$": "<rootDir>/src/$1",
-      "^@users/(.*)$": "<rootDir>/src/users/$1",
-      "^@posting/(.*)$": "<rootDir>/src/posting/$1",
-      "^@feed/(.*)$": "<rootDir>/src/feed/$1"
-    }
+    "testEnvironment": "node"
   }
 }

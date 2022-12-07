@@ -4,8 +4,8 @@ config:
     faker:
       locale: en
   phases:
-    - duration: 60
-      arrivalRate: 100
+    - duration: 300
+      arrivalRate: 40
   defaults:
     headers:
       content-type: application/json
@@ -13,28 +13,20 @@ config:
   variables:
     kakaoId: '$faker.datatype.number'
     nickname: '$faker.name.middleName'
-    accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsIm5pY2tuYW1lIjoi67OE7J20NSIsInRva2VuVHlwZSI6ImFjY2Vzc1Rva2VuIiwiaWF0IjoxNjcwMjkwNjI2LCJleHAiOjE2NzIwOTA2MjZ9.ybxZ27FPzF1BnYcNDQ1gJrmHHRTfpIunlK11Q98HYDQ'
-    refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsIm5pY2tuYW1lIjoi67OE7J20NSIsInRva2VuVHlwZSI6InJlZnJlc2hUb2tlbiIsImlhdCI6MTY3MDI5MDYyNiwiZXhwIjoyMjc1MDkwNjI2fQ.l6r0cc9P6x4C0CVCuSNnPZXhRPcHe5ajBT1yLaS2lHI'
-    feedId: '0f2b9b89d4fe64634b6c597793f7daca'
+    accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsIm5pY2tuYW1lIjoiaGVsbGxvIiwidG9rZW5UeXBlIjoiYWNjZXNzVG9rZW4iLCJpYXQiOjE2NzAzMDYxMjksImV4cCI6MTY3MjEwNjEyOX0.th5XjQCK7Sb_cyLNCcY7rz1c8x4OlBP49WGP1P0KNyA'
+    refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsIm5pY2tuYW1lIjoiaGVsbGxvIiwidG9rZW5UeXBlIjoicmVmcmVzaFRva2VuIiwiaWF0IjoxNjcwMzA2MTI5LCJleHAiOjIyNzUxMDYxMjl9.rYkS5npihlHVLiu2IgiMFNV2A5DMqleRsRtFlVJ4bLw'
+    feedId: 'cd5bfd5176b25923df2c7915bb39e330'
+    feedId2: '2f0a75c9e0393fbd42cf31d6f924defe'
 scenarios:
   - name: '피드 조회'
-    weight: 6
     flow:
       - get:
           url: '/feed/info/{{feedId}}'
           cookie:
             refreshToken: '{{refreshToken}}'
             accessToken: '{{accessToken}}'
-  - name: 'posting 올리기'
-    weight: 4
-    flow:
-      - post:
-          url: '/posting/{{feedId}}'
+      - get:
+          url: '/feed/info/{{feedId2}}'
           cookie:
             refreshToken: '{{refreshToken}}'
             accessToken: '{{accessToken}}'
-          json:
-            letter: '이건 피드에 포스팅을 잘 올릴 수 있는지를 테스트하는 중'
-            thumbnail: 'http://naver.com'
-            senderId: 4
-            images: ['http://naver.com']
