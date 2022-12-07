@@ -2,12 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import Posting from '@root/entities/Posting.entity';
-import {
-  DBError,
-  NonExistFKConstraintError,
-} from '@root/custom/customError/serverError';
 import FindPostingDto from '@posting/dto/find.posting.dto';
-import { decrypt, encrypt } from '@root/feed/feed.utils';
+import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
 
@@ -19,15 +15,11 @@ export class PostingService {
   ) {}
 
   async getPosting(findPostingDto: FindPostingDto & Record<string, unknown>) {
-    try {
-      const posting = await this.postingRepository.find({
-        where: findPostingDto,
-        relations: ['feed'],
-      });
-      return posting;
-    } catch (e) {
-      throw new DBError('DBError: getUser 오류');
-    }
+    const posting = await this.postingRepository.find({
+      where: findPostingDto,
+      relations: ['feed'],
+    });
+    return posting;
   }
 
   async createPosting(
@@ -54,15 +46,8 @@ export class PostingService {
       await queryRunner.commitTransaction();
       return posting.id;
     } catch (e) {
-      const errorType = e.code;
       await queryRunner.rollbackTransaction();
-
-      if (errorType === 'ER_NO_REFERENCED_ROW_2')
-        throw new NonExistFKConstraintError(
-          '존재하지 않는 유저, 또는 피드 입니다.',
-        );
-
-      throw new DBError('DBError: createPosting 오류');
+      throw e;
     } finally {
       await queryRunner.release();
     }

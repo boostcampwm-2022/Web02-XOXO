@@ -1,31 +1,38 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import {
-  AccessAfterDueDateException,
-  AccessBeforeDueDateException,
-  InvalidPostingId,
-} from '@root/custom/customError/httpException';
-import { PostingService } from '@posting/posting.service';
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  Inject,
+} from '@nestjs/common';
+import {
+  AccessAfterDueDateError,
+  AccessBeforeDueDateError,
+  NonExistFeedError,
+} from '@root/custom/customError/serverError';
+import { FeedService } from '@root/feed/feed.service';
 
 @Injectable()
 export class DueDateGuard implements CanActivate {
-  constructor(private readonly postingService: PostingService) {}
+  constructor(@Inject(FeedService) private readonly feedService: FeedService) {}
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
-    const { postingId } = req.params;
+    const { feedId } = req.params;
 
     const isCreatePostingApi =
       req.route.path === '/posting/:feedId' && req.route.methods.post;
+    const feed = await this.feedService.getFeedById(feedId);
 
-    const posting = await this.postingService.getPosting({ id: postingId });
-    if (!posting) throw new InvalidPostingId();
+    if (!feed) throw new NonExistFeedError();
 
+    // 포스팅 생성 api
     if (isCreatePostingApi) {
-      if (posting[0].feed.dueDate > new Date()) return true;
-      throw new AccessAfterDueDateException();
-    } else {
-      if (posting[0].feed.dueDate < new Date()) return true;
-      throw new AccessBeforeDueDateException();
+      if (feed.dueDate > new Date()) return true;
+      throw new AccessAfterDueDateError();
     }
+
+    // 비 포스팅 생성 api
+    if (feed.dueDate < new Date()) return true;
+    throw new AccessBeforeDueDateError();
   }
 }

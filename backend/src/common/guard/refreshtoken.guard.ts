@@ -1,13 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import {
-  ExpiredTokenException,
-  InternalServerException,
-  InvalidTokenException,
-  NoExistTokenException,
-} from '@root/custom/customError/httpException';
 
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import UsersService from '@users/users.service';
+import {
+  ExpiredTokenError,
+  InvalidTokenError,
+  NonExistTokenError,
+} from '@root/custom/customError/serverError';
 
 @Injectable()
 export class RefreshAuthGuard implements CanActivate {
@@ -22,7 +21,7 @@ export class RefreshAuthGuard implements CanActivate {
     const { refreshToken } = request.cookies;
     response.clearCookie('refreshToken');
     response.clearCookie('accessToken');
-    if (refreshToken === undefined) throw new NoExistTokenException();
+    if (refreshToken === undefined) throw new NonExistTokenError();
     request.user = await this.validateToken(refreshToken);
     return true;
   }
@@ -40,11 +39,11 @@ export class RefreshAuthGuard implements CanActivate {
         case 'invalid token':
         case 'jwt malformed':
         case 'invalid signature':
-          throw new InvalidTokenException();
+          throw new InvalidTokenError();
         case 'jwt expired':
-          throw new ExpiredTokenException();
+          throw new ExpiredTokenError();
         default:
-          throw new InternalServerException();
+          throw error;
       }
     }
   }
