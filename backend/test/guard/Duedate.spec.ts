@@ -2,14 +2,12 @@ import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import FindPostingDto from '@posting/dto/find.posting.dto';
 
 import {
   AccessAfterDueDateException,
   AccessBeforeDueDateException,
 } from '@root/custom/customError/httpException';
 import { DueDateGuard } from '@common/guard/DueDate.guard';
-import { PostingService } from '@root/posting/posting.service';
 import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
 import { FeedService } from '@root/feed/feed.service';

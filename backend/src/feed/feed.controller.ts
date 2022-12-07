@@ -83,7 +83,6 @@ export class FeedController {
   }
 
   @Get('list')
-  // TODO : user decorator 지금은 user하위에 있는데 따로뺄까...?
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
