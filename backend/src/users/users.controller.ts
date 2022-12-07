@@ -10,10 +10,7 @@ import {
   UseGuards,
   Param,
 } from '@nestjs/common';
-import {
-  FailedToLoginKakaoException,
-  FailedToRedirectKakaoException,
-} from '@root/custom/customError/httpException';
+import { FailedToLoginKakaoException } from '@root/custom/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
