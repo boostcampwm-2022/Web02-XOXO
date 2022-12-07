@@ -44,8 +44,13 @@ export class FeedService {
           dueDate: true,
         },
       });
-
-      return FeedInfoDto.createFeedInfoDto(feed[0], userId);
+      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
+      if (feedInfoDto.isOwner) {
+        await this.dataSource
+          .getRepository(User)
+          .update(userId, { lastVistedFeed: id });
+      }
+      return feedInfoDto;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       if (
