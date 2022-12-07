@@ -101,7 +101,7 @@ export default class UsersController {
       await this.userService.setCurrentRefreshToken(refreshToken, user.id);
       res.cookie('refreshToken', refreshToken, refreshTokenOption);
       res.cookie('accessToken', accessToken, accessTokenOption);
-      return res.redirect('http://localhost:3000/feed');
+      return res.redirect('http://localhost:3000/feeds');
     } catch (e) {
       throw new FailedToLoginKakaoException();
     }
@@ -147,7 +147,7 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    return res.redirect('http://localhost:3000/feed');
+    res.send(ResponseEntity.CREATED());
   }
 
   @UseGuards(AccessAuthGuard)
