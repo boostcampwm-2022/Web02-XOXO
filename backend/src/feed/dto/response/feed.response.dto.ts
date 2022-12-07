@@ -1,6 +1,5 @@
 import { PickType } from '@nestjs/swagger';
 import { Feed } from '@root/entities/Feed.entity';
-import { FeedService } from '@root/feed/feed.service';
 import { encrypt } from '@root/feed/feed.utils';
 
 export default class FeedResponseDto extends PickType(Feed, [
