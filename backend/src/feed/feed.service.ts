@@ -26,14 +26,15 @@ export class FeedService {
     private dataSource: DataSource,
   ) {}
 
-  async getFeedById(encryptedFeedID: string) {
+  async getFeedInfo(encryptedFeedID: string, userId: number) {
     try {
       const id = Number(decrypt(encryptedFeedID));
       const feed = await this.dataSource.getRepository(Feed).find({
         where: { id },
-        relations: ['postings'],
+        relations: ['postings', 'users'],
         select: {
           postings: { id: true },
+          users: { userId: true },
           name: true,
           description: true,
           thumbnail: true,
@@ -41,8 +42,7 @@ export class FeedService {
         },
       });
 
-      if (!feed) throw new NonExistFeedError();
-      return new FeedInfoDto(feed[0]);
+      return FeedInfoDto.createFeedInfoDto(feed[0], userId);
     } catch (e) {
       if (
         e instanceof NonExistFeedError ||

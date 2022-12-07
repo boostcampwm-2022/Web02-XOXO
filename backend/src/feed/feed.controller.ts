@@ -97,8 +97,11 @@ export class FeedController {
   }
 
   @Get('info/:feedId')
-  async getFeedInfo(@Param('feedId') encryptedId: string) {
-    const feedInfo = await this.feedService.getFeedById(encryptedId);
+  async getFeedInfo(
+    @Param('feedId') encryptedId: string,
+    @UserReq() user: User,
+  ) {
+    const feedInfo = await this.feedService.getFeedInfo(encryptedId, user.id);
     return ResponseEntity.OK_WITH_DATA(feedInfo);
   }
 
