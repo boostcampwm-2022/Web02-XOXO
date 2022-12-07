@@ -21,8 +21,7 @@ export default class FeedResponseDto extends PickType(Feed, [
   }
 
   static makeFeedResponseArray(feeds: Feed[]) {
-    const feedResponseArray = [];
-    feeds.forEach((feed) => feedResponseArray.push(new FeedResponseDto(feed)));
+    const feedResponseArray = feeds.map((feed) => new FeedResponseDto(feed));
     return feedResponseArray;
   }
 }
