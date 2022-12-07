@@ -5,7 +5,12 @@ import Posting from '@root/entities/Posting.entity';
 import {
   DBError,
   NonExistFKConstraintError,
+<<<<<<< Updated upstream
 } from '@root/custom/customError/serverError';
+=======
+} from '@root/customError/serverError';
+import FindPostingDto from '@posting/dto/find.posting.dto';
+>>>>>>> Stashed changes
 import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
