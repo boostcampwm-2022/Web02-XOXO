@@ -24,6 +24,7 @@ import ResponseEntity from '@root/common/response/response.entity';
 import User from '@root/entities/User.entity';
 
 import { createHash } from 'crypto';
+import { Response } from 'aws-sdk';
 
 @Controller('users')
 export default class UsersController {
@@ -149,7 +150,10 @@ export default class UsersController {
     const res = await this.userService.getUser({
       hashedNickname: createHash('md5').update(nickname).digest('hex'),
     });
-    return !res;
+    if (res) {
+      return ResponseEntity.OK_WITH_DATA(true);
+    }
+    return ResponseEntity.OK_WITH_DATA(false);
   }
 
   @UseGuards(AccessAuthGuard)
