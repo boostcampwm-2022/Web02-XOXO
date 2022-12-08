@@ -23,6 +23,7 @@ import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseDto from '@root/common/response/response.dto';
 import { createHash } from 'crypto';
 import User from '@root/entities/User.entity';
+import { encrypt } from '@root/feed/feed.utils';
 
 @Controller('users')
 export default class UsersController {
@@ -94,7 +95,11 @@ export default class UsersController {
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
     const lastVisitedFeed = user.lastVistedFeed;
-    return ResponseDto.OK_WITH_DATA(lastVisitedFeed);
+    if (lastVisitedFeed)
+      return res.redirect(
+        `http://localhost:3000/feed/${encrypt(lastVisitedFeed.toString())}`,
+      );
+    return res.redirect(`http://localhost:3000/feeds`);
   }
 
   @UseGuards(AccessAuthGuard)
