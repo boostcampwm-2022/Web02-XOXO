@@ -9,18 +9,17 @@ import { Response } from 'express';
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
+    console.log(exception);
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
+    const res = ctx.getResponse<Response>();
 
-    const err = exception.getResponse() as
-      | { message: any; statusCode: number }
-      | { error: string; statusCode: 400; message: string[] }
-      | { error: string; statusCode: number; message: string };
-    return response.status(status).json({
+    const statusCode = exception.getStatus();
+    const data = exception.getResponse() as { message: string };
+
+    res.status(statusCode).json({
       success: false,
-      code: status,
-      data: err,
+      code: statusCode,
+      data,
     });
   }
 }

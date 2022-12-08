@@ -1,16 +1,16 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import {
-  ExpiredTokenException,
-  InternalServerException,
-  InvalidTokenException,
-  NoExistTokenException,
-} from '@root/custom/customError/httpException';
 
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import UsersService from '@users/users.service';
 import {
+<<<<<<< HEAD
   DBError,
   UnauthorizedError,
+=======
+  ExpiredTokenError,
+  InvalidTokenError,
+  NonExistTokenError,
+>>>>>>> main
 } from '@root/custom/customError/serverError';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class RefreshAuthGuard implements CanActivate {
     const { refreshToken } = request.cookies;
     response.clearCookie('refreshToken');
     response.clearCookie('accessToken');
-    if (refreshToken === undefined) throw new NoExistTokenException();
+    if (refreshToken === undefined) throw new NonExistTokenError();
     request.user = await this.validateToken(refreshToken);
     return true;
   }
@@ -40,6 +40,7 @@ export class RefreshAuthGuard implements CanActivate {
       );
       return result;
     } catch (error) {
+<<<<<<< HEAD
       switch (error.name) {
         case 'JsonWebTokenError':
           throw new InvalidTokenException();
@@ -49,8 +50,17 @@ export class RefreshAuthGuard implements CanActivate {
           throw new UnauthorizedError();
         case 'DBError':
           throw new DBError('DBError 발생');
+=======
+      switch (error.message) {
+        case 'invalid token':
+        case 'jwt malformed':
+        case 'invalid signature':
+          throw new InvalidTokenError();
+        case 'jwt expired':
+          throw new ExpiredTokenError();
+>>>>>>> main
         default:
-          throw new InternalServerException();
+          throw error;
       }
     }
   }

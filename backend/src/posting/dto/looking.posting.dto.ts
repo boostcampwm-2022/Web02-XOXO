@@ -1,4 +1,5 @@
 import { PickType } from '@nestjs/swagger';
+import { NonExistPostingError } from '@root/custom/customError/serverError';
 import { FeedInterface } from '@root/entities/entityInterfaces/FeedInterface';
 import { ImageInterface } from '@root/entities/entityInterfaces/ImageInterface';
 import { UserInterface } from '@root/entities/entityInterfaces/UserInterface';
@@ -31,7 +32,7 @@ export default class LookingPostingDto extends PickType(Posting, [
   }
 
   static createLookingPostingDto(posting) {
-    if (!posting) return null;
+    if (!posting) throw new NonExistPostingError();
     return new LookingPostingDto(posting);
   }
 }

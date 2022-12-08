@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from '@root/entities/User.entity';
 import {
-  DBError,
   DuplicateKakaoIdError,
   UnauthorizedError,
   DuplicateNicknameError,
@@ -34,33 +33,25 @@ export default class UsersService {
           throw new DuplicateKakaoIdError();
         else throw new DuplicateNicknameError();
       }
-      throw new DBError('DBError: joinUser .save() 오류');
+      throw e;
     }
   }
 
   async getUser(findUserInterface: FindUserDto & Record<string, unknown>) {
-    try {
-      const user = await this.userRepository.findOne({
-        where: findUserInterface,
-      });
-      return user;
-    } catch (e) {
-      throw new DBError('DBError: getUser 오류');
-    }
+    const user = await this.userRepository.findOne({
+      where: findUserInterface,
+    });
+    return user;
   }
 
   async getUserList(nickname: string, maxRecord: number, reqClientId: number) {
-    try {
-      const userList = await this.userRepository
-        .createQueryBuilder()
-        .select(['id', 'nickname'])
-        .where(`MATCH(nickname) AGAINST ('+${nickname}*' IN BOOLEAN MODE)`)
-        .limit(maxRecord)
-        .execute();
-      return userList.filter((user) => user.id !== reqClientId);
-    } catch (e) {
-      throw new DBError('DBError: getUserList 오류');
-    }
+    const userList = await this.userRepository
+      .createQueryBuilder()
+      .select(['id', 'nickname'])
+      .where(`MATCH(nickname) AGAINST ('+${nickname}*' IN BOOLEAN MODE)`)
+      .limit(maxRecord)
+      .execute();
+    return userList.filter((user) => user.id !== reqClientId);
   }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
@@ -114,12 +105,8 @@ export default class UsersService {
   }
 
   async removeRefreshToken(id: number) {
-    try {
-      await this.userRepository.update(id, {
-        currentRefreshToken: null,
-      });
-    } catch (e) {
-      throw new DBError('DBError: removeRefreshToken 오류');
-    }
+    await this.userRepository.update(id, {
+      currentRefreshToken: null,
+    });
   }
 }
