@@ -33,4 +33,4 @@ jobs:
         run: 
           aws --endpoint-url=https://kr.object.ncloudstorage.com  
           s3 cp ./dist
-          s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/dist
+          s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy
