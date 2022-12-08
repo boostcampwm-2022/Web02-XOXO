@@ -4,6 +4,7 @@ import {
   ExpiredTokenError,
   InvalidTokenError,
   NonExistTokenError,
+  NotInLoaginStateError,
 } from '@root/custom/customError/serverError';
 
 @Injectable()
@@ -13,9 +14,14 @@ export class AccessAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const { accessToken } = request.cookies;
-    if (accessToken === undefined) throw new NonExistTokenError();
-    request.user = await this.validateToken(accessToken);
-    return true;
+    try {
+      if (accessToken === undefined) throw new NonExistTokenError();
+      request.user = await this.validateToken(accessToken);
+      return true;
+    } catch (e) {
+      if (request.route.path === '/users') throw new NotInLoaginStateError();
+      throw e;
+    }
   }
 
   async validateToken(token: string) {
