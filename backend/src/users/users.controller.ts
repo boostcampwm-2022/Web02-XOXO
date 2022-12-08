@@ -15,7 +15,7 @@ import { AuthenticationService } from '@root/authentication/authentication.servi
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { RefreshAuthGuard } from '@root/common/guard/refreshtoken.guard';
 import UsersService from '@users/users.service';
-import { UserReq } from '@users/decorators/users.decorators';
+import usersDecorators, { UserReq } from '@users/decorators/users.decorators';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
@@ -23,6 +23,7 @@ import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
 import User from '@root/entities/User.entity';
 import { createHash } from 'crypto';
+import { encrypt } from '@root/feed/feed.utils';
 
 @Controller('users')
 export default class UsersController {
@@ -54,7 +55,7 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    return res.redirect('http://localhost:3001');
+    return res.redirect(process.env.SERVER_URL_PREFIX);
   }
 
   @Get('kakao')
@@ -77,7 +78,7 @@ export default class UsersController {
         httpOnly: true,
         maxAge: 60 * 60 * 1000,
       });
-      return res.redirect('http://localhost:3000/signin/info');
+      return res.redirect(`${process.env.CLIENT_URL_PREFIX}/signin/info`);
     }
 
     const { accessToken, ...accessTokenOption } =
@@ -93,8 +94,12 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    const lastVisitedFeed = user.lastVistedFeed;
-    return ResponseEntity.OK_WITH_DATA(lastVisitedFeed);
+    const lastVisitedFeedId = user.lastVistedFeed
+      ? encrypt(user.lastVistedFeed.toString())
+      : '';
+    return res.redirect(
+      `${process.env.CLIENT_URL_PREFIX}/api/feed/${lastVisitedFeedId}`,
+    );
   }
 
   @UseGuards(AccessAuthGuard)
@@ -103,7 +108,7 @@ export default class UsersController {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
-    return res.redirect('http://localhost:3000');
+    return res.redirect(process.env.CLIENT_URL_PREFIX);
   }
 
   @Post('join')

@@ -24,12 +24,12 @@ const SignIn = () => {
         <div className="icon-wrapper">
           <XoxoIcon />
         </div>
-          <a href={`${process.env.REACT_APP_SERVER_API as string}/users/kakao`} className='kakao-auth-button'>
-            <div>
-              <KakaoIcon />
-              <span>카카오 로그인</span>
-            </div>
-          </a>
+        <a href={'http://localhost:3001/api/users/kakao'} className="kakao-auth-button">
+          <div>
+            <KakaoIcon />
+            <span>카카오 로그인</span>
+          </div>
+        </a>
       </div>
     </div>
   )
