@@ -118,23 +118,19 @@ export default class UsersController {
       joinCookieDto.kakaoId,
       joinCookieDto.profilePicture,
     );
-    await this.userService.joinUser(joinMember);
-    // note : 여기서 userId를 조회하려면 이방법이 최선일까?
-    const { kakaoId } = joinCookieDto;
-    const user = await this.userService.getUser({
-      kakaoId,
-    });
+    const userId = await this.userService.joinUser(joinMember);
+
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
-        user.nickname,
-        user.id,
+        joinMember.nickname,
+        userId,
       );
     const { refreshToken, ...refreshTokenOption } =
       this.authenticationService.getCookieWithJwtRefreshToken(
-        user.nickname,
-        user.id,
+        joinMember.nickname,
+        userId,
       );
-    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+    await this.userService.setCurrentRefreshToken(refreshToken, userId);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
     res.send(ResponseEntity.CREATED());
@@ -142,8 +138,9 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
-  async serachUser(@Param('nickname') nickname: string) {
-    const userList = await this.userService.getUserList(nickname, 10, 10);
+  async serachUser(@Param('nickname') nickname: string, @UserReq() user: User) {
+    const { id } = user;
+    const userList = await this.userService.getUserList(nickname, 10, id);
     return ResponseEntity.OK_WITH_DATA(userList);
   }
 
