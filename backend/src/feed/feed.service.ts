@@ -79,9 +79,11 @@ export class FeedService {
     return feed[0];
   }
 
-  async getPostingThumbnails(encryptedFeedID: string, startPostingId: number) {
-    const postingCount = 15;
-
+  async getPostingThumbnails(
+    encryptedFeedID: string,
+    startPostingId: number,
+    scrollSize: number,
+  ) {
     const id = Number(decrypt(encryptedFeedID));
     const postingThumbnailList = await this.dataSource
       .getRepository(Feed)
@@ -90,7 +92,7 @@ export class FeedService {
       .select(['posting.id as id', 'posting.thumbnail as thumbanil'])
       .where('feed.id = :id', { id })
       .andWhere('posting.id > :startPostingId', { startPostingId })
-      .limit(postingCount)
+      .limit(scrollSize)
       .getRawMany();
 
     // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교

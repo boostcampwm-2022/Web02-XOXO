@@ -21,6 +21,7 @@ import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
 import ResponseEntity from '@root/common/response/response.entity';
+import FeedScrollDto from './dto/request/feed.scroll.dto';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
@@ -111,12 +112,12 @@ export class FeedController {
   @Get('scroll/:feedId')
   async getFeedPostingThumbnail(
     @Param('feedId') encryptedId: string,
-    @Query('size') scrollSize: number,
-    @Query('index') startPostingId: number,
+    @Query() { size: scrollSize, index: startPostingId }: FeedScrollDto,
   ) {
     const postingThumbnailList = await this.feedService.getPostingThumbnails(
       encryptedId,
       startPostingId,
+      scrollSize,
     );
     return ResponseEntity.OK_WITH_DATA(postingThumbnailList);
   }
