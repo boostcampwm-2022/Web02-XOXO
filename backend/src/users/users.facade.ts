@@ -1,5 +1,4 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import JoinRequestDto from '@users/dto/join.request.dto';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import UsersService from '@users/users.service';
@@ -23,16 +22,5 @@ export default class UserFacade {
     const { kakaoId, profilePicture } = this.oauthService.validateToken(openID);
     const user = await this.userService.getUser({ kakaoId });
     return { user, profilePicture, kakaoId };
-  }
-
-  async createUser({ joinNicknameDto, joinCookieDto }: JoinUserInterface) {
-    const joinMember = new JoinRequestDto(
-      joinNicknameDto.nickname,
-      joinCookieDto.kakaoId,
-      joinCookieDto.profilePicture,
-    );
-
-    const userId = await this.userService.joinUser(joinMember);
-    return userId;
   }
 }

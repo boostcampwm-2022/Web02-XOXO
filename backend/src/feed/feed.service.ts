@@ -125,7 +125,7 @@ export class FeedService {
         .getRepository(User)
         .update({ id: userId }, { lastVistedFeed: feed.id });
       await queryRunner.commitTransaction();
-      return FeedResponseDto.makeFeedResponseDto(feed, false).encryptedId;
+      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;
@@ -256,7 +256,7 @@ export class FeedService {
       .setParameters(subQuery.getParameters())
       .execute();
     if (!feedList) throw new NonExistFeedError();
-    return FeedResponseDto.makeFeedResponseArray(feedList, true);
+    return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
   async getPersonalFeedList(userId: number) {
@@ -272,7 +272,7 @@ export class FeedService {
       .andWhere('user_feed_mapping.userId = :userId', { userId })
       .getRawMany();
     if (!feedList) throw new NonExistFeedError();
-    return FeedResponseDto.makeFeedResponseArray(feedList, false);
+    return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
   async checkFeedOwner(id: number, feedId: string) {

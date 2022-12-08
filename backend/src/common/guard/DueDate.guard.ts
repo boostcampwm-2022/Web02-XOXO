@@ -18,10 +18,9 @@ export class DueDateGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
     const { feedId } = req.params;
-    const userId = req.user.id;
     const isCreatePostingApi =
-      req.route.path === '/posting/:feedId' && req.route.methods.post;
-    const feed = await this.feedService.getFeedInfo(feedId, userId);
+      req.route.path === '/api/posting/:feedId' && req.route.methods.post;
+    const feed = await this.feedService.getFeedById(feedId);
 
     if (!feed) throw new NonExistFeedError();
 

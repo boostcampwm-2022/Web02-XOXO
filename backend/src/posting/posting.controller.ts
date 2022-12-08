@@ -39,6 +39,7 @@ export class PostingController {
     @Param('feedId') feedId: string,
   ) {
     const res = await this.postingService.getPosting(postingId, feedId);
+    if (!res) throw new NonExistPostingError();
     return ResponseDto.OK_WITH_DATA(res);
   }
 }

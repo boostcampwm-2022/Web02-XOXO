@@ -39,8 +39,8 @@ export default class UsersController {
   }
 
   @UseGuards(RefreshAuthGuard)
-  @Post('refresh')
-  async refreshToken(@UserReq() user, @Res() res: Response) {
+  @Get('refresh')
+  async refreshToken(@UserReq() user: User, @Res() res: Response) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
         user.nickname,
@@ -77,7 +77,6 @@ export default class UsersController {
         httpOnly: true,
         maxAge: 60 * 60 * 1000,
       });
-
       return res.redirect('http://localhost:3000/signin/info');
     }
 
@@ -94,12 +93,13 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    return res.redirect('http://localhost:3000/feeds');
+    const lastVisitedFeed = user.lastVistedFeed;
+    return ResponseDto.OK_WITH_DATA(lastVisitedFeed);
   }
 
   @UseGuards(AccessAuthGuard)
   @Post('logout')
-  async logoutUser(@UserReq() user, @Res() res: Response) {
+  async logoutUser(@UserReq() user: User, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
@@ -118,23 +118,19 @@ export default class UsersController {
       joinCookieDto.kakaoId,
       joinCookieDto.profilePicture,
     );
-    await this.userService.joinUser(joinMember);
-    // note : 여기서 userId를 조회하려면 이방법이 최선일까?
-    const { kakaoId } = joinCookieDto;
-    const user = await this.userService.getUser({
-      kakaoId,
-    });
+    const userId = await this.userService.joinUser(joinMember);
+
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(
-        user.nickname,
-        user.id,
+        joinMember.nickname,
+        userId,
       );
     const { refreshToken, ...refreshTokenOption } =
       this.authenticationService.getCookieWithJwtRefreshToken(
-        user.nickname,
-        user.id,
+        joinMember.nickname,
+        userId,
       );
-    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+    await this.userService.setCurrentRefreshToken(refreshToken, userId);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
     return ResponseDto.CREATED();
@@ -152,14 +148,9 @@ export default class UsersController {
     const res = await this.userService.getUser({
       hashedNickname: createHash('md5').update(nickname).digest('hex'),
     });
-    return !res;
-  }
-
-  @UseGuards(AccessAuthGuard)
-  @Get('recent')
-  async getLastVistiedFeed(@UserReq() user: User) {
-    const { id } = user;
-    const lastVisitedFeed = await this.userService.getLastVisitedFeed(id);
-    return lastVisitedFeed;
+    if (res) {
+      return ResponseDto.OK_WITH_DATA(true);
+    }
+    return ResponseDto.OK_WITH_DATA(false);
   }
 }
