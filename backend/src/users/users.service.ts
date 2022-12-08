@@ -3,9 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from '@root/entities/User.entity';
 import {
-  DuplicateKakaoIdError,
   UnauthorizedError,
-  DuplicateNicknameError,
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
 import FindUserDto from '@users/dto/find.user.dto';
@@ -18,23 +16,13 @@ export default class UsersService {
   ) {}
 
   async joinUser(user: JoinRequestDto) {
-    try {
-      const userId = await this.userRepository
-        .createQueryBuilder()
-        .insert()
-        .into(User)
-        .values(user)
-        .execute();
-      return userId;
-    } catch (e) {
-      const errorType = e.code;
-      if (errorType === 'ER_DUP_ENTRY') {
-        if (e.sqlMessage.includes(process.env.DB_USERS_KAKAOID_UNIQUE))
-          throw new DuplicateKakaoIdError();
-        else throw new DuplicateNicknameError();
-      }
-      throw e;
-    }
+    const userId = await this.userRepository
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values(user)
+      .execute();
+    return userId;
   }
 
   async getUser(findUserInterface: FindUserDto & Record<string, unknown>) {
@@ -55,53 +43,30 @@ export default class UsersService {
   }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
-    try {
-      await this.userRepository.update(id, {
-        currentRefreshToken: refreshtoken,
-      });
-    } catch (e) {
-      throw new DBError('DBError: setCurrentRefreshToken error');
-    }
+    await this.userRepository.update(id, {
+      currentRefreshToken: refreshtoken,
+    });
   }
 
   async getLastVisitedFeed(id: number) {
-    try {
-      const user = await this.userRepository.findOneBy({ id });
-      const { lastVistedFeed } = user;
-      if (!lastVistedFeed) throw new NonExistFeedError();
-      return lastVistedFeed;
-    } catch (e) {
-      switch (e.name) {
-        case 'NonExistFeedError':
-          throw new NonExistFeedError();
-        default:
-          throw new DBError('DBError: getLastVisitedFeed error');
-      }
-    }
+    const user = await this.userRepository.findOneBy({ id });
+    const { lastVistedFeed } = user;
+    if (!lastVistedFeed) throw new NonExistFeedError();
+    return lastVistedFeed;
   }
 
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
-    try {
-      const user = await this.userRepository.findOneBy({
-        currentRefreshToken: refreshtoken,
-      });
-      if (!user) {
-        const hackedUser = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({
+      currentRefreshToken: refreshtoken,
+    });
+    if (!user) {
+      const hackedUser = await this.userRepository.findOneBy({ id });
 
-        if (!hackedUser) throw new UnauthorizedError();
-        await this.userRepository.update(id, { currentRefreshToken: null });
-        throw new UnauthorizedError();
-      }
-      return user;
-    } catch (e) {
-      switch (e.name) {
-        case 'UnauthorizedError':
-          console.log('service', e.name);
-          throw new UnauthorizedError();
-        default:
-          throw new DBError('DBError: getLastVisitedFeed error');
-      }
+      if (!hackedUser) throw new UnauthorizedError();
+      await this.userRepository.update(id, { currentRefreshToken: null });
+      throw new UnauthorizedError();
     }
+    return user;
   }
 
   async removeRefreshToken(id: number) {
