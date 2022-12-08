@@ -20,7 +20,7 @@ import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
-import ResponseEntity from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.entity';
 import { createHash } from 'crypto';
 import User from '@root/entities/User.entity';
 
@@ -35,7 +35,7 @@ export default class UsersController {
   @UseGuards(AccessAuthGuard)
   @Get()
   async checkLoginUser() {
-    return ResponseEntity.OK_WITH_DATA(true);
+    return ResponseDto.OK_WITH_DATA(true);
   }
 
   @UseGuards(RefreshAuthGuard)
@@ -137,14 +137,14 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    res.send(ResponseEntity.CREATED());
+    return ResponseDto.CREATED();
   }
 
   @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
   async serachUser(@Param('nickname') nickname: string) {
     const userList = await this.userService.getUserList(nickname, 10, 10);
-    return ResponseEntity.OK_WITH_DATA(userList);
+    return ResponseDto.OK_WITH_DATA(userList);
   }
 
   @Get('check/:nickname')

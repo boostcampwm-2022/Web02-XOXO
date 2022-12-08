@@ -5,7 +5,7 @@ import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
 import { NonExistPostingError } from '@root/custom/customError/serverError';
-import ResponseEntity from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.entity';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
 
 @UseGuards(AccessAuthGuard)
@@ -29,7 +29,7 @@ export class PostingController {
       },
       createPostingReq.images,
     );
-    return ResponseEntity.CREATED_WITH_DATA(postingId);
+    return ResponseDto.CREATED_WITH_DATA(postingId);
   }
 
   @Get('/:feedId/:postingId')
@@ -39,6 +39,6 @@ export class PostingController {
     @Param('feedId') feedId: string,
   ) {
     const res = await this.postingService.getPosting(postingId, feedId);
-    return ResponseEntity.OK_WITH_DATA(res);
+    return ResponseDto.OK_WITH_DATA(res);
   }
 }

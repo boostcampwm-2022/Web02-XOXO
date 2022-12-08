@@ -11,7 +11,7 @@ import {
   NotInLoaginStateError,
 } from '@root/custom/customError/serverError';
 import { QueryFailedError } from 'typeorm';
-import { ResponseEntity } from '../response/response.entity';
+import { ResponseDto } from '../response/response.entity';
 
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {
@@ -31,7 +31,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
           code: 200,
           data: false,
         });
-        // res.send(ResponseEntity.OK_WITH_DATA(false));
+        // res.send(ResponseDto.OK_WITH_DATA(false));
         return;
       }
 

@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 
-export class ResponseEntity<T> {
+export class ResponseDto<T> {
   @Exclude() private readonly Success: true;
 
   @Exclude() private readonly Status: number;
@@ -13,20 +13,20 @@ export class ResponseEntity<T> {
     this.Data = data;
   }
 
-  static OK(): ResponseEntity<string> {
-    return new ResponseEntity<string>(200, '');
+  static OK(): ResponseDto<string> {
+    return new ResponseDto<string>(200, '');
   }
 
-  static OK_WITH_DATA<T>(data: T): ResponseEntity<T> {
-    return new ResponseEntity<T>(200, data);
+  static OK_WITH_DATA<T>(data: T): ResponseDto<T> {
+    return new ResponseDto<T>(200, data);
   }
 
-  static CREATED(): ResponseEntity<string> {
-    return new ResponseEntity(201, '');
+  static CREATED(): ResponseDto<string> {
+    return new ResponseDto(201, '');
   }
 
-  static CREATED_WITH_DATA<T>(data: T): ResponseEntity<T> {
-    return new ResponseEntity<T>(201, data);
+  static CREATED_WITH_DATA<T>(data: T): ResponseDto<T> {
+    return new ResponseDto<T>(201, data);
   }
 
   @Expose()
@@ -44,4 +44,4 @@ export class ResponseEntity<T> {
     return this.Data;
   }
 }
-export default ResponseEntity;
+export default ResponseDto;
