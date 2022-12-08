@@ -6,7 +6,6 @@ import {
   DBError,
   NonExistFKConstraintError,
 } from '@root/custom/customError/serverError';
-import FindPostingDto from '@posting/dto/find.posting.dto';
 import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
@@ -19,19 +18,7 @@ export class PostingService {
     private dataSource: DataSource,
   ) {}
 
-  async getPosting(findPostingDto: FindPostingDto & Record<string, unknown>) {
-    try {
-      const posting = await this.postingRepository.find({
-        where: findPostingDto,
-        relations: ['feed'],
-      });
-      return posting;
-    } catch (e) {
-      throw new DBError('DBError: getUser 오류');
-    }
-  }
-
-  async getOnlyPostingById(postindId: number, encryptedFeedId: string) {
+  async getPosting(postindId: number, encryptedFeedId: string) {
     try {
       const feedId = Number(decrypt(encryptedFeedId));
       const posting = await this.postingRepository.find({
@@ -39,10 +26,10 @@ export class PostingService {
         relations: ['images', 'sender', 'feed'],
         select: {
           images: { url: true },
-          // sender: { nickname: true, profile: true },
+          sender: { nickname: true, profile: true },
+          feed: { name: true },
         },
       });
-
       return LookingPostingDto.createLookingPostingDto(posting[0]);
     } catch (e) {
       throw new DBError('DBError: getUser 오류');
