@@ -3,9 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from '@root/entities/User.entity';
 import {
-  DuplicateKakaoIdError,
   UnauthorizedError,
-  DuplicateNicknameError,
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
 import FindUserDto from '@users/dto/find.user.dto';
@@ -18,23 +16,13 @@ export default class UsersService {
   ) {}
 
   async joinUser(user: JoinRequestDto) {
-    try {
-      const userId = await this.userRepository
-        .createQueryBuilder()
-        .insert()
-        .into(User)
-        .values(user)
-        .execute();
-      return userId.raw.insertId;
-    } catch (e) {
-      const errorType = e.code;
-      if (errorType === 'ER_DUP_ENTRY') {
-        if (e.sqlMessage.includes(process.env.DB_USERS_KAKAOID_UNIQUE))
-          throw new DuplicateKakaoIdError();
-        else throw new DuplicateNicknameError();
-      }
-      throw e;
-    }
+    const userId = await this.userRepository
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values(user)
+      .execute();
+    return userId.identifiers[0].id;
   }
 
   async getUser(findUserInterface: FindUserDto & Record<string, unknown>) {
