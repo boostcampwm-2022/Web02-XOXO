@@ -22,9 +22,7 @@ import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
 import User from '@root/entities/User.entity';
-
 import { createHash } from 'crypto';
-import { Response } from 'aws-sdk';
 
 @Controller('users')
 export default class UsersController {
@@ -95,7 +93,8 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    return res.redirect('http://localhost:3000/feeds');
+    const lastVisitedFeed = user.lastVistedFeed;
+    return ResponseEntity.OK_WITH_DATA(lastVisitedFeed);
   }
 
   @UseGuards(AccessAuthGuard)
@@ -154,13 +153,5 @@ export default class UsersController {
       return ResponseEntity.OK_WITH_DATA(true);
     }
     return ResponseEntity.OK_WITH_DATA(false);
-  }
-
-  @UseGuards(AccessAuthGuard)
-  @Get('recent')
-  async getLastVistiedFeed(@UserReq() user: User) {
-    const { id } = user;
-    const lastVisitedFeed = await this.userService.getLastVisitedFeed(id);
-    return lastVisitedFeed;
   }
 }
