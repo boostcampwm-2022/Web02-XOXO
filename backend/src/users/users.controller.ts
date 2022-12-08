@@ -10,7 +10,6 @@ import {
   UseGuards,
   Param,
 } from '@nestjs/common';
-import { FailedToLoginKakaoException } from '@root/custom/customError/httpException';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
@@ -68,38 +67,34 @@ export default class UsersController {
 
   @Get('kakao/callback')
   async loginUser(@Query('code') code: string, @Res() res: Response) {
-    try {
-      const { user, profilePicture, kakaoId } =
-        await this.facade.getUserInfoFromKakao(code);
-      if (!user) {
-        res.cookie('kakaoId', kakaoId, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 1000,
-        });
-        res.cookie('profilePicture', profilePicture, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 1000,
-        });
-        return res.redirect('http://localhost:3000/signin/info');
-      }
-
-      const { accessToken, ...accessTokenOption } =
-        this.authenticationService.getCookieWithJwtAccessToken(
-          user.nickname,
-          user.id,
-        );
-      const { refreshToken, ...refreshTokenOption } =
-        this.authenticationService.getCookieWithJwtRefreshToken(
-          user.nickname,
-          user.id,
-        );
-      await this.userService.setCurrentRefreshToken(refreshToken, user.id);
-      res.cookie('refreshToken', refreshToken, refreshTokenOption);
-      res.cookie('accessToken', accessToken, accessTokenOption);
-      return res.redirect('http://localhost:3000/feeds');
-    } catch (e) {
-      throw new FailedToLoginKakaoException();
+    const { user, profilePicture, kakaoId } =
+      await this.facade.getUserInfoFromKakao(code);
+    if (!user) {
+      res.cookie('kakaoId', kakaoId, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 1000,
+      });
+      res.cookie('profilePicture', profilePicture, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 1000,
+      });
+      return res.redirect('http://localhost:3000/signin/info');
     }
+
+    const { accessToken, ...accessTokenOption } =
+      this.authenticationService.getCookieWithJwtAccessToken(
+        user.nickname,
+        user.id,
+      );
+    const { refreshToken, ...refreshTokenOption } =
+      this.authenticationService.getCookieWithJwtRefreshToken(
+        user.nickname,
+        user.id,
+      );
+    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+    res.cookie('refreshToken', refreshToken, refreshTokenOption);
+    res.cookie('accessToken', accessToken, accessTokenOption);
+    return res.redirect('http://localhost:3000/feeds');
   }
 
   @UseGuards(AccessAuthGuard)

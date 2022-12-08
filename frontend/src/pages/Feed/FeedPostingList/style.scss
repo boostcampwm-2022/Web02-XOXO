@@ -1,28 +1,50 @@
 @import "@src/global";
 
-.posting-grid {
-    width: calc(100%+16px);
-    margin: 0 -16px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-}
+.posting-list-wrapper {
+    .posting-grid {
+        width: calc(100%+16px);
+        margin: 0 -16px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+    }
 
-.posting-container {
-    width: 100%;
-    position: relative;
-    background-color: $grey;
-}
+    .posting-container {
+        width: 100%;
+        position: relative;
+        background-color: $grey;
+    }
 
-.posting-container::after {
-    display: block;
-    content: "";
-    padding-bottom: 100%;
-}
+    .posting-container::after {
+        display: block;
+        content: "";
+        padding-bottom: 100%;
+    }
 
-.posting {
-    border: 1px solid $white;
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    .posting {
+        border: 1px solid $white;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .write-posting-container {
+        width: 100%;
+        position: relative;
+        background-color: $primary-3;
+    }
+
+    .write-posting-container::after {
+        display: block;
+        content: "";
+        padding-bottom: 100%;
+    }
+
+    .write-posting-button {
+        border: 1px solid $white;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        @include vhcenter;
+    }
 }

@@ -3,14 +3,14 @@ import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 
-import {
-  AccessAfterDueDateException,
-  AccessBeforeDueDateException,
-} from '@root/custom/customError/httpException';
 import { DueDateGuard } from '@common/guard/DueDate.guard';
 import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
 import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
 import { FeedService } from '@root/feed/feed.service';
+import {
+  AccessAfterDueDateError,
+  AccessBeforeDueDateError,
+} from '@root/custom/customError/serverError';
 import configuration from '../../configuration';
 
 describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
@@ -66,7 +66,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       expect(dueDateGuard.canActivate(mockContext)).resolves.toBe(true);
     });
 
-    it('피드 공개일 이후 접근 불가(AccessAfterDueDateException)', async () => {
+    it('피드 공개일 이후 접근 불가(AccessAfterDueDateError)', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
       const mockParam = { feedId: 1 };
@@ -76,7 +76,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       Object.assign(req, { params: mockParam });
 
       expect(dueDateGuard.canActivate(mockContext)).rejects.toThrowError(
-        new AccessAfterDueDateException(),
+        new AccessAfterDueDateError(),
       );
     });
   });
@@ -92,7 +92,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       expect(dueDateGuard.canActivate(mockContext)).resolves.toBe(true);
     });
 
-    it('피드 공개일 전 접근 불가(AccessBeforeDueDateException)', async () => {
+    it('피드 공개일 전 접근 불가(AccessBeforeDueDateError)', async () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
       const mockParam = { feedId: 2 };
@@ -100,7 +100,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       Object.assign(req, { params: mockParam });
 
       expect(dueDateGuard.canActivate(mockContext)).rejects.toThrowError(
-        new AccessBeforeDueDateException(),
+        new AccessBeforeDueDateError(),
       );
     });
   });

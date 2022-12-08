@@ -40,9 +40,11 @@ const Write = () => {
   const [croppedURL, setCroppedURL] = useState('')
 
   useEffect(() => {
-    if (!isEmpty(images)) {
-      cropImg(images[0].originalImage, setCroppedURL)
-    }
+    if (isEmpty(images)) return
+    void (async () => {
+      const url = await cropImg(images[0].originalImage)
+      setCroppedURL(url)
+    })()
     const canvas = document.querySelector('canvas')
     canvas?.toBlob(
       (blob) => {

@@ -3,22 +3,14 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
-  HttpException,
-  InternalServerErrorException,
+  HttpStatus,
 } from '@nestjs/common';
 
 import {
-  DuplicateJoinException,
-  DuplicateNicknameException,
-  GroupFeedMemberListCountException,
-  InternalDBException,
-  InvalidFKConstraintException,
-  NonExistFeedIdException,
-  NonExistFKException,
-  NonExistPostingIdException,
-  NonExistUserIdException,
-  UnauthorizedException,
-} from '@root/custom/customError/httpException';
+  CustomError,
+  NonExistFeedError,
+} from '@root/custom/customError/serverError';
+import { QueryFailedError } from 'typeorm';
 
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {
@@ -26,6 +18,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
+<<<<<<< HEAD
     console.log(error);
     let exception: HttpException;
     const errorName = error.name;
@@ -35,54 +28,26 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
       case 'DBError':
         exception = new InternalDBException();
         break;
+=======
+    let statusCode: HttpStatus;
+    let message: string;
+>>>>>>> main
 
-      case 'NonExistUserError':
-        exception = new NonExistUserIdException();
-        break;
-
-      case 'DuplicateNicknameError':
-        exception = new DuplicateNicknameException();
-        break;
-
-      case 'InvalidFKConstraintError':
-        exception = new InvalidFKConstraintException();
-        break;
-
-      case 'NonExistFeedError':
-        exception = new NonExistFeedIdException();
-        break;
-
-      case 'NonExistPostingError':
-        exception = new NonExistPostingIdException();
-        break;
-
-      case 'GroupFeedMemberListCountException':
-        exception = new GroupFeedMemberListCountException();
-        break;
-
-      case 'DuplicateKakaoIdError':
-        exception = new DuplicateJoinException();
-        break;
-
-      case 'UnauthorizedError':
-        exception = new UnauthorizedException();
-        break;
-
-      case 'NonExistFKConstraintError':
-        exception = new NonExistFKException(errorMessage);
-        break;
-
-      default:
-        if (error.message.includes('digital envelope routines'))
-          exception = new NonExistFeedIdException();
-        else exception = new InternalServerErrorException();
+    if (error instanceof CustomError) {
+      statusCode = error.getStatudCode();
+      message = error.getMessage();
+    } else if (error instanceof QueryFailedError) {
+      statusCode = HttpStatus.BAD_REQUEST;
+      message = 'BAD_REQUEST';
+    } else {
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = '서버에서 에러가 발생했습니다. 관리자에게 문의하십시오.';
     }
 
-    const response = (exception as HttpException).getResponse();
-    res.status((exception as HttpException).getStatus()).json({
+    res.status(statusCode).json({
       success: false,
-      code: exception.getStatus(),
-      data: response,
+      code: statusCode,
+      data: { message },
     });
   }
 }
