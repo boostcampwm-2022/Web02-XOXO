@@ -17,6 +17,7 @@ async function bootstrap() {
     new ServerErrorHandlingFilter(),
     new HttpExceptionFilter(),
   );
+  app.setGlobalPrefix('api');
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalPipes(new CustomValidationPipe());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
