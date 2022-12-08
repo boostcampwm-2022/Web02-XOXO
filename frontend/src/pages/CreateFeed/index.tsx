@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-delimiter-style */
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -10,7 +11,7 @@ import Input from '@src/components/Input'
 import GroupMember from './GroupMember'
 import { compressImage } from '@src/util/imageCompress'
 import usePost from '@hooks/usePost'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   getWarningDuedate,
   getWarningDescription,
@@ -39,7 +40,7 @@ interface feedForm {
   memberIdList?: number[]
 }
 
-const CreateFeed = ({ path }: ICreateFeed) => {
+const CreateFeed = () => {
   const nameRef = useRef<HTMLInputElement>(null)
   const [thumbnail, setThumbnail] = useState<File>()
   const descriptionRef = useRef<HTMLInputElement>(null)
@@ -53,6 +54,12 @@ const CreateFeed = ({ path }: ICreateFeed) => {
   const postPersonalFeed = usePost('/feed')
   const postGroupFeed = usePost('/feed/group')
   const navigate = useNavigate()
+
+  const { path } = useParams<{ path: string }>()
+
+  useEffect(() => {
+    if (!(path === 'group' || path === 'personal')) navigate('/404')
+  }, [path])
 
   useEffect(() => {
     if (!isEmpty(dueDateRef.current)) {
@@ -113,12 +120,12 @@ const CreateFeed = ({ path }: ICreateFeed) => {
     console.log(formData)
 
     if (path === 'personal') {
-      const { success, data }: { success: boolean, data: string } = await postPersonalFeed(formData)
-      if (success) navigate(`/feed/${data}`)
+      const { success, data }: { success: boolean; data: string } = await postPersonalFeed(formData)
+      if (success) navigate(`/Feed/${data}`)
     }
     if (path === 'group') {
-      const { success, data }: { success: boolean, data: string } = await postGroupFeed(formData)
-      if (success) navigate(`/feed/${data}`)
+      const { success, data }: { success: boolean; data: string } = await postGroupFeed(formData)
+      if (success) navigate(`/Feed/${data}`)
     }
   }
 
