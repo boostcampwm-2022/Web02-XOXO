@@ -9,26 +9,23 @@ import Posting from '@pages/Posting'
 import Feeds from '@pages/Feeds'
 import Info from '@pages/Info'
 import Error from '@pages/Error'
-
+import AuthRoute from '@components/AuthRoute'
+import SigninRoute from '@components/SigninRoute'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <BrowserRouter>
     <Routes>
-        <Route path="/Feed">
-          <Route path=":feedId" element={<Feed />} />
-          <Route path=":feedId">
-            <Route path=":postingId" element={<Posting />} />
-          </Route>
+      <Route path="/Feed">
+        <Route path=":feedId" element={<AuthRoute Component={Feed} />} />
+        <Route path=":feedId">
+          <Route path=":postingId" element={<AuthRoute Component={Posting} />} />
         </Route>
-      <Route path="/Write/:feedId" element={<Write />} />
-      <Route path="/SignIn/Info" element={<Info />} />
-      <Route path="/SignIn" element={<SignIn />} />
-      <Route path="/createfeed">
-        <Route path="personal" element={<CreateFeed path="personal" />} />
-        <Route path="group" element={<CreateFeed path="group" />} />
       </Route>
-      <Route path="/posting" element={<Posting />} />
-      <Route path="/feeds" element={<Feeds />} />
+      <Route path="/Write/:feedId" element={<AuthRoute Component={Write} />} />
+      <Route path="/SignIn/Info" element={<SigninRoute Component={Info} />} />
+      <Route path="/SignIn" element={<SigninRoute Component={SignIn} />} />
+      <Route path="/Createfeed/:path" element={<AuthRoute Component={CreateFeed} />} />
+      <Route path="/Feeds" element={<Feeds />} />
       <Route path="/*" element={<Error />} />
     </Routes>
   </BrowserRouter>
