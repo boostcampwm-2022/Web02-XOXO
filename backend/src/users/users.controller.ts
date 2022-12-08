@@ -20,7 +20,7 @@ import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
-import ResponseDto from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.dto';
 import { createHash } from 'crypto';
 import User from '@root/entities/User.entity';
 

@@ -6,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import ResponseDto from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.dto';
 import { ImageService } from './image.service';
 
 @Controller('image')

@@ -5,7 +5,7 @@ import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
 import { NonExistPostingError } from '@root/custom/customError/serverError';
-import ResponseDto from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.dto';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
 
 @UseGuards(AccessAuthGuard)

@@ -20,7 +20,7 @@ import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
-import ResponseDto from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.dto';
 import FeedScrollDto from './dto/request/feed.scroll.dto';
 
 @UseGuards(AccessAuthGuard)

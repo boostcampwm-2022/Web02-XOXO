@@ -11,7 +11,7 @@ import {
   NotInLoaginStateError,
 } from '@root/custom/customError/serverError';
 import { QueryFailedError } from 'typeorm';
-import { ResponseDto } from '../response/response.entity';
+import { ResponseDto } from '../response/response.dto';
 
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {
