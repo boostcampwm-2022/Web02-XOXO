@@ -6,5 +6,6 @@ export default class FeedScrollDto {
   size: number;
 
   @IsNotEmpty()
+  @IsNumber()
   index: number;
 }
