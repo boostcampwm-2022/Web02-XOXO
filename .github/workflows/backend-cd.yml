@@ -31,5 +31,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: 
           aws --endpoint-url=https://kr.object.ncloudstorage.com  
-          s3 cp ./build
+          s3 cp ./dist
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/build
