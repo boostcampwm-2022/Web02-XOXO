@@ -97,12 +97,14 @@ export class FeedController {
     return ResponseEntity.OK_WITH_DATA(feedList);
   }
 
+  @UseGuards(AccessAuthGuard)
   @Get('info/:feedId')
   async getFeedInfo(
     @Param('feedId') encryptedId: string,
     @UserReq() user: User,
   ) {
-    const feedInfo = await this.feedService.getFeedInfo(encryptedId, user.id);
+    const userId = user.id;
+    const feedInfo = await this.feedService.getFeedInfo(encryptedId, userId);
     return ResponseEntity.OK_WITH_DATA(feedInfo);
   }
 

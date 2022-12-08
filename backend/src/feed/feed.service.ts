@@ -3,11 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
-import { GroupFeedMembersCountError } from '@root/custom/customError/serverError';
-import CreateFeedDto from './dto/create.feed.dto';
-import { decrypt, encrypt } from './feed.utils';
-import FindFeedDto from './dto/find.feed.dto';
-import FeedInfoDto from './dto/info.feed.dto';
+import {
+  GroupFeedMembersCountError,
+  NonExistFeedError,
+} from '@root/custom/customError/serverError';
+import User from '@root/entities/User.entity';
+import CreateFeedDto from '@feed/dto/create.feed.dto';
+import { decrypt, encrypt } from '@feed/feed.utils';
+import FindFeedDto from '@feed/dto/find.feed.dto';
+import FeedInfoDto from '@feed/dto/info.feed.dto';
 import FeedResponseDto from './dto/response/feed.response.dto';
 
 @Injectable()
@@ -20,21 +24,36 @@ export class FeedService {
   ) {}
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
-    const id = Number(decrypt(encryptedFeedID));
-    const feed = await this.dataSource.getRepository(Feed).find({
-      where: { id },
-      relations: ['postings', 'users'],
-      select: {
-        postings: { id: true },
-        users: { userId: true },
-        name: true,
-        description: true,
-        thumbnail: true,
-        dueDate: true,
-      },
-    });
-
-    return FeedInfoDto.createFeedInfoDto(feed[0], userId);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const id = Number(decrypt(encryptedFeedID));
+      const feed = await this.dataSource.getRepository(Feed).find({
+        where: { id },
+        relations: ['postings', 'users'],
+        select: {
+          postings: { id: true },
+          users: { userId: true },
+          name: true,
+          description: true,
+          thumbnail: true,
+          dueDate: true,
+        },
+      });
+      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
+      if (feedInfoDto.isOwner) {
+        await this.dataSource
+          .getRepository(User)
+          .update(userId, { lastVistedFeed: id });
+      }
+      return feedInfoDto;
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getFeedById(encryptedFeedID: string) {
@@ -100,9 +119,11 @@ export class FeedService {
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
-
+      await queryRunner.manager
+        .getRepository(User)
+        .update({ id: userId }, { lastVistedFeed: feed.id });
       await queryRunner.commitTransaction();
-      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
+      return FeedResponseDto.makeFeedResponseDto(feed, false).encryptedId;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;
@@ -232,8 +253,8 @@ export class FeedService {
       .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
       .setParameters(subQuery.getParameters())
       .execute();
-
-    return feedList;
+    if (!feedList) throw new NonExistFeedError();
+    return FeedResponseDto.makeFeedResponseArray(feedList, true);
   }
 
   async getPersonalFeedList(userId: number) {
@@ -248,7 +269,8 @@ export class FeedService {
       .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
       .andWhere('user_feed_mapping.userId = :userId', { userId })
       .getRawMany();
-    return feedList;
+    if (!feedList) throw new NonExistFeedError();
+    return FeedResponseDto.makeFeedResponseArray(feedList, false);
   }
 
   async checkFeedOwner(id: number, feedId: string) {

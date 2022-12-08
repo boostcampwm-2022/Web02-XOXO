@@ -5,10 +5,16 @@ import {
   Inject,
 } from '@nestjs/common';
 import {
+<<<<<<< HEAD
+  AccessAfterDueDateException,
+  AccessBeforeDueDateException,
+} from '@root/custom/customError/httpException';
+=======
   AccessAfterDueDateError,
   AccessBeforeDueDateError,
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
+>>>>>>> main
 import { FeedService } from '@root/feed/feed.service';
 
 @Injectable()
@@ -18,10 +24,10 @@ export class DueDateGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
     const { feedId } = req.params;
-
+    const userId = req.user.id;
     const isCreatePostingApi =
       req.route.path === '/posting/:feedId' && req.route.methods.post;
-    const feed = await this.feedService.getFeedById(feedId);
+    const feed = await this.feedService.getFeedInfo(feedId, userId);
 
 
     if (!feed) throw new NonExistFeedError();

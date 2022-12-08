@@ -3,9 +3,14 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import UsersService from '@users/users.service';
 import {
+<<<<<<< HEAD
+  DBError,
+  UnauthorizedError,
+=======
   ExpiredTokenError,
   InvalidTokenError,
   NonExistTokenError,
+>>>>>>> main
 } from '@root/custom/customError/serverError';
 
 @Injectable()
@@ -35,6 +40,17 @@ export class RefreshAuthGuard implements CanActivate {
       );
       return result;
     } catch (error) {
+<<<<<<< HEAD
+      switch (error.name) {
+        case 'JsonWebTokenError':
+          throw new InvalidTokenException();
+        case 'TokenExpiredError':
+          throw new ExpiredTokenException();
+        case 'UnauthorizedError':
+          throw new UnauthorizedError();
+        case 'DBError':
+          throw new DBError('DBError 발생');
+=======
       switch (error.message) {
         case 'invalid token':
         case 'jwt malformed':
@@ -42,6 +58,7 @@ export class RefreshAuthGuard implements CanActivate {
           throw new InvalidTokenError();
         case 'jwt expired':
           throw new ExpiredTokenError();
+>>>>>>> main
         default:
           throw error;
       }

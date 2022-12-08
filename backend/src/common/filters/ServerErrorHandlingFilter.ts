@@ -18,8 +18,20 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
+<<<<<<< HEAD
+    console.log(error);
+    let exception: HttpException;
+    const errorName = error.name;
+    const errorMessage = error.message;
+    console.log(errorName, 'filter');
+    switch (errorName) {
+      case 'DBError':
+        exception = new InternalDBException();
+        break;
+=======
     let statusCode: HttpStatus;
     let message: string;
+>>>>>>> main
 
     if (error instanceof CustomError) {
       statusCode = error.getStatudCode();

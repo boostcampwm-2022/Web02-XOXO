@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import Posting from '@root/entities/Posting.entity';
-import FindPostingDto from '@posting/dto/find.posting.dto';
 import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
@@ -15,25 +14,17 @@ export class PostingService {
     private dataSource: DataSource,
   ) {}
 
-  async getPosting(findPostingDto: FindPostingDto & Record<string, unknown>) {
-    const posting = await this.postingRepository.find({
-      where: findPostingDto,
-      relations: ['feed'],
-    });
-    return posting;
-  }
-
-  async getOnlyPostingById(postindId: number, encryptedFeedId: string) {
+  async getPosting(postindId: number, encryptedFeedId: string) {
     const feedId = Number(decrypt(encryptedFeedId));
     const posting = await this.postingRepository.find({
       where: { id: postindId, feed: { id: feedId } },
       relations: ['images', 'sender', 'feed'],
       select: {
         images: { url: true },
-        // sender: { nickname: true, profile: true },
+        sender: { nickname: true, profile: true },
+        feed: { name: true },
       },
     });
-
     return LookingPostingDto.createLookingPostingDto(posting[0]);
   }
 
