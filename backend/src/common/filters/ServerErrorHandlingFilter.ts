@@ -26,7 +26,7 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     if (error instanceof CustomError) {
       // 로그인 상태 분기 처리
       if (error instanceof NotInLoaginStateError) {
-        res.status(statusCode).json({
+        res.status(200).json({
           success: true,
           code: 200,
           data: false,
