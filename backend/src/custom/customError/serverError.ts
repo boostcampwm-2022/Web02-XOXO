@@ -101,3 +101,10 @@ export class FailedToLogin extends CustomError {
     super('로그인에 싪패하였습니다.', HttpStatus.FORBIDDEN);
   }
 }
+
+// 예외처리를 위함임. 찐 에러 아님
+export class NotInLoaginStateError extends CustomError {
+  constructor() {
+    super('로그인 상태가 아닙니다..', HttpStatus.OK);
+  }
+}
