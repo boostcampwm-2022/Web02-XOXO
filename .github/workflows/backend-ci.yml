@@ -15,13 +15,26 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+
       - name: nodeJS
         uses: actions/setup-node@v3
+
+      - name: npm cache
+        uses: actions/cache@v2
+        with:
+          path: backend/node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+
       - name: dependency install
         run: npm ci
+
       - name: eslint test
         run: npm run lint
+
       - name: jest test
         run: npm run test
+
       - name: build
         run: npm run build
