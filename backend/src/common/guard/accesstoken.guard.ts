@@ -19,7 +19,8 @@ export class AccessAuthGuard implements CanActivate {
       request.user = await this.validateToken(accessToken);
       return true;
     } catch (e) {
-      if (request.route.path === '/users') throw new NotInLoaginStateError();
+      if (request.route.path === '/api/users')
+        throw new NotInLoaginStateError();
       throw e;
     }
   }
