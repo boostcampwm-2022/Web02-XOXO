@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumberString } from 'class-validator';
 
 export default class FeedScrollDto {
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   size: number;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   index: number;
 }
