@@ -58,7 +58,10 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
       const mockParam = { feedId: 2 };
-      const mockRoute = { path: '/posting/:feedId', methods: { post: true } };
+      const mockRoute = {
+        path: '/api/posting/:feedId',
+        methods: { post: true },
+      };
 
       Object.assign(req, { route: mockRoute });
       Object.assign(req, { params: mockParam });
@@ -70,7 +73,10 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
       const mockParam = { feedId: 1 };
-      const mockRoute = { path: '/posting/:feedId', methods: { post: true } };
+      const mockRoute = {
+        path: '/api/posting/:feedId',
+        methods: { post: true },
+      };
 
       Object.assign(req, { route: mockRoute });
       Object.assign(req, { params: mockParam });
