@@ -1,6 +1,7 @@
 @import "@src/global";
 .feed-page{
     @include page;
+    height: 100vh;
 }
 .feed-body{
     @include body;

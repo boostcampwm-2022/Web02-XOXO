@@ -113,12 +113,12 @@ const CreateFeed = ({ path }: ICreateFeed) => {
     console.log(formData)
 
     if (path === 'personal') {
-      const { success } = await postPersonalFeed(formData)
-      if (success === true) navigate('/feed')
+      const { success, data }: { success: boolean, data: string } = await postPersonalFeed(formData)
+      if (success) navigate(`/feed/${data}`)
     }
     if (path === 'group') {
-      const { success } = await postGroupFeed(formData)
-      if (success === true) navigate('/feed')
+      const { success, data }: { success: boolean, data: string } = await postGroupFeed(formData)
+      if (success) navigate(`/feed/${data}`)
     }
   }
 

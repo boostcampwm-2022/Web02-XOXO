@@ -1,0 +1,47 @@
+@import "@src/global";
+
+.loading {
+  @include vhcenter;
+  width: 100%;
+  background-color: $white;
+  animation-delay: 0.7s;
+  padding: 4vw 0;
+}
+
+@keyframes hideLoadingScreen {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.loading-circle {
+  position: relative;
+  width: 5vw;
+  height: 5vw;
+  border: 1vw solid #DDDDDD;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  animation: loadingCircle 1s ease-in-out infinite;
+}
+
+@keyframes loadingCircle {
+  from {
+    transform: none;
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-empty {
+  position: absolute;
+  background-color: $white;
+  width: 3vw;
+  height: 4vw;
+  top: -1vw;
+}
