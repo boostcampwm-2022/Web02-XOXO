@@ -22,7 +22,7 @@ export default class UsersService {
       .into(User)
       .values(user)
       .execute();
-    return userId;
+    return userId.identifiers[0].id;
   }
 
   async getUser(findUserInterface: FindUserDto & Record<string, unknown>) {
@@ -39,7 +39,7 @@ export default class UsersService {
       .where(`MATCH(nickname) AGAINST ('+${nickname}*' IN BOOLEAN MODE)`)
       .limit(maxRecord)
       .execute();
-    return userList.filter((user) => user.id !== reqClientId);
+    return userList.filter((user: User) => user.id !== reqClientId);
   }
 
   async setCurrentRefreshToken(refreshtoken: string, id: number) {
