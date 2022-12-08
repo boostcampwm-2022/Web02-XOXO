@@ -16,14 +16,22 @@
   width: calc(100vw - 16px);
   overflow-x: scroll;
   z-index: 2;
+  @include not-mobile{
+    height: 409px;
+    width: 409px;
+  }
   .image-holder {
+    @include vhcenter;
     position: relative;
     border-radius: 8px;
     width: 80vw;
     height: 80vw;
-    @include vhcenter;
     margin-right: 32px;
     background-color: #000;
+    @include not-mobile{
+      width: 340px;
+      height: 340px;
+    }
     img {
       display: block;
       margin: 0;
@@ -36,6 +44,11 @@
       right: -3vw;
       top: -3vw;
       background-color: $primary-3;
+      @include not-mobile{
+        @include circle(25px);
+        right: -12px;
+        top: -12px;
+      }
     }
   }
   .text-container {
@@ -46,9 +59,15 @@
     line-height: 0;
     .title {
       @include medium(4.38vw);
+      @include not-mobile{
+        @include medium(18px);
+      }
     }
     .desc {
       @include regular(3.13vw, $grey-font);
+      @include not-mobile{
+        @include regular(13px, $grey-font);
+      }
     }
   }
 }
@@ -62,10 +81,20 @@
   height: 12.5vw;
   border-top: solid 1px $grey;
   border-bottom: solid 1px $grey;
+  @include not-mobile{
+    padding: 0 16px;
+    height: 53px;
+  }
   .thumbnail-preview {
     @include bold(3.13vw);
+    @include not-mobile{
+      @include bold(13px);
+    }
     &:disabled {
       @include bold(3.13vw, $grey-font);
+      @include not-mobile{
+        @include bold(13px, $grey-font);
+      }
     }
   }
 }
@@ -74,6 +103,11 @@
   padding: 5vw;
   border: 0;
   @include regular(3.13vw);
+  @include not-mobile{
+    width: 340px;
+    padding: 21px;
+    @include regular(13px);
+  }
 }
 canvas {
   display: none;
