@@ -8,13 +8,15 @@ import {
 
 import {
   CustomError,
-  NonExistFeedError,
+  NotInLoaginStateError,
 } from '@root/custom/customError/serverError';
 import { QueryFailedError } from 'typeorm';
+import { ResponseEntity } from '../response/response.entity';
 
 @Catch()
 export class ServerErrorHandlingFilter implements ExceptionFilter {
   catch(error: Error, host: ArgumentsHost) {
+    console.log(error);
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
@@ -22,6 +24,17 @@ export class ServerErrorHandlingFilter implements ExceptionFilter {
     let message: string;
 
     if (error instanceof CustomError) {
+      // 로그인 상태 분기 처리
+      if (error instanceof NotInLoaginStateError) {
+        res.status(200).json({
+          success: true,
+          code: 200,
+          data: false,
+        });
+        // res.send(ResponseEntity.OK_WITH_DATA(false));
+        return;
+      }
+
       statusCode = error.getStatudCode();
       message = error.getMessage();
     } else if (error instanceof QueryFailedError) {

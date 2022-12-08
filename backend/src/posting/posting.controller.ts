@@ -34,11 +34,11 @@ export class PostingController {
 
   @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
-  async lookingPosting(
+  async getPosting(
     @Param('postingId') postingId: number,
     @Param('feedId') feedId: string,
   ) {
-    const res = await this.postingService.getOnlyPostingById(postingId, feedId);
+    const res = await this.postingService.getPosting(postingId, feedId);
     return ResponseEntity.OK_WITH_DATA(res);
   }
 }
