@@ -9,12 +9,16 @@ import Posting from '@pages/Posting'
 import Feeds from '@pages/Feeds'
 import Info from '@pages/Info'
 import Error from '@pages/Error'
+import { ReactComponent as DesktopSideImage } from '@assets/desktopSideImage.svg'
+import './global.scss'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
+  <>
+  <div className='image-wrapper' ><DesktopSideImage width={240}/></div>
   <BrowserRouter>
     <Routes>
-        <Route path="/Feed">
+        <Route path="/Feed" element={<Feed />}>
           <Route path=":feedId" element={<Feed />} />
           <Route path=":feedId">
             <Route path=":postingId" element={<Posting />} />
@@ -32,4 +36,5 @@ root.render(
       <Route path="/*" element={<Error />} />
     </Routes>
   </BrowserRouter>
+  </>
 )
