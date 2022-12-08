@@ -111,7 +111,7 @@ export default class UsersController {
     @Body() joinNicknameDto: JoinNicknameDto,
     @Cookie(new CustomValidationPipe({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const joinMember = new JoinRequestDto(
       joinNicknameDto.nickname,
