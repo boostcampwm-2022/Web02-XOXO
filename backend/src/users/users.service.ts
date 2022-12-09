@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import User from '@root/entities/User.entity';
-import {
-  UnauthorizedError,
-  NonExistFeedError,
-} from '@root/custom/customError/serverError';
+import { UnauthorizedError } from '@root/custom/customError/serverError';
 import FindUserDto from '@users/dto/find.user.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import { UserRepository } from '@users/users.repository';
@@ -26,7 +23,6 @@ export default class UsersService {
     const userList = await this.userRepository.findUserList(
       nickname,
       maxRecord,
-      reqClientId,
     );
     return userList.filter((user: User) => user.id !== reqClientId);
   }
@@ -38,7 +34,6 @@ export default class UsersService {
   async getLastVisitedFeed(id: number) {
     const user = await this.userRepository.findUser({ id });
     const { lastVistedFeed } = user;
-    if (!lastVistedFeed) throw new NonExistFeedError();
     return lastVistedFeed;
   }
 
