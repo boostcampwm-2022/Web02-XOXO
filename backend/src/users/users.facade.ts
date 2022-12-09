@@ -12,7 +12,7 @@ import CookieDto from './dto/cookie.info.dto';
 @Injectable()
 export default class UserFacade {
   constructor(
-    @Inject(forwardRef(() => UsersService)) // 여기 순환참조...
+    @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
     private readonly oauthService: OauthService,
     private readonly authenticationService: AuthenticationService,
@@ -64,7 +64,7 @@ export default class UserFacade {
       );
 
       return {
-        cookies: [kakaoCookie, profilePictureCookie],
+        cookieList: [kakaoCookie, profilePictureCookie],
         redirectURL: `${process.env.CLIENT_URL_PREFIX}/signin/info`,
       };
     }
