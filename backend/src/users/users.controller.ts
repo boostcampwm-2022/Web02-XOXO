@@ -38,7 +38,7 @@ export default class UsersController {
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
   async refreshToken(@UserReq() user: User, @Res() res: Response) {
-    const cookies = await this.userFacade.getToken(user.id, user.nickname);
+    const cookies = await this.userFacade.publishToken(user.id, user.nickname);
 
     Object.values(cookies).forEach((cookie) => {
       res.cookie(cookie.name, cookie.value, cookie.option);

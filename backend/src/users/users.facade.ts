@@ -25,7 +25,7 @@ export default class UserFacade {
     return { user, profilePicture, kakaoId };
   }
 
-  async getToken(userId: number, nickname: string) {
+  async publishToken(userId: number, nickname: string) {
     const { accessToken, ...accessTokenOption } =
       this.authenticationService.getCookieWithJwtAccessToken(nickname, userId);
 
@@ -69,7 +69,7 @@ export default class UserFacade {
       };
     }
 
-    const { refreshTokenCookie, accessTokenCookie } = await this.getToken(
+    const { refreshTokenCookie, accessTokenCookie } = await this.publishToken(
       user.id,
       user.nickname,
     );
@@ -97,7 +97,7 @@ export default class UserFacade {
     );
     const userId = await this.userService.joinUser(joinMember);
 
-    const { refreshTokenCookie, accessTokenCookie } = await this.getToken(
+    const { refreshTokenCookie, accessTokenCookie } = await this.publishToken(
       userId,
       joinMember.nickname,
     );
