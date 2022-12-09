@@ -74,13 +74,15 @@ export default class UserFacade {
       user.nickname,
     );
 
-    const lastVisitedFeedId = user.lastVistedFeed
-      ? encrypt(user.lastVistedFeed.toString())
-      : '';
+    const redirectURL = user.lastVistedFeed
+      ? `${process.env.CLIENT_URL_PREFIX}/feed/${encrypt(
+          user.lastVistedFeed.toString(),
+        )}`
+      : `${process.env.CLIENT_URL_PREFIX}/feeds`;
 
     return {
       cookieList: [accessTokenCookie, refreshTokenCookie],
-      redirectURL: `${process.env.CLIENT_URL_PREFIX}/feed/${lastVisitedFeedId}`,
+      redirectURL,
     };
   }
 
