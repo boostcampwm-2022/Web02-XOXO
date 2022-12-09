@@ -18,8 +18,11 @@ import { UserReq } from '@users/decorators/users.decorators';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
+
 import ResponseDto from '@root/common/response/response.dto';
+import { createHash } from 'crypto';
 import User from '@root/entities/User.entity';
+import { encrypt } from '@root/feed/feed.utils';
 import CookieDto from './dto/cookie.info.dto';
 
 @Controller('users')
