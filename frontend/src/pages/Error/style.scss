@@ -1,7 +1,7 @@
 @import '@src/global';
 .error-page{
   @include vhcenter;
-  height: 70vh;
+  @include page;
 }
 .text-container{
   @include vhcenter;
@@ -10,8 +10,14 @@
   .error-title{
     margin: 0;
     @include bold(20vw, $white);
+    @include not-mobile{
+      @include bold(85px, $white);
+    }
   }
   .error-desc{
     @include bold(4vw, $grey-font);
+    @include not-mobile{
+      @include bold(17px, $grey-font);
+    }
   }
 }

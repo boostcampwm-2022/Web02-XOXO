@@ -1,3 +1,5 @@
+@import './mixin';
+
 $primary-1: #ffefed;
 $primary-2: #edb0a8;
 $primary-3: #ea4b35;
@@ -6,13 +8,6 @@ $grey-font: #d9d9d9;
 $grey: #ededed;
 $white: #ffffff;
 $error: #fd4747;
-
-html,
-body {
-  margin: 0;
-  max-width: 100%;
-  overflow-x: hidden;
-}
 
 @mixin font($color: $black) {
   font-family: 'Noto Sans KR';
@@ -58,9 +53,13 @@ body {
   @include scroll;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: transparent;
   position: relative;
+  @include not-mobile{
+    width: 425px;
+  }
 }
 
 @mixin header {
@@ -107,6 +106,10 @@ a {
     cursor: default;
     background-color: $primary-2;
   }
+  @include not-mobile{
+    @include bold(16px, $font-color);
+    padding: 16px 0;
+  }
 }
 
 @mixin input-common($color: $black) {
@@ -118,8 +121,21 @@ a {
   border-bottom: 1px solid $grey;
   margin: 2.5vw 0;
   color: $color;
+  @include not-mobile{
+    @include regular(16px, $color);
+    height: 28px;
+    margin: 10px 0;
+  }
+  @include desktop{
+    @include regular(16px, $color);
+    height: 28px;
+    margin: 10px 0;
+  }
   &::placeholder {
     @include regular(3.75vw, $grey-font);
+    @include not-mobile{
+      @include regular(16px, $grey-font);
+    }
   }
   &:focus {
     outline: none;
@@ -152,13 +168,48 @@ a {
 
 @mixin form-wrapper($label-color: $black, $font-color: $black) {
   @include display-col(1.25vw);
+  @include not-mobile{
+    @include display-col(5px);
+  }
   .form-label {
     @include medium(4.375vw, $label-color);
+    @include not-mobile{
+      @include bold(18px, $label-color);
+    }
   }
   input {
     @include input-common($font-color);
   }
   .form-warning {
     @include regular(2.5vw, $error);
+    @include not-mobile{
+      @include bold(10px, $error);
+    }
+  }
+}
+
+html,
+body {
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  @include vhcenter;
+  @include desktop {
+    width: 100vw;
+  }
+}
+#root {
+  .image-wrapper{
+    display: none;
+  }
+  @include desktop {
+    @include vhcenter;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    .image-wrapper {
+      display: block;
+      margin-right: 48px;
+    }
   }
 }
