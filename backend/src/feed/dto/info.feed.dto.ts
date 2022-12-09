@@ -7,6 +7,7 @@ export default class FeedInfoDto extends PickType(Feed, [
   'thumbnail',
   'description',
   'dueDate',
+  'isGroupFeed',
 ] as const) {
   postingCnt: number;
 
