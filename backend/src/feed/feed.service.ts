@@ -250,13 +250,12 @@ export class FeedService {
 
     const feedList = await this.dataSource
       .createQueryBuilder()
-      .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
+      .select(['id', 'name', 'thumbnail'])
       .from(Feed, 'feeds')
       .where(`EXISTS (${subQuery.getQuery()})`)
       .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
       .setParameters(subQuery.getParameters())
       .execute();
-    if (!feedList) throw new NonExistFeedError();
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
@@ -272,7 +271,6 @@ export class FeedService {
       .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
       .andWhere('user_feed_mapping.userId = :userId', { userId })
       .getRawMany();
-    if (!feedList) throw new NonExistFeedError();
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
