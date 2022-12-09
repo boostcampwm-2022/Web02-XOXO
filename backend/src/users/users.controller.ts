@@ -18,9 +18,13 @@ import { UserReq } from '@users/decorators/users.decorators';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
-import ResponseEntity from '@root/common/response/response.entity';
 import User from '@root/entities/User.entity';
 import CookieDto from './dto/cookie.info.dto';
+import ResponseDto from '@root/common/response/response.dto';
+import { createHash } from 'crypto';
+import User from '@root/entities/User.entity';
+import { encrypt } from '@root/feed/feed.utils';
+
 
 @Controller('users')
 export default class UsersController {
@@ -32,7 +36,7 @@ export default class UsersController {
   @UseGuards(AccessAuthGuard)
   @Get()
   async checkLoginUser() {
-    return ResponseEntity.OK_WITH_DATA(true);
+    return ResponseDto.OK_WITH_DATA(true);
   }
 
   @UseGuards(RefreshAuthGuard)
@@ -77,7 +81,7 @@ export default class UsersController {
     @Body() joinNicknameDto: JoinNicknameDto,
     @Cookie(new CustomValidationPipe({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const cookieList: CookieDto[] = await this.userFacade.joinUser(
       joinCookieDto,
@@ -87,20 +91,19 @@ export default class UsersController {
     cookieList.forEach((cookie) => {
       res.cookie(cookie.name, cookie.value, cookie.option);
     });
-    res.send(ResponseEntity.CREATED());
+    res.send(ResponseDto.CREATED());
   }
 
   @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
-  async serachUser(@Param('nickname') nickname: string, @UserReq() user: User) {
-    const { id } = user;
-    const userList = await this.userService.getUserList(nickname, 10, id);
-    return ResponseEntity.OK_WITH_DATA(userList);
+  async serachUser(@Param('nickname') nickname: string) {
+    const userList = await this.userService.getUserList(nickname, 10, 10);
+    return ResponseDto.OK_WITH_DATA(userList);
   }
 
   @Get('check/:nickname')
   async checkDuplicateNickname(@Param('nickname') nickname: string) {
     const res = await this.userFacade.checkIsDuplicateNickname(nickname);
-    return ResponseEntity.OK_WITH_DATA(res);
+    return ResponseDto.OK_WITH_DATA(res);
   }
 }
