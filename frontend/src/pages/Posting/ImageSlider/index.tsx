@@ -21,7 +21,6 @@ const ImageSlider = ({ images }: IImageSlider) => {
       }
     })
   )
-  const imageCards = images.map(({ src }: IImageCard) => <ImageCard src={src} key={src} />)
   const settings = {
     dots: true,
     infinite: true,
@@ -31,11 +30,24 @@ const ImageSlider = ({ images }: IImageSlider) => {
     arrows: false,
     beforeChange: (_, index: number) => {
       setPage(index)
+      setImageStatus((imageStatus) => {
+        return imageStatus.map((e) => {
+          if (e.index === page + 2 && !e.isLq) {
+            e.src = getoriginalUrl(e.url)
+            e.isLq = false
+          }
+          return e
+        })
+      })
     }
   }
   return (
     <div className="image-carousel-container">
-      <Slider {...settings}>{imageCards}</Slider>
+      <Slider {...settings}>
+        {imageStatus.map(({ src, index }) => (
+          <ImageCard src={src} key={index} />
+        ))}
+      </Slider>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import React from 'react'
-import { IImageCard } from './types'
 
-const ImageCard = ({ src }: IImageCard) => {
+const ImageCard = ({ src }: { src: string }) => {
   return (
     <div key={src} className="image-container">
       <div>
