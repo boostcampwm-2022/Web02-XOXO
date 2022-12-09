@@ -25,6 +25,9 @@ jobs:
       - name: build
         run: npm run build
 
+      - name: compress build file
+        run: zip ./artifacts/build.zip -r ./dist
+
       - name: Deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
@@ -32,5 +35,5 @@ jobs:
           AWS_DEFAULT_REGION: ap-northeast-2
         run: 
           aws --endpoint-url=https://kr.object.ncloudstorage.com  
-          s3 cp ./dist
-          s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy --recursive
+          s3 cp ./artifacts/build.zip
+          s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy
