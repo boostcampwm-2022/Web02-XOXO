@@ -7,27 +7,27 @@ class CookieOptionDto {
 }
 
 export default class CookieDto {
-  private name: string;
+  private Name: string;
 
-  private value: string;
+  private Value: string;
 
-  private option: CookieOptionDto;
+  private Option: CookieOptionDto;
 
   constructor(name: string, value: string, option: CookieOptionDto) {
-    this.name = name;
-    this.value = value;
-    this.option = option;
+    this.Name = name;
+    this.Value = value;
+    this.Option = option;
   }
 
-  getName() {
-    return this.name;
+  get name() {
+    return this.Name;
   }
 
-  getValue() {
-    return this.value;
+  get value() {
+    return this.Value;
   }
 
-  getOption() {
-    return this.option;
+  get option() {
+    return this.Option;
   }
 }

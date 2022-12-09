@@ -41,7 +41,7 @@ export default class UsersController {
     const cookies = await this.userFacade.getToken(user.id, user.nickname);
 
     Object.values(cookies).forEach((cookie) => {
-      res.cookie(cookie.getName(), cookie.getValue(), cookie.getOption());
+      res.cookie(cookie.name, cookie.value, cookie.option);
     });
     return res.redirect(process.env.SERVER_URL_PREFIX);
   }
@@ -58,7 +58,7 @@ export default class UsersController {
     const { cookieList, redirectURL } = await this.userFacade.login(code);
 
     cookieList.forEach((cookie) => {
-      res.cookie(cookie.getName(), cookie.getValue(), cookie.getOption());
+      res.cookie(cookie.name, cookie.value, cookie.option);
     });
     res.redirect(redirectURL);
   }
@@ -85,7 +85,7 @@ export default class UsersController {
     );
 
     cookieList.forEach((cookie) => {
-      res.cookie(cookie.getName(), cookie.getValue(), cookie.getOption());
+      res.cookie(cookie.name, cookie.value, cookie.option);
     });
     res.send(ResponseEntity.CREATED());
   }
