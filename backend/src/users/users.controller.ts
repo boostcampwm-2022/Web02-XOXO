@@ -11,26 +11,22 @@ import {
   Param,
 } from '@nestjs/common';
 import Cookie from '@root/custom/customDecorator/cookie.decorator';
-import { AuthenticationService } from '@root/authentication/authentication.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { RefreshAuthGuard } from '@root/common/guard/refreshtoken.guard';
 import UsersService from '@users/users.service';
-import usersDecorators, { UserReq } from '@users/decorators/users.decorators';
+import { UserReq } from '@users/decorators/users.decorators';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
-import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
 import ResponseEntity from '@root/common/response/response.entity';
 import User from '@root/entities/User.entity';
-import { createHash } from 'crypto';
-import { encrypt } from '@root/feed/feed.utils';
+import CookieDto from './dto/cookie.info.dto';
 
 @Controller('users')
 export default class UsersController {
   constructor(
     private readonly userService: UsersService,
-    private readonly facade: UserFacade,
-    private readonly authenticationService: AuthenticationService,
+    private readonly userFacade: UserFacade,
   ) {}
 
   @UseGuards(AccessAuthGuard)
@@ -42,19 +38,11 @@ export default class UsersController {
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
   async refreshToken(@UserReq() user: User, @Res() res: Response) {
-    const { accessToken, ...accessTokenOption } =
-      this.authenticationService.getCookieWithJwtAccessToken(
-        user.nickname,
-        user.id,
-      );
-    const { refreshToken, ...refreshTokenOption } =
-      this.authenticationService.getCookieWithJwtRefreshToken(
-        user.nickname,
-        user.id,
-      );
-    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
-    res.cookie('refreshToken', refreshToken, refreshTokenOption);
-    res.cookie('accessToken', accessToken, accessTokenOption);
+    const cookies = await this.userFacade.getToken(user.id, user.nickname);
+
+    Object.values(cookies).forEach((cookie) => {
+      res.cookie(cookie.getName(), cookie.getValue(), cookie.getOption());
+    });
     return res.redirect(process.env.SERVER_URL_PREFIX);
   }
 
@@ -67,39 +55,12 @@ export default class UsersController {
 
   @Get('kakao/callback')
   async loginUser(@Query('code') code: string, @Res() res: Response) {
-    const { user, profilePicture, kakaoId } =
-      await this.facade.getUserInfoFromKakao(code);
-    if (!user) {
-      res.cookie('kakaoId', kakaoId, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 1000,
-      });
-      res.cookie('profilePicture', profilePicture, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 1000,
-      });
-      return res.redirect(`${process.env.CLIENT_URL_PREFIX}/signin/info`);
-    }
+    const { cookieList, redirectURL } = await this.userFacade.login(code);
 
-    const { accessToken, ...accessTokenOption } =
-      this.authenticationService.getCookieWithJwtAccessToken(
-        user.nickname,
-        user.id,
-      );
-    const { refreshToken, ...refreshTokenOption } =
-      this.authenticationService.getCookieWithJwtRefreshToken(
-        user.nickname,
-        user.id,
-      );
-    await this.userService.setCurrentRefreshToken(refreshToken, user.id);
-    res.cookie('refreshToken', refreshToken, refreshTokenOption);
-    res.cookie('accessToken', accessToken, accessTokenOption);
-    const lastVisitedFeedId = user.lastVistedFeed
-      ? encrypt(user.lastVistedFeed.toString())
-      : '';
-    return res.redirect(
-      `${process.env.CLIENT_URL_PREFIX}/api/feed/${lastVisitedFeedId}`,
-    );
+    cookieList.forEach((cookie) => {
+      res.cookie(cookie.getName(), cookie.getValue(), cookie.getOption());
+    });
+    res.redirect(redirectURL);
   }
 
   @UseGuards(AccessAuthGuard)
@@ -118,26 +79,14 @@ export default class UsersController {
     joinCookieDto: JoinCookieDto,
     @Res() res: Response,
   ) {
-    const joinMember = new JoinRequestDto(
-      joinNicknameDto.nickname,
-      joinCookieDto.kakaoId,
-      joinCookieDto.profilePicture,
+    const cookieList: CookieDto[] = await this.userFacade.joinUser(
+      joinCookieDto,
+      joinNicknameDto,
     );
-    const userId = await this.userService.joinUser(joinMember);
 
-    const { accessToken, ...accessTokenOption } =
-      this.authenticationService.getCookieWithJwtAccessToken(
-        joinMember.nickname,
-        userId,
-      );
-    const { refreshToken, ...refreshTokenOption } =
-      this.authenticationService.getCookieWithJwtRefreshToken(
-        joinMember.nickname,
-        userId,
-      );
-    await this.userService.setCurrentRefreshToken(refreshToken, userId);
-    res.cookie('refreshToken', refreshToken, refreshTokenOption);
-    res.cookie('accessToken', accessToken, accessTokenOption);
+    cookieList.forEach((cookie) => {
+      res.cookie(cookie.getName(), cookie.getValue(), cookie.getOption());
+    });
     res.send(ResponseEntity.CREATED());
   }
 
@@ -151,12 +100,7 @@ export default class UsersController {
 
   @Get('check/:nickname')
   async checkDuplicateNickname(@Param('nickname') nickname: string) {
-    const res = await this.userService.getUser({
-      hashedNickname: createHash('md5').update(nickname).digest('hex'),
-    });
-    if (res) {
-      return ResponseEntity.OK_WITH_DATA(true);
-    }
-    return ResponseEntity.OK_WITH_DATA(false);
+    const res = await this.userFacade.checkIsDuplicateNickname(nickname);
+    return ResponseEntity.OK_WITH_DATA(res);
   }
 }
