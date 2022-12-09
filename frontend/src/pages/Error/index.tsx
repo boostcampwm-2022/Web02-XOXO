@@ -10,7 +10,6 @@ const Error = () => {
         <p className='error-title'>404</p>
         <p className='error-desc'>여긴 당신이 찾는 웹페이지가 아니에요 :(</p>
       </div>
-
     </div>
   )
 }

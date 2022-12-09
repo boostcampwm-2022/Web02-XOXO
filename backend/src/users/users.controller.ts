@@ -55,7 +55,7 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    return res.redirect('http://localhost:3001');
+    return res.redirect(process.env.SERVER_URL_PREFIX);
   }
 
   @Get('kakao')
@@ -78,7 +78,7 @@ export default class UsersController {
         httpOnly: true,
         maxAge: 60 * 60 * 1000,
       });
-      return res.redirect('http://localhost:3000/signin/info');
+      return res.redirect(`${process.env.CLIENT_URL_PREFIX}/signin/info`);
     }
 
     const { accessToken, ...accessTokenOption } =
@@ -108,7 +108,7 @@ export default class UsersController {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
-    return res.redirect('http://localhost:3000');
+    return res.redirect(process.env.CLIENT_URL_PREFIX);
   }
 
   @Post('join')

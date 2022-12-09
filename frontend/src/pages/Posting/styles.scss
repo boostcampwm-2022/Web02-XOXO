@@ -8,6 +8,9 @@
   @include display-col(3.75vw);
   padding: 0;
   gap: 0;
+  @include not-mobile{
+    @include display-col(16px);
+  }
 }
 .image-container {
   aspect-ratio: 1/1;
@@ -28,11 +31,22 @@
   height: 15vw;
   padding-left: 5vw;
   gap: 2.5vw;
+  @include not-mobile{
+    height: 64px;
+    padding-left: 21px;
+    gap: 10px;
+  }
   &-picture {
     @include circle(7.5vw, true, $grey);
+    @include not-mobile{
+      @include circle(32px, true, $grey);
+    }
   }
   span {
     @include medium(3.75vw, $black);
+    @include not-mobile{
+      @include medium(16px, $black);
+    }
   }
 }
 .slick-slider {
@@ -40,10 +54,18 @@
   .slick-dots {
     position: absolute;
     bottom: 2.5vw;
+    @include not-mobile{
+      bottom: 10px;
+    }
   }
 }
 .letter-container {
   @include regular(3.13vw, $black);
   margin-top: 3.75vw;
   padding: 0 5vw;
+  @include not-mobile{
+    @include regular(13px, $black);
+    margin-top: 16px;
+    padding: 0 21px;
+  }
 }

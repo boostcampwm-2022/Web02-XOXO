@@ -6,25 +6,47 @@
 .feeds-body {
   @include body;
   padding: 2.5vw 5vw;
+  @include not-mobile{
+    padding: 10px 20px;
+  }
 }
 .feeds-title {
   @include medium(3.75vw, $black);
   display: block;
   margin: 3.75vw 0;
+  @include not-mobile{
+    @include medium(16px, $black);
+    margin: 16px 0;
+  }
 }
 .feeds-list {
   padding-bottom: 1.5vw;
+  @include not-mobile{
+    padding-bottom: 6px;
+  }
   .feeds-card {
     @include vcenter;
     padding: 1.25vw 0;
+    @include not-mobile{
+      padding: 5px 0;
+    }
     &-circle {
       margin-right: 2.5vw;
+      @include not-mobile{
+        margin-right: 10px;
+      }
       &.add {
         @include circle(9.375vw, true, $primary-3);
         @include vhcenter;
+        @include not-mobile{
+          @include circle(40px, true, $primary-3);
+        }
       }
       &.basic {
         @include circle(10vw);
+        @include not-mobile{
+          @include circle(42px);
+        }
       }
     }
 
@@ -32,9 +54,15 @@
       vertical-align: center;
       &.add {
         @include medium(3.13vw, $black);
+        @include not-mobile{
+          @include medium(12px, $black);
+        }
       }
       &.basic {
         @include regular(3.13vw, $black);
+        @include not-mobile{
+          @include regular(12px, $black);
+        }
       }
     }
   }
