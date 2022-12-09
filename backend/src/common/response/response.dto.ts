@@ -1,47 +1,51 @@
+/* eslint-disable no-underscore-dangle */
 import { Exclude, Expose } from 'class-transformer';
 
-export class ResponseDto<T> {
-  @Exclude() private readonly Success: true;
+export class ResponseDto {
+  @Exclude()
+  private readonly _success: true;
 
-  @Exclude() private readonly Status: number;
+  @Exclude()
+  private readonly _code: number;
 
-  @Exclude() private readonly Data: T;
+  @Exclude()
+  private readonly _data: any;
 
-  protected constructor(status: number, data: T) {
-    this.Success = true;
-    this.Status = status;
-    this.Data = data;
+  private constructor(status: number, data: any) {
+    this._success = true;
+    this._code = status;
+    this._data = data;
   }
 
-  static OK(): ResponseDto<string> {
-    return new ResponseDto<string>(200, '');
+  static OK(): ResponseDto {
+    return new ResponseDto(200, '');
   }
 
-  static OK_WITH_DATA<T>(data: T): ResponseDto<T> {
-    return new ResponseDto<T>(200, data);
+  static OK_WITH_DATA(data: any): ResponseDto {
+    return new ResponseDto(200, data);
   }
 
-  static CREATED(): ResponseDto<string> {
+  static CREATED(): ResponseDto {
     return new ResponseDto(201, '');
   }
 
-  static CREATED_WITH_DATA<T>(data: T): ResponseDto<T> {
-    return new ResponseDto<T>(201, data);
+  static CREATED_WITH_DATA(data: any): ResponseDto {
+    return new ResponseDto(201, data);
   }
 
   @Expose()
-  get success() {
-    return this.Success;
+  get success(): true {
+    return this._success;
   }
 
   @Expose()
-  get status() {
-    return this.Status;
+  get code() {
+    return this._code;
   }
 
   @Expose()
-  get data(): T {
-    return this.Data;
+  get data() {
+    return this._data;
   }
 }
 export default ResponseDto;

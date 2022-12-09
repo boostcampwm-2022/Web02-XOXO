@@ -5,16 +5,14 @@ import {
   ExceptionFilter,
   HttpStatus,
 } from '@nestjs/common';
-
 import {
   CustomError,
   NotInLoaginStateError,
 } from '@root/custom/customError/serverError';
 import { QueryFailedError } from 'typeorm';
-import { ResponseDto } from '../response/response.dto';
 
 @Catch()
-export class ServerErrorHandlingFilter implements ExceptionFilter {
+export class ServerErrorExceptionFilter implements ExceptionFilter {
   catch(error: Error, host: ArgumentsHost) {
     console.log(error);
     const ctx = host.switchToHttp();
