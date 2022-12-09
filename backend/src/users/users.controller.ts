@@ -15,14 +15,14 @@ import { AuthenticationService } from '@root/authentication/authentication.servi
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { RefreshAuthGuard } from '@root/common/guard/refreshtoken.guard';
 import UsersService from '@users/users.service';
-import usersDecorators, { UserReq } from '@users/decorators/users.decorators';
+import { UserReq } from '@users/decorators/users.decorators';
 import JoinNicknameDto from '@users/dto/join.nickname.dto';
 import JoinRequestDto from '@users/dto/join.request.dto';
 import UserFacade from '@users/users.facade';
 import JoinCookieDto from '@users/dto/join.cookie.dto';
-import ResponseEntity from '@root/common/response/response.entity';
-import User from '@root/entities/User.entity';
+import ResponseDto from '@root/common/response/response.dto';
 import { createHash } from 'crypto';
+import User from '@root/entities/User.entity';
 import { encrypt } from '@root/feed/feed.utils';
 
 @Controller('users')
@@ -36,7 +36,7 @@ export default class UsersController {
   @UseGuards(AccessAuthGuard)
   @Get()
   async checkLoginUser() {
-    return ResponseEntity.OK_WITH_DATA(true);
+    return ResponseDto.OK_WITH_DATA(true);
   }
 
   @UseGuards(RefreshAuthGuard)
@@ -94,12 +94,12 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    const lastVisitedFeedId = user.lastVistedFeed
-      ? encrypt(user.lastVistedFeed.toString())
-      : '';
-    return res.redirect(
-      `${process.env.CLIENT_URL_PREFIX}/api/feed/${lastVisitedFeedId}`,
-    );
+    const lastVisitedFeed = user.lastVistedFeed;
+    if (lastVisitedFeed)
+      return res.redirect(
+        `http://localhost:3000/feed/${encrypt(lastVisitedFeed.toString())}`,
+      );
+    return res.redirect(`http://localhost:3000/feeds`);
   }
 
   @UseGuards(AccessAuthGuard)
@@ -116,7 +116,7 @@ export default class UsersController {
     @Body() joinNicknameDto: JoinNicknameDto,
     @Cookie(new CustomValidationPipe({ validateCustomDecorators: true }))
     joinCookieDto: JoinCookieDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const joinMember = new JoinRequestDto(
       joinNicknameDto.nickname,
@@ -138,15 +138,14 @@ export default class UsersController {
     await this.userService.setCurrentRefreshToken(refreshToken, userId);
     res.cookie('refreshToken', refreshToken, refreshTokenOption);
     res.cookie('accessToken', accessToken, accessTokenOption);
-    res.send(ResponseEntity.CREATED());
+    return ResponseDto.CREATED();
   }
 
   @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
-  async serachUser(@Param('nickname') nickname: string, @UserReq() user: User) {
-    const { id } = user;
-    const userList = await this.userService.getUserList(nickname, 10, id);
-    return ResponseEntity.OK_WITH_DATA(userList);
+  async serachUser(@Param('nickname') nickname: string) {
+    const userList = await this.userService.getUserList(nickname, 10, 10);
+    return ResponseDto.OK_WITH_DATA(userList);
   }
 
   @Get('check/:nickname')
@@ -155,8 +154,8 @@ export default class UsersController {
       hashedNickname: createHash('md5').update(nickname).digest('hex'),
     });
     if (res) {
-      return ResponseEntity.OK_WITH_DATA(true);
+      return ResponseDto.OK_WITH_DATA(true);
     }
-    return ResponseEntity.OK_WITH_DATA(false);
+    return ResponseDto.OK_WITH_DATA(false);
   }
 }

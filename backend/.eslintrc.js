@@ -41,5 +41,6 @@ module.exports = {
     'max-classes-per-file': 0,
     'class-methods-use-this': 0,
     'no-restricted-syntax': 0,
+    'no-underscore-dangle': 0,
   },
 };

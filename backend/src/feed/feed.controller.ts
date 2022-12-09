@@ -20,7 +20,7 @@ import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
-import ResponseEntity from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.dto';
 import FeedScrollDto from './dto/request/feed.scroll.dto';
 
 @UseGuards(AccessAuthGuard)
@@ -36,7 +36,7 @@ export class FeedController {
   ) {
     const userId = user.id;
     const feedParam = await this.feedService.createFeed(createFeedDto, userId);
-    return ResponseEntity.CREATED_WITH_DATA(feedParam);
+    return ResponseDto.CREATED_WITH_DATA(feedParam);
   }
 
   @UseGuards(AuthorizationGuard)
@@ -48,7 +48,7 @@ export class FeedController {
   ) {
     const feedId = decrypt(encryptedFeedId);
     await this.feedService.editFeed(createFeedDto, Number(feedId));
-    return ResponseEntity.OK();
+    return ResponseDto.OK();
   }
 
   @Post('group')
@@ -63,7 +63,7 @@ export class FeedController {
       [...memberIdList, user.id],
     );
 
-    return ResponseEntity.CREATED_WITH_DATA(encryptedFeedID);
+    return ResponseDto.CREATED_WITH_DATA(encryptedFeedID);
   }
 
   @UseGuards(AuthorizationGuard)
@@ -81,21 +81,21 @@ export class FeedController {
       user.id,
     ]);
 
-    return ResponseEntity.OK();
+    return ResponseDto.OK();
   }
 
   @Get('list')
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
-    return ResponseEntity.OK_WITH_DATA(feedList);
+    return ResponseDto.OK_WITH_DATA(feedList);
   }
 
   @Get('group/list')
   async getGroupFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
-    return ResponseEntity.OK_WITH_DATA(feedList);
+    return ResponseDto.OK_WITH_DATA(feedList);
   }
 
   @UseGuards(AccessAuthGuard)
@@ -106,7 +106,7 @@ export class FeedController {
   ) {
     const userId = user.id;
     const feedInfo = await this.feedService.getFeedInfo(encryptedId, userId);
-    return ResponseEntity.OK_WITH_DATA(feedInfo);
+    return ResponseDto.OK_WITH_DATA(feedInfo);
   }
 
   @Get('scroll/:feedId')
@@ -119,6 +119,6 @@ export class FeedController {
       startPostingId,
       scrollSize,
     );
-    return ResponseEntity.OK_WITH_DATA(postingThumbnailList);
+    return ResponseDto.OK_WITH_DATA(postingThumbnailList);
   }
 }
