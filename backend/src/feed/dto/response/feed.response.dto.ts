@@ -16,11 +16,13 @@ export default class FeedResponseDto extends PickType(Feed, [
     this.encryptedId = encrypt(feed.id.toString());
   }
 
-  static makeFeedResponseDto(feed: Feed) {
+  static makeFeedResponseDto(feed) {
+    if (!feed) return null;
     return new FeedResponseDto(feed);
   }
 
-  static makeFeedResponseArray(feeds: Feed[]) {
+  static makeFeedResponseArray(feeds) {
+    if (!feeds) return null;
     const feedResponseArray = feeds.map((feed) => new FeedResponseDto(feed));
     return feedResponseArray;
   }

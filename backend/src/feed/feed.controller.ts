@@ -95,6 +95,7 @@ export class FeedController {
   async getGroupFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
+    // return ResponseEntity.OK_WITH_DATA(null);
     return ResponseEntity.OK_WITH_DATA(feedList);
   }
 
