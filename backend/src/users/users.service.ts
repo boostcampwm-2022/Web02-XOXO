@@ -31,12 +31,6 @@ export default class UsersService {
     await this.userRepository.updateRefreshToken(id, refreshtoken);
   }
 
-  async getLastVisitedFeed(id: number) {
-    const user = await this.userRepository.findUser({ id });
-    const { lastVistedFeed } = user;
-    return lastVistedFeed;
-  }
-
   async getUserIfRefreshTokenMatches(refreshtoken: string, id: number) {
     const user = await this.userRepository.findUser({
       currentRefreshToken: refreshtoken,
