@@ -39,6 +39,7 @@ export class FeedService {
           description: true,
           thumbnail: true,
           dueDate: true,
+          isGroupFeed: true,
         },
       });
       const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
