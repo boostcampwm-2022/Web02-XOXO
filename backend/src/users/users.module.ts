@@ -15,7 +15,6 @@ import { UserRepository } from './users.repository';
   imports: [
     OauthModule,
     TypeOrmCustomModule.forCustomRepository(UserRepository),
-    TypeOrmModule.forFeature([User]),
   ],
   controllers: [UsersController],
   providers: [
