@@ -34,8 +34,17 @@ jobs:
       - name: build
         run: npm run build
 
+      - name: make deploy directory
+        run: mkdir ./build
+      
+      - name: copy .json files
+        run: cp package*.json ./build
+      
+      - name: copy build file
+        run: cp -r ./dist ./build
+
       - name: compress build file
-        run: zip ./build.zip -r ./dist
+        run: zip ./build.zip -r ./build
 
       - name: Deploy
         env:
