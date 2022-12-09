@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { Exclude, Expose } from 'class-transformer';
 
 export class ResponseDto {

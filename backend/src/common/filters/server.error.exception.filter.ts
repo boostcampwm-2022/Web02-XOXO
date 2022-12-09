@@ -14,7 +14,6 @@ import { QueryFailedError } from 'typeorm';
 @Catch()
 export class ServerErrorExceptionFilter implements ExceptionFilter {
   catch(error: Error, host: ArgumentsHost) {
-    console.log(error);
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
 
