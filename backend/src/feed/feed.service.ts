@@ -29,7 +29,7 @@ export class FeedService {
     await queryRunner.startTransaction();
     try {
       const id = Number(decrypt(encryptedFeedID));
-      const feed = await this.dataSource.getRepository(Feed).find({
+      const feed = await queryRunner.manager.getRepository(Feed).find({
         where: { id },
         relations: ['postings', 'users'],
         select: {
@@ -44,7 +44,7 @@ export class FeedService {
       });
       const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
       if (feedInfoDto.isOwner) {
-        await this.dataSource
+        await queryRunner.manager
           .getRepository(User)
           .update(userId, { lastVistedFeed: id });
       }
