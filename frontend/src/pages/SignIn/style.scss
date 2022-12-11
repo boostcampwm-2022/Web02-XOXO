@@ -1,10 +1,11 @@
 @import '@src/global';
 
 .signin-page {
-  height: 100vh;
+  @include page;
   .signin-body {
     @include vcenter;
-    padding: 15vw 16px;
+    @include body;
+    padding: 10vh 16px;
     flex-direction: column;
     .icon-wrapper {
       width: 100%;
@@ -16,6 +17,10 @@
       text-align: right;
       @include bold(3.75vw, $white);
       line-height: 2vw;
+      @include not-mobile{
+        @include bold(16px, $white);
+        line-height: 8.5px;
+      }
     }
       .kakao-auth-button {
         width: 100%;

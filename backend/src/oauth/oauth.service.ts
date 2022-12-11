@@ -1,7 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { AxiosRequestConfig } from 'axios';
+import { FailedToLogin } from '@root/custom/customError/serverError';
 import PostFormDto from './dto/oauth.postform.dto';
 import { makeFormData, parseToken } from './oauth.utils';
 
@@ -18,7 +19,7 @@ export class OauthService {
       payload.aud !== process.env.KAKAO_CLIENT_ID ||
       payload.exp < new Date().getTime() / 1000
     )
-      throw new ForbiddenException('openID가 유효하지 않습니다.');
+      throw new FailedToLogin();
 
     // to-do : 서명 알고리즘 추가
     return { kakaoId: payload.sub, profilePicture: payload.picture };
@@ -51,7 +52,7 @@ export class OauthService {
           }),
         ),
     );
-    if (!openId) throw new ForbiddenException('openID가 유효하지 않습니다.');
+    if (!openId) throw new FailedToLogin();
 
     return openId;
   }

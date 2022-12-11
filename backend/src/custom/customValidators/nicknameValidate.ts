@@ -21,7 +21,7 @@ export class InvalidNickname implements ValidatorConstraintInterface {
 }
 
 export default function IsValidNickname(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
+  return (object: any, propertyName: string) => {
     registerDecorator({
       name: 'IsValidNickname',
       target: object.constructor,

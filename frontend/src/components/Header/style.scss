@@ -9,6 +9,9 @@
     .text {
       @include bold(5vw, $black);
       margin-right: 4px;
+      @include not-mobile{
+        @include bold(22px, $black);
+      }
     }
   }
 }
@@ -16,4 +19,8 @@
   @include vhcenter;
   @include bold(5vw, $black);
   height: 16vw;
+  @include not-mobile{
+    @include bold(22px, $black);
+    height: 68px
+  }
 }

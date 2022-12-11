@@ -8,6 +8,11 @@
   @include body;
   .icon-image {
     height: 20vw;
+    margin-bottom: 4vw;
+    @include not-mobile{
+      height: 85px;
+      margin-bottom: 17px;
+    }
   }
   .form-wrapper {
     @include form-wrapper($white, $white);
@@ -15,6 +20,9 @@
   }
   .form-button {
     @include button-large(#fee500, $black);
-    margin-top: 9vw;
+    margin-top: 4vw;
+    @include not-mobile{
+      margin-top: 17px;
+    }
   }
 }

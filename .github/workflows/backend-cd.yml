@@ -1,0 +1,39 @@
+name: Backend CD Github Action
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀🚀🚀🚀
+on:
+  pull_request:
+    branches:
+      - deploy
+jobs:
+  back-cd-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        
+      - name: nodeJS
+        uses: actions/setup-node@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: ${{ runner.OS }}-master-build-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+
+      - name: dependency install
+        run: npm ci
+
+      - name: build
+        run: npm run build
+
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: $
+          AWS_SECRET_ACCESS_KEY: $
+        run: |
+          aws --endpoint-url=https://kr.object.ncloudstorage.com  
+          s3 cp --recursive /
+          s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}

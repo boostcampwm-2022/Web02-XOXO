@@ -37,6 +37,12 @@ export default class User implements UserInterface {
   @Column('bigint', { name: 'kakaoId', unique: true, unsigned: true })
   kakaoId: number;
 
+  @Index({ unique: true })
+  @IsString()
+  @IsNotEmpty()
+  @Column('char', { name: 'hashedNickname', length: 32 })
+  hashedNickname: string;
+
   @DeleteDateColumn()
   deletedAt: Date | null;
 
@@ -52,4 +58,7 @@ export default class User implements UserInterface {
   @Column({ nullable: true })
   @Exclude()
   currentRefreshToken?: string;
+
+  @Column({ nullable: true })
+  lastVistedFeed?: number;
 }

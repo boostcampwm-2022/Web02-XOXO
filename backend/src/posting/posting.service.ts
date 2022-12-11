@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import Posting from '@root/entities/Posting.entity';
-import {
-  DBError,
-  NonExistFKConstraintError,
-} from '@root/customError/serverError';
-import FindPostingDto from '@posting/dto/find.posting.dto';
-import { decrypt, encrypt } from '@root/feed/feed.utils';
+import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
+import LookingPostingDto from './dto/looking.posting.dto';
 
 @Injectable()
 export class PostingService {
@@ -18,16 +14,18 @@ export class PostingService {
     private dataSource: DataSource,
   ) {}
 
-  async getPosting(findPostingDto: FindPostingDto & Record<string, unknown>) {
-    try {
-      const posting = await this.postingRepository.find({
-        where: findPostingDto,
-        relations: ['feed'],
-      });
-      return posting;
-    } catch (e) {
-      throw new DBError('DBError: getUser 오류');
-    }
+  async getPosting(postindId: number, encryptedFeedId: string) {
+    const feedId = Number(decrypt(encryptedFeedId));
+    const posting = await this.postingRepository.find({
+      where: { id: postindId, feed: { id: feedId } },
+      relations: ['images', 'sender', 'feed'],
+      select: {
+        images: { url: true },
+        sender: { nickname: true, profile: true },
+        feed: { name: true },
+      },
+    });
+    return LookingPostingDto.createLookingPostingDto(posting[0]);
   }
 
   async createPosting(
@@ -54,15 +52,8 @@ export class PostingService {
       await queryRunner.commitTransaction();
       return posting.id;
     } catch (e) {
-      const errorType = e.code;
       await queryRunner.rollbackTransaction();
-
-      if (errorType === 'ER_NO_REFERENCED_ROW_2')
-        throw new NonExistFKConstraintError(
-          '존재하지 않는 유저, 또는 피드 입니다.',
-        );
-
-      throw new DBError('DBError: createPosting 오류');
+      throw e;
     } finally {
       await queryRunner.release();
     }

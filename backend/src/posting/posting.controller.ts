@@ -4,6 +4,8 @@ import { PostingService } from '@posting/posting.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 import { UserReq } from '@root/users/decorators/users.decorators';
 import User from '@root/entities/User.entity';
+import { NonExistPostingError } from '@root/custom/customError/serverError';
+import ResponseDto from '@root/common/response/response.dto';
 import { CreatePostingReqDto } from './dto/create.posting.dto';
 
 @UseGuards(AccessAuthGuard)
@@ -11,13 +13,14 @@ import { CreatePostingReqDto } from './dto/create.posting.dto';
 export class PostingController {
   constructor(private readonly postingService: PostingService) {}
 
+  @UseGuards(DueDateGuard)
   @Post('/:feedId')
   async createPosting(
     @UserReq() user: User,
     @Param('feedId') encryptedFeedId: string,
     @Body() createPostingReq: CreatePostingReqDto,
   ) {
-    const res = await this.postingService.createPosting(
+    const postingId = await this.postingService.createPosting(
       {
         letter: createPostingReq.letter,
         thumbnail: createPostingReq.thumbnail,
@@ -26,12 +29,17 @@ export class PostingController {
       },
       createPostingReq.images,
     );
-    return res;
+    return ResponseDto.CREATED_WITH_DATA(postingId);
   }
 
-  @Get('test/:postingId')
+  @Get('/:feedId/:postingId')
   @UseGuards(DueDateGuard)
-  testFunction(@Param('postingId') postingId: number) {
-    return postingId;
+  async getPosting(
+    @Param('postingId') postingId: number,
+    @Param('feedId') feedId: string,
+  ) {
+    const res = await this.postingService.getPosting(postingId, feedId);
+    if (!res) throw new NonExistPostingError();
+    return ResponseDto.OK_WITH_DATA(res);
   }
 }

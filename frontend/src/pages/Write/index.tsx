@@ -8,88 +8,168 @@ import './style.scss'
 import { ReactComponent as CameraIcon } from '@assets/uploadCameraIcon.svg'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
 import ThumbnailPreview from './ThumbnailPreview'
-// import uploader from '@util/uploader'
 import usePost from '@hooks/usePost'
+import { isEmpty } from 'lodash'
+import { ImagePixelated } from 'react-pixelate'
+import { compressImage } from '@src/util/imageCompress'
+import { useNavigate, useParams } from 'react-router-dom'
+import { cropImg } from '@src/util/cropImg'
+
+interface IImage {
+  originalImage: File
+  compressedImage: File | undefined
+  thumbnailSrc: string
+}
+interface IPosting {
+  letter?: string
+  thumbnail?: string
+  images?: string[]
+  feedId?: string
+}
 
 const Write = () => {
-  const [imageList, setImageList] = useState<File[]>([])
-  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [images, setImages] = useState<IImage[]>([])
   const [isModalOpen, setModalOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
   const postImage = usePost('/image')
+  const letterRef = useRef<HTMLTextAreaElement>(null)
+  const [pixelatedFile, setPixelatedFile] = useState<File>()
+  const { feedId } = useParams()
+  const postPosting = usePost(`/posting/${feedId!}`)
+  const navigate = useNavigate()
+  const [croppedURL, setCroppedURL] = useState('')
 
   useEffect(() => {
-    const imageUrlList = Object.values(imageList).map((image: any) => {
-      return URL.createObjectURL(image)
-    })
-    setImagePreviews(imageUrlList)
-  }, [imageList])
-
-  const handleImageState: ChangeEventHandler<HTMLInputElement> = (event: any) => {
-    const images: FileList = event.target.files
-    if (imageList.length + images.length > 10) {
+    if (isEmpty(images)) return
+    void (async () => {
+      const url = await cropImg(images[0].originalImage)
+      setCroppedURL(url)
+    })()
+    const canvas = document.querySelector('canvas')
+    canvas?.toBlob(
+      (blob) => {
+        const newPixelatedFile = new File([blob as BlobPart], 'name.jpeg', { type: 'image/jpeg' })
+        setPixelatedFile(newPixelatedFile)
+      },
+      'image/jpeg',
+      100
+    )
+  }, [images])
+  const handleImageState: ChangeEventHandler<HTMLInputElement> = async (event: any) => {
+    const newImages: FileList = event.target.files
+    if (images.length + newImages.length > 10) {
       toast('이미지는 최대 10장만 업로드 가능합니다.')
       return
     }
-    setImageList((prev) => [...prev, ...Array.from(images)])
+    setImages((prev) => [
+      ...prev,
+      ...Array.from(newImages).map((image): IImage => {
+        return {
+          originalImage: image,
+          compressedImage: undefined,
+          thumbnailSrc: URL.createObjectURL(image)
+        }
+      })
+    ])
   }
 
   const handleCameraButton = () => {
-    if (inputRef.current !== null) {
-      inputRef.current.click()
-    }
+    if (!isEmpty(imageRef.current)) imageRef.current.click()
   }
-  const handleDeleteButton = (id: number) => {
-    setImagePreviews(imagePreviews.filter((_, index) => index !== id))
-    setImageList(imageList.filter((_, index) => index !== id))
+  const handleDeleteButton = (src: string) => {
+    const newImages = images.filter(({ thumbnailSrc }: IImage) => thumbnailSrc !== src)
+
+    setImages(newImages)
   }
   const handleThumbnailModal = (e: any) => {
     e.stopPropagation()
     setModalOpen(true)
   }
-  const isDisabledButton = () => {
-    return imagePreviews.length === 0
-  }
-  const imageUpload = async () => {
+  const uploadImage = async (files: File[]) => {
     const formData = new FormData()
-    imageList.forEach((image) => {
-      console.log(image)
-      formData.append('image', image)
-    })
-    const response = await postImage(formData)
-    if (response !== undefined) return response.data
+    files.forEach((file) => formData.append('image', file))
+    const { data } = await postImage(formData)
+    return data
   }
   const handleUploadPosting = async () => {
-    const imagePathList = await imageUpload()
-    console.log(imagePathList)
-    setImagePreviews([]) // TODO 추후 삭제
-    setImageList([]) // TODO 추후 삭제
-    // TODO 이 이미지 주소 리스트와 내용을 모두 api로 전달한다.
-    // TODO 정상적으로 글쓰기가 완료되면, 피드페이지로 리다이렉트 시킨다.
+    if (isEmpty(letterRef.current)) {
+      toast('페이지에 오류가 있습니다. 새로고침 후 다시 작성해주세요.')
+      return
+    }
+    if (isEmpty(images)) {
+      toast('이미지를 1개이상 첨부해주세요.')
+      return
+    }
+    if (images.some(({ compressedImage }: IImage) => isEmpty(compressedImage))) {
+      toast('이미지 압축중입니다.')
+      return
+    }
+
+    if (pixelatedFile === undefined) {
+      toast('썸네일 생성중입니다.')
+      return
+    }
+
+    const compressedImages = images.map(({ compressedImage }: IImage) => compressedImage as File)
+    const imagesUrls: string[] = await uploadImage(compressedImages)
+
+    const [thumbnail] = await uploadImage([pixelatedFile])
+    const letter = letterRef.current?.value ?? ''
+
+    const formData: IPosting = {
+      letter,
+      thumbnail,
+      images: imagesUrls,
+      feedId
+    }
+
+    const { success } = await postPosting(formData)
+    if (success === true) navigate('/feed')
   }
 
   return (
     <div className="write-page">
       {isModalOpen && (
-        <ThumbnailPreview isModalOpen={isModalOpen} setModalOpen={setModalOpen} imageSrc={imagePreviews[0]} />
+        <ThumbnailPreview
+          isModalOpen={isModalOpen}
+          setModalOpen={setModalOpen}
+          imageSrc={URL.createObjectURL(pixelatedFile as Blob)}
+        />
       )}
       <Header text="업로드" />
       <div className="write-body">
         <div className="image-list">
-          {imagePreviews.length === 0 ? (
-            <div className="text-container">
+          {images.length === 0 ? (
+            <button className="text-container" onClick={handleCameraButton}>
               <p className="title">아직 사진이 추가되지 않았어요</p>
               <p className="desc">아래 버튼을 눌러 사진을 추가해주세요!</p>
-            </div>
+            </button>
           ) : (
-            imagePreviews.map((image, id) => (
-              <div className="image-holder" key={id}>
+            images.map(({ originalImage, thumbnailSrc, compressedImage }: IImage) => (
+              <div className="image-holder" key={thumbnailSrc}>
                 <div>
-                  <img className="image-holder" src={image} alt="이미지" />
+                  <img
+                    className="image-holder"
+                    src={thumbnailSrc}
+                    alt={originalImage.name}
+                    onLoad={async (e) => {
+                      URL.revokeObjectURL(thumbnailSrc)
+                      if (isEmpty(compressedImage)) {
+                        const compressedImage = await compressImage(originalImage)
+                        setImages((images) => {
+                          const newImages = images.map((item) => {
+                            if (item.thumbnailSrc === thumbnailSrc) item.compressedImage = compressedImage
+                            return item
+                          })
+                          return newImages
+                        })
+                      }
+                    }}
+                  />
                 </div>
-                <div className="image-delete-button" onClick={() => handleDeleteButton(id)}>
+                <button className="image-delete-button" onClick={() => handleDeleteButton(thumbnailSrc)}>
                   <XIcon width="2.5vw" height="3.75vw" fill="#ffffff" />
-                </div>
+                </button>
               </div>
             ))
           )}
@@ -101,19 +181,31 @@ const Write = () => {
             multiple
             className="image-input"
             accept="image/*"
-            ref={inputRef}
+            ref={imageRef}
             onChange={handleImageState}
           />
-          <button className="thumbnail-preview" onClick={handleThumbnailModal} disabled={isDisabledButton()}>
-            썸네일 미리보기
-          </button>
+          {!isEmpty(images) && (
+            <button className="thumbnail-preview" onClick={handleThumbnailModal}>
+              썸네일 미리보기
+            </button>
+          )}
         </div>
-        <textarea className="text-area" placeholder="글 내용을 입력해주세요" />
-        <button className="write-button" disabled={isDisabledButton()} onClick={handleUploadPosting}>
+        <textarea className="text-area" placeholder="글 내용을 입력해주세요" ref={letterRef} />
+        <button className="write-button" onClick={handleUploadPosting}>
           게시물 업로드 하기
         </button>
         <Toast />
       </div>
+      {!isEmpty(croppedURL) && (
+        <ImagePixelated
+          src={croppedURL}
+          width={240}
+          height={240}
+          pixelSize={12}
+          centered={true}
+          fillTransparencyColor={'#ffffff'}
+        />
+      )}
     </div>
   )
 }

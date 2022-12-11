@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import {
-  InvalidTokenException,
-  ExpiredTokenException,
-  InternalServerException,
-  NoExistTokenException,
-} from '@root/customError/httpException';
+  ExpiredTokenError,
+  InvalidTokenError,
+  NonExistTokenError,
+  NotInLoaginStateError,
+} from '@root/custom/customError/serverError';
 
 @Injectable()
 export class AccessAuthGuard implements CanActivate {
@@ -14,9 +14,15 @@ export class AccessAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const { accessToken } = request.cookies;
-    if (accessToken === undefined) throw new NoExistTokenException();
-    request.user = await this.validateToken(accessToken);
-    return true;
+    try {
+      if (accessToken === undefined) throw new NonExistTokenError();
+      request.user = await this.validateToken(accessToken);
+      return true;
+    } catch (e) {
+      if (request.route.path === '/api/users')
+        throw new NotInLoaginStateError();
+      throw e;
+    }
   }
 
   async validateToken(token: string) {
@@ -28,11 +34,11 @@ export class AccessAuthGuard implements CanActivate {
         case 'invalid token':
         case 'jwt malformed':
         case 'invalid signature':
-          throw new InvalidTokenException();
+          throw new InvalidTokenError();
         case 'jwt expired':
-          throw new ExpiredTokenException();
+          throw new ExpiredTokenError();
         default:
-          throw new InternalServerException();
+          throw error;
       }
     }
   }

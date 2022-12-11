@@ -1,0 +1,29 @@
+@import "@src/global";
+.observer-element {
+  width: 100%;
+  height: 10vh;
+  @include not-mobile{
+    transform: translate(0, 42px);
+  }
+  @include vhcenter;
+  @keyframes slide {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+  
+    50% {
+      transform: translate(0, 2vw);
+      @include not-mobile{
+        transform: translate(0, 8px);
+      }
+    }
+  }
+  .arrow {
+    padding-bottom: 2vw;
+    animation: slide 1s ease-in-out infinite;
+    @include not-mobile{
+      transform: translate(0, 8px);
+    }
+  }
+}

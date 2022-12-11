@@ -1,6 +1,8 @@
+import { NonExistFeedError } from '@root/custom/customError/serverError';
 import { createCipheriv, createDecipheriv } from 'crypto';
 
 export function encrypt(text: string) {
+  if (!text) return null;
   const iv = Buffer.from(process.env.IV);
   const key = process.env.SECRET_KEY;
 
@@ -10,14 +12,18 @@ export function encrypt(text: string) {
 }
 
 export function decrypt(text: string) {
-  const iv = Buffer.from(process.env.IV);
-  const key = process.env.SECRET_KEY;
+  try {
+    const iv = Buffer.from(process.env.IV);
+    const key = process.env.SECRET_KEY;
 
-  const decipher = createDecipheriv('aes-256-cbc', key, iv);
-  const encryptText = Buffer.from(text, 'hex');
+    const decipher = createDecipheriv('aes-256-cbc', key, iv);
+    const encryptText = Buffer.from(text, 'hex');
 
-  return Buffer.concat([
-    decipher.update(encryptText),
-    decipher.final(),
-  ]).toString();
+    return Buffer.concat([
+      decipher.update(encryptText),
+      decipher.final(),
+    ]).toString();
+  } catch (e) {
+    throw new NonExistFeedError();
+  }
 }

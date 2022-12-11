@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
 
@@ -16,10 +17,11 @@ import { UserReq } from '@users/decorators/users.decorators';
 import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
 
 import CreateFeedDto from '@feed/dto/create.feed.dto';
-import CustomValidationPipe from '@root/customValidationPipe';
+import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
 import { decrypt } from '@feed/feed.utils';
-import ResponseEntity from '@root/common/response/response.entity';
+import ResponseDto from '@root/common/response/response.dto';
+import FeedScrollDto from './dto/request/feed.scroll.dto';
 
 @UseGuards(AccessAuthGuard)
 @Controller('feed')
@@ -32,8 +34,9 @@ export class FeedController {
     @Feed(new CustomValidationPipe({ validateCustomDecorators: true }))
     createFeedDto: CreateFeedDto,
   ) {
-    const feedParam = await this.feedService.createFeed(createFeedDto, user.id);
-    return ResponseEntity.CREATED_WITH_DATA(feedParam);
+    const userId = user.id;
+    const feedParam = await this.feedService.createFeed(createFeedDto, userId);
+    return ResponseDto.CREATED_WITH_DATA(feedParam);
   }
 
   @UseGuards(AuthorizationGuard)
@@ -45,7 +48,7 @@ export class FeedController {
   ) {
     const feedId = decrypt(encryptedFeedId);
     await this.feedService.editFeed(createFeedDto, Number(feedId));
-    return ResponseEntity.OK();
+    return ResponseDto.OK();
   }
 
   @Post('group')
@@ -60,7 +63,7 @@ export class FeedController {
       [...memberIdList, user.id],
     );
 
-    return ResponseEntity.CREATED_WITH_DATA(encryptedFeedID);
+    return ResponseDto.CREATED_WITH_DATA(encryptedFeedID);
   }
 
   @UseGuards(AuthorizationGuard)
@@ -78,40 +81,44 @@ export class FeedController {
       user.id,
     ]);
 
-    return ResponseEntity.OK();
+    return ResponseDto.OK();
   }
 
   @Get('list')
-  // TODO : user decorator 지금은 user하위에 있는데 따로뺄까...?
   async getPersonalFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getPersonalFeedList(userId);
-    return ResponseEntity.OK_WITH_DATA(feedList);
+    return ResponseDto.OK_WITH_DATA(feedList);
   }
 
   @Get('group/list')
   async getGroupFeedList(@UserReq() user: User) {
     const userId = user.id;
     const feedList = await this.feedService.getGroupFeedList(userId);
-    return ResponseEntity.OK_WITH_DATA(feedList);
+    return ResponseDto.OK_WITH_DATA(feedList);
   }
 
+  @UseGuards(AccessAuthGuard)
   @Get('info/:feedId')
-  async getFeedInfo(@Param('feedId') encryptedId: string) {
-    const feedInfo = await this.feedService.getFeedById(encryptedId);
-    return ResponseEntity.OK_WITH_DATA(feedInfo);
+  async getFeedInfo(
+    @Param('feedId') encryptedId: string,
+    @UserReq() user: User,
+  ) {
+    const userId = user.id;
+    const feedInfo = await this.feedService.getFeedInfo(encryptedId, userId);
+    return ResponseDto.OK_WITH_DATA(feedInfo);
   }
 
   @Get('scroll/:feedId')
   async getFeedPostingThumbnail(
     @Param('feedId') encryptedId: string,
-    @Body('startPostingId')
-    startPostingId: number,
+    @Query() { size: scrollSize, index: startPostingId }: FeedScrollDto,
   ) {
     const postingThumbnailList = await this.feedService.getPostingThumbnails(
       encryptedId,
       startPostingId,
+      scrollSize,
     );
-    return postingThumbnailList;
+    return ResponseDto.OK_WITH_DATA(postingThumbnailList);
   }
 }

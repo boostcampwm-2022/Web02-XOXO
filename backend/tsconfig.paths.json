@@ -5,7 +5,9 @@
       "@root/*": ["./src/*"],
       "@users/*": ["./src/users/*"],
       "@posting/*": ["./src/posting/*"],
-      "@feed/*": ["./src/feed/*"]
+      "@feed/*": ["./src/feed/*"],
+      "@common/*": ["./src/common/*"],
+      "@custom/*": ["./src/custom/*"]
     }
   }
 }
