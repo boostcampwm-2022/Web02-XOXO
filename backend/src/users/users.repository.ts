@@ -32,4 +32,8 @@ export class UserRepository extends Repository<User> {
       .execute();
     return userList;
   }
+
+  async updateLastVisitedFeed(id: number, feed: number) {
+    await this.update(id, { lastVistedFeed: feed });
+  }
 }

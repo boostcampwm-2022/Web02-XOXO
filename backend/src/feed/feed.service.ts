@@ -8,17 +8,20 @@ import {
   GroupFeedMembersCountError,
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
+import { UserRepository } from '@root/users/users.repository';
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt, encrypt } from '@feed/feed.utils';
 import FindFeedDto from '@feed/dto/find.feed.dto';
 import FeedInfoDto from '@feed/dto/info.feed.dto';
 import FeedResponseDto from './dto/response/feed.response.dto';
+import { FeedRepository } from './feed.repository';
 
 @Injectable()
 export class FeedService {
   constructor(
-    @InjectRepository(Feed) private feedRepository: Repository<Feed>,
+    private feedRepository2: FeedRepository,
+    private userRepository: UserRepository,
     @InjectRepository(UserFeedMapping)
     private userFeedMappingRepository: Repository<UserFeedMapping>,
     private dataSource: DataSource,
@@ -26,33 +29,21 @@ export class FeedService {
   ) {}
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
+    const id = Number(decrypt(encryptedFeedID));
+    const cachedResult = await this.cacheManager.get(`${id}`);
+    if (cachedResult) {
+      return cachedResult;
+    }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const id = Number(decrypt(encryptedFeedID));
-      const cachedResult = await this.cacheManager.get(`${id}`);
-      if (cachedResult) {
-        return cachedResult;
-      }
-      const feed = await this.dataSource.getRepository(Feed).find({
-        where: { id },
-        relations: ['postings', 'users'],
-        select: {
-          postings: { id: true },
-          users: { userId: true },
-          name: true,
-          description: true,
-          thumbnail: true,
-          dueDate: true,
-        },
-      });
+      const feed = await this.feedRepository2.getFeed(id);
       const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
       if (feedInfoDto.isOwner) {
-        await this.dataSource
-          .getRepository(User)
-          .update(userId, { lastVistedFeed: id });
+        await this.userRepository.updateLastVisitedFeed(userId, id);
       }
+      await queryRunner.commitTransaction();
       return feedInfoDto;
     } catch (e) {
       await queryRunner.rollbackTransaction();
