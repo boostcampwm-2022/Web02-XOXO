@@ -22,16 +22,22 @@ const MainPage = () => {
   const navigate = useNavigate()
   const { feedId } = useParams<{ feedId: string }>()
   const { data: feedInfo, error: feedError } = useSWR<IFeedInfo>(feedId !== undefined ? `/feed/info/${feedId}` : null, fetcher)
+
+  // 올바른 경로가 아닐 때 (feed 정보를 불러오는데에 실패 했을 때)
   useEffect(() => {
-    // 올바른 경로가 아니라면 에러를 404 페이지로 리다이렉트
-    if (feedError) {
-      console.log(feedError)
-    }
+    navigate('/404')
   }, [feedError])
+
+  // 그룹 피드의 주인이 아닐 때
   useEffect(() => {
-    // TODO - 그룹 피드의 일원이 아닐 경우 일단 404로 옮겨놨는데, 권한 없는 페이지 안내하는걸 만들지? 아니면 뒤로가기 시킬지 논의해봐야함
-    if (feedInfo?.isGroupFeed && !feedInfo?.isOwner) navigate('/404')
+    if (feedInfo) feedInfo.isGroupFeed && !feedInfo.isOwner && navigate('/404')
   }, [feedInfo])
+
+  // feedId를 쓰지 않았을 때 '/feed'로 접근했을 때
+  useEffect(() => {
+    if (!feedId) navigate('/404')
+  }, [feedId])
+
   return (
     <>
     {
