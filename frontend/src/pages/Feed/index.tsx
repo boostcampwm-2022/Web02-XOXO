@@ -25,17 +25,17 @@ const MainPage = () => {
 
   // 올바른 경로가 아닐 때 (feed 정보를 불러오는데에 실패 했을 때)
   useEffect(() => {
-    navigate('/404')
+    if (feedError !== undefined) navigate('/404')
   }, [feedError])
 
   // 그룹 피드의 주인이 아닐 때
   useEffect(() => {
-    if (feedInfo) feedInfo.isGroupFeed && !feedInfo.isOwner && navigate('/404')
+    if (feedInfo !== undefined) feedInfo.isGroupFeed && !feedInfo.isOwner && navigate('/404')
   }, [feedInfo])
 
   // feedId를 쓰지 않았을 때 '/feed'로 접근했을 때
   useEffect(() => {
-    if (!feedId) navigate('/404')
+    if (feedId === undefined) navigate('/404')
   }, [feedId])
 
   return (
