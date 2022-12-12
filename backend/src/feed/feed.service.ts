@@ -28,31 +28,18 @@ export class FeedService {
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
     const id = Number(decrypt(encryptedFeedID));
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const feed = await this.feedRepository2.getFeed(id);
-      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
-      if (feedInfoDto.isOwner) {
-        await this.userRepository.updateLastVisitedFeed(userId, id);
-      }
-      await queryRunner.commitTransaction();
-      return feedInfoDto;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
+    const feed = await this.feedRepository2.getFeed(id);
+    const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
+    if (feedInfoDto.isOwner) {
+      await this.userRepository.updateLastVisitedFeed(userId, id);
     }
+    return feedInfoDto;
   }
 
   async getFeedById(encryptedFeedID: string) {
     const id = Number(decrypt(encryptedFeedID));
-    const feed = await this.dataSource.getRepository(Feed).find({
-      where: { id },
-    });
-
+    const findFeedDto = new FindFeedDto(id);
+    const feed = await this.feedRepository2.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }
 
@@ -63,10 +50,7 @@ export class FeedService {
       delete findFeedDto.encryptedId;
       findFeedDto.id = Number(decrypt(encryptId));
     }
-
-    const feed = await this.dataSource
-      .getRepository(Feed)
-      .find({ where: findFeedDto });
+    const feed = await this.feedRepository2.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }
 
@@ -76,15 +60,11 @@ export class FeedService {
     scrollSize: number,
   ) {
     const id = Number(decrypt(encryptedFeedID));
-    const postingThumbnailList = await this.dataSource
-      .getRepository(Feed)
-      .createQueryBuilder('feed')
-      .innerJoin('feed.postings', 'posting')
-      .select(['posting.id as id', 'posting.thumbnail as thumbanil'])
-      .where('feed.id = :id', { id })
-      .andWhere('posting.id > :startPostingId', { startPostingId })
-      .limit(scrollSize)
-      .getRawMany();
+    const postingThumbnailList = await this.feedRepository2.getThumbnailList(
+      startPostingId,
+      scrollSize,
+      id,
+    );
 
     // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교
     // const postingThumbnailList2 = await this.dataSource
@@ -105,16 +85,17 @@ export class FeedService {
     await queryRunner.startTransaction();
 
     try {
-      const feed = await queryRunner.manager
-        .getRepository(Feed)
-        .save({ ...createFeedDto, isGroupFeed: false });
-
+      const feed = await queryRunner.manager.save(Feed, {
+        ...createFeedDto,
+        isGroupFeed: false,
+      });
       await queryRunner.manager
         .getRepository(UserFeedMapping)
         .save({ feedId: feed.id, userId });
-      await queryRunner.manager
-        .getRepository(User)
-        .update({ id: userId }, { lastVistedFeed: feed.id });
+
+      await queryRunner.manager.update(User, userId, {
+        lastVistedFeed: feed.id,
+      });
       await queryRunner.commitTransaction();
       return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {
@@ -136,20 +117,20 @@ export class FeedService {
 
     try {
       // 새로운 피드 생성
-      const feed = await queryRunner.manager
-        .getRepository(Feed)
-        .insert({ ...createFeedDto, isGroupFeed: true });
-      const feedId: number = feed.identifiers[0].id;
+      const feed = await queryRunner.manager.save(Feed, {
+        ...createFeedDto,
+        isGroupFeed: true,
+      });
 
       // useFeedMappingTable 삽입
       for await (const userId of memberIdList) {
         const id = await queryRunner.manager
           .getRepository(UserFeedMapping)
-          .insert({ feedId, userId });
+          .insert({ feedId: feed.id, userId });
       }
 
       await queryRunner.commitTransaction();
-      return encrypt(feedId.toString());
+      return encrypt(feed.id.toString());
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;
@@ -164,10 +145,7 @@ export class FeedService {
     await queryRunner.startTransaction();
 
     try {
-      await queryRunner.manager
-        .getRepository(Feed)
-        .update({ id: feedId }, createFeedDto);
-
+      await queryRunner.manager.update(Feed, { id: feedId }, createFeedDto);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -231,37 +209,28 @@ export class FeedService {
   }
 
   async getGroupFeedList(userId: number) {
-    const subQuery = await this.dataSource
-      .createQueryBuilder()
-      .select('feedId')
-      .from(UserFeedMapping, 'user_feed_mapping')
-      .where('user_feed_mapping.feedId = feeds.id')
-      .andWhere('user_feed_mapping.userId = :userId', { userId });
+    // const subQuery = await this.dataSource
+    //   .createQueryBuilder()
+    //   .select('feedId')
+    //   .from(UserFeedMapping, 'user_feed_mapping')
+    //   .where('user_feed_mapping.feedId = feeds.id')
+    //   .andWhere('user_feed_mapping.userId = :userId', { userId });
 
-    const feedList = await this.dataSource
-      .createQueryBuilder()
-      .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
-      .from(Feed, 'feeds')
-      .where(`EXISTS (${subQuery.getQuery()})`)
-      .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
-      .setParameters(subQuery.getParameters())
-      .execute();
+    // const feedList = await this.dataSource
+    //   .createQueryBuilder()
+    //   .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
+    //   .from(Feed, 'feeds')
+    //   .where(`EXISTS (${subQuery.getQuery()})`)
+    //   .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
+    //   .setParameters(subQuery.getParameters())
+    //   .execute();
+    const feedList = await this.feedRepository2.getFeedList(userId, true);
     if (!feedList) throw new NonExistFeedError();
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
   async getPersonalFeedList(userId: number) {
-    const feedList = await this.userFeedMappingRepository
-      .createQueryBuilder('user_feed_mapping')
-      .innerJoin('user_feed_mapping.feed', 'feeds')
-      .select([
-        'feeds.id as id',
-        'feeds.name as name',
-        'feeds.thumbnail as thumbnail',
-      ])
-      .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
-      .andWhere('user_feed_mapping.userId = :userId', { userId })
-      .getRawMany();
+    const feedList = await this.feedRepository2.getFeedList(userId, false);
     if (!feedList) throw new NonExistFeedError();
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
