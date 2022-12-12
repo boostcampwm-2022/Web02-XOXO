@@ -2,7 +2,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { ExecutionContext, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { DueDateGuard } from '@root/common/guard/duedate.guard';
+import { DueDateGuard } from '@common/guard/duedate.guard';
 import { ServerErrorExceptionFilter } from '@root/common/filters/server.error.exception.filter';
 import { HttpExceptionFilter } from '@root/common/filters/http.exception.filter';
 import { FeedService } from '@root/feed/feed.service';
