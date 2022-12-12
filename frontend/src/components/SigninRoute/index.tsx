@@ -1,15 +1,15 @@
 import fetcher from '@src/util/fetcher'
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { Navigate } from 'react-router-dom'
 import useSWR from 'swr'
 
 interface IAuthRoute {
-  children: JSX.Element
+  Component: () => ReactElement
 }
-const SigninRoute = ({ children }: IAuthRoute) => {
+const SigninRoute = ({ Component }: IAuthRoute) => {
   const { data: isLoggined } = useSWR<boolean>('/users', fetcher, { revalidateOnFocus: false })
   if (isLoggined === undefined) return <></>
-  return !isLoggined ? children : <Navigate to="/Feeds" />
+  return !isLoggined ? <Component /> : <Navigate to="/Feeds" />
 }
 
 export default SigninRoute

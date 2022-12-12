@@ -20,17 +20,17 @@ root.render(
   <div className='image-wrapper' ><DesktopSideImage width={240}/></div>
   <BrowserRouter>
     <Routes>
-      <Route path="/Feed" element={ <AuthRoute><Feed/></AuthRoute> }>
-        <Route path=":feedId" element={ <AuthRoute><Feed/></AuthRoute> }/>
+      <Route path="/Feed" element={<AuthRoute Component={Feed} />}>
+        <Route path=":feedId" element={<AuthRoute Component={Feed} />} />
         <Route path=":feedId">
-          <Route path=":postingId" element={ <AuthRoute><Posting/></AuthRoute> }/>
+          <Route path=":postingId" element={<AuthRoute Component={Posting} />} />
         </Route>
       </Route>
-      <Route path="/Write/:feedId" element={ <AuthRoute><Write/></AuthRoute> } />
-      <Route path="/SignIn/Info" element={<SigninRoute><Info/></SigninRoute> } />
-      <Route path="/SignIn" element={<SigninRoute><SignIn/></SigninRoute>} />
-      <Route path="/Createfeed/:path" element={ <AuthRoute><CreateFeed/></AuthRoute> }/>
-      <Route path="/Feeds" element={ <AuthRoute><Feeds/></AuthRoute> } />
+      <Route path="/Write/:feedId" element={<AuthRoute Component={Write} />} />
+      <Route path="/SignIn/Info" element={<SigninRoute Component={Info} />} />
+      <Route path="/SignIn" element={<SigninRoute Component={SignIn} />} />
+      <Route path="/Createfeed/:path" element={<AuthRoute Component={CreateFeed} />} />
+      <Route path="/Feeds" element={<AuthRoute Component={Feeds} />} />
       <Route path="/Posting" element={<Posting />} />
       <Route path="/*" element={<Error />} />
     </Routes>
