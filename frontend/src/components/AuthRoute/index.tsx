@@ -9,6 +9,8 @@ interface IAuthRoute {
 }
 const AuthRoute = ({ Component }: IAuthRoute) => {
   const { data: isLoggined } = useSWR('/users', fetcher)
+  console.log(isLoggined)
+
   return isEmpty(isLoggined) ? <Component /> : <Navigate to="/Signin" />
 }
 
