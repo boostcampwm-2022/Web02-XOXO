@@ -6,7 +6,7 @@ const ObserverElement = () => {
   return (
     <div className='observer-element'>
       <div className="arrow">
-        <ArrowIcon width={'4vw'} fill={'#cccccc'}/>
+        <ArrowIcon width={'16px'} fill={'#cccccc'}/>
       </div>
     </div>
   )

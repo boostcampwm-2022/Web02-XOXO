@@ -10,4 +10,5 @@ export const containsEmoji = (str: string) =>
     str
   )
 export const isFuture = (date: string) => new Date(yyyymmdd(new Date())) < new Date(date)
+export const isFutureRatherThanServer = (dueDate: string, serverDate: string) => new Date(serverDate) < new Date(dueDate)
 export const isYYYYMMDD = (date: string) => /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/.test(date)
