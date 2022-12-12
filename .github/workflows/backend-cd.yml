@@ -46,7 +46,7 @@ jobs:
       - name: compress build file
         run: zip ./build.zip -r ./build
 
-      - name: Deploy
+      - name: Deploy source
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
@@ -55,3 +55,8 @@ jobs:
           aws --endpoint-url=https://kr.object.ncloudstorage.com  
           s3 cp ./build.zip
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy/build.zip
+          
+      - name: start ncloud SourceDeploy
+        run:
+          curl --request POST \
+          --url ${{SOURCEDEPLOY_API_URL}}/project/${{projectId}}/stage/${{stageId}}/scenario/${{scenarioId}}/deploy
