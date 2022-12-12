@@ -42,20 +42,6 @@ export class FeedRepository extends Repository<Feed> {
     return postingThumbnaillist;
   }
 
-  async getFeedList(userId: number, isGroupFeed: boolean) {
-    const feedList = await this.createQueryBuilder('user_feed_mapping')
-      .innerJoin('user_feed_mapping.feed', 'feeds')
-      .select([
-        'feeds.id as id',
-        'feeds.name as name',
-        'feeds.thumbnail as thumbnail',
-      ])
-      .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed })
-      .andWhere('user_feed_mapping.userId = :userId', { userId })
-      .getRawMany();
-    return feedList;
-  }
-
   async updateFeed(id: number, createFeedDto: CreateFeedDto) {
     await this.update(id, createFeedDto);
   }

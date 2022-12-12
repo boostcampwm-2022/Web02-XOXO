@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
+import { Cache } from 'cache-manager';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
   GroupFeedMembersCountError,
@@ -10,25 +10,30 @@ import {
 import { UserRepository } from '@root/users/users.repository';
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
-import { decrypt, encrypt } from '@feed/feed.utils';
+import { decrypt } from '@feed/feed.utils';
 import FindFeedDto from '@feed/dto/find.feed.dto';
 import FeedInfoDto from '@feed/dto/info.feed.dto';
 import { FeedRepository } from '@feed/feed.repository';
 import FeedResponseDto from './dto/response/feed.response.dto';
+import { UserFeedMappingRepository } from './user.feed.mapping.repository';
 
 @Injectable()
 export class FeedService {
   constructor(
-    private feedRepository2: FeedRepository,
+    private feedRepository: FeedRepository,
     private userRepository: UserRepository,
-    @InjectRepository(UserFeedMapping)
-    private userFeedMappingRepository: Repository<UserFeedMapping>,
+    private userFeedMappingRepository: UserFeedMappingRepository,
     private dataSource: DataSource,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
     const id = Number(decrypt(encryptedFeedID));
-    const feed = await this.feedRepository2.getFeed(id);
+    const cachedResult = await this.cacheManager.get(`${id}`);
+    if (cachedResult) {
+      return cachedResult;
+    }
+    const feed = await this.feedRepository.getFeed(id);
     const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
     if (feedInfoDto.isOwner) {
       await this.userRepository.updateLastVisitedFeed(userId, id);
@@ -39,7 +44,7 @@ export class FeedService {
   async getFeedById(encryptedFeedID: string) {
     const id = Number(decrypt(encryptedFeedID));
     const findFeedDto = new FindFeedDto(id);
-    const feed = await this.feedRepository2.getFeedByFindFeedDto(findFeedDto);
+    const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }
 
@@ -50,7 +55,7 @@ export class FeedService {
       delete findFeedDto.encryptedId;
       findFeedDto.id = Number(decrypt(encryptId));
     }
-    const feed = await this.feedRepository2.getFeedByFindFeedDto(findFeedDto);
+    const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }
 
@@ -60,7 +65,7 @@ export class FeedService {
     scrollSize: number,
   ) {
     const id = Number(decrypt(encryptedFeedID));
-    const postingThumbnailList = await this.feedRepository2.getThumbnailList(
+    const postingThumbnailList = await this.feedRepository.getThumbnailList(
       startPostingId,
       scrollSize,
       id,
@@ -80,29 +85,6 @@ export class FeedService {
   }
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    // try {
-    //   const feed = await queryRunner.manager.save(Feed, {
-    //     ...createFeedDto,
-    //     isGroupFeed: false,
-    //   });
-    //   await queryRunner.manager
-    //     .getRepository(UserFeedMapping)
-    //     .save({ feedId: feed.id, userId });
-    //   await this.cacheManager.set(`${feed.id}`, createFeedDto);
-    //   await queryRunner.manager.update(User, userId, {
-    //     lastVistedFeed: feed.id,
-    //   });
-    //   await queryRunner.commitTransaction();
-    //   return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
-    // } catch (e) {
-    //   await queryRunner.rollbackTransaction();
-    //   throw e;
-    // } finally {
-    //   await queryRunner.release();
-    // }
     let feed: Feed;
     await this.dataSource.transaction(async (manager) => {
       feed = await manager.save(Feed, {
@@ -110,73 +92,42 @@ export class FeedService {
         isGroupFeed: false,
       });
       await manager.insert(UserFeedMapping, { feedId: feed.id, userId });
+      await this.cacheManager.set(`${feed.id}`, createFeedDto);
       await manager.update(User, userId, { lastVistedFeed: feed.id });
     });
     return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
   }
 
-  async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
+  async createGroupFeed(
+    createFeedDto: CreateFeedDto,
+    memberIdList: number[],
+    userId: number,
+  ) {
     // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
     if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
       throw new GroupFeedMembersCountError();
 
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   // 새로운 피드 생성
-    //   const feed = await queryRunner.manager.save(Feed, {
-    //     ...createFeedDto,
-    //     isGroupFeed: true,
-    //   });
-
-    //   // useFeedMappingTable 삽입
-    //   for await (const userId of memberIdList) {
-    //     const id = await queryRunner.manager
-    //       .getRepository(UserFeedMapping)
-    //       .insert({ feedId: feed.id, userId });
-    //   }
-
-    //   await queryRunner.commitTransaction();
-    //   return encrypt(feed.id.toString());
-    // } catch (e) {
-    //   await queryRunner.rollbackTransaction();
-    //   throw e;
-    // } finally {
-    //   await queryRunner.release();
-    // }
     let feed: Feed;
     await this.dataSource.transaction(async (manager) => {
       feed = await manager.save(Feed, {
         ...createFeedDto,
         isGroupFeed: true,
       });
-      for await (const userId of memberIdList) {
+      for await (const memberId of memberIdList) {
         await manager.insert(UserFeedMapping, {
           feedId: feed.id,
-          userId,
+          userId: memberId,
         });
       }
+      await this.cacheManager.set(`${feed.id}`, createFeedDto);
+      await manager.update(User, userId, { lastVistedFeed: feed.id });
     });
     return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
   }
 
   async editFeed(createFeedDto: CreateFeedDto, feedId: number) {
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    // try {
-    //   await queryRunner.manager.update(Feed, { id: feedId }, createFeedDto);
-    //   await this.cacheManager.set(`${feedId}`, createFeedDto);
-    //   await queryRunner.commitTransaction();
-    // } catch (e) {
-    //   await queryRunner.rollbackTransaction();
-    //   throw e;
-    // } finally {
-    //   await queryRunner.release();
-    // }
-    await this.feedRepository2.updateFeed(feedId, createFeedDto);
+    await this.feedRepository.updateFeed(feedId, createFeedDto);
+    await this.cacheManager.set(`${feedId}`, createFeedDto);
   }
 
   async editGroupFeed(
@@ -187,49 +138,6 @@ export class FeedService {
     // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
     if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
       throw new GroupFeedMembersCountError();
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   // 피드 정보 업데이트
-    //   await queryRunner.manager
-    //     .getRepository(Feed)
-    //     .update({ id: feedId }, createFeedDto);
-
-    //   // 그룹 피드 멤버 정보(user_feed_mapping) 업데이트
-    //   const prevMemberList = await queryRunner.manager
-    //     .getRepository(UserFeedMapping)
-    //     .find({ where: { feedId }, select: { userId: true } });
-
-    //   const prevMemberIdList = prevMemberList.map((member) => member.userId);
-
-    //   // 1. 삭제
-    //   for await (const userId of prevMemberIdList) {
-    //     if (!memberIdList.includes(userId)) {
-    //       await queryRunner.manager
-    //         .getRepository(UserFeedMapping)
-    //         .delete({ userId });
-    //     }
-    //   }
-
-    //   // 2. 추가
-    //   for await (const userId of memberIdList) {
-    //     if (!prevMemberIdList.includes(userId)) {
-    //       await queryRunner.manager
-    //         .getRepository(UserFeedMapping)
-    //         .save({ feedId, userId });
-    //     }
-    //   }
-
-    //   await queryRunner.commitTransaction();
-    // } catch (e) {
-    //   await queryRunner.rollbackTransaction();
-    //   throw e;
-    // } finally {
-    //   await queryRunner.release();
-    // }
 
     await this.dataSource.transaction(async (manager) => {
       await manager.update(
@@ -256,42 +164,34 @@ export class FeedService {
           await manager.save(UserFeedMapping, { feedId, userId });
         }
       }
+      await this.cacheManager.set(`${feedId}`, createFeedDto);
     });
   }
 
   async getGroupFeedList(userId: number) {
-    // const subQuery = await this.dataSource
-    //   .createQueryBuilder()
-    //   .select('feedId')
-    //   .from(UserFeedMapping, 'user_feed_mapping')
-    //   .where('user_feed_mapping.feedId = feeds.id')
-    //   .andWhere('user_feed_mapping.userId = :userId', { userId });
-
-    // const feedList = await this.dataSource
-    //   .createQueryBuilder()
-    //   .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
-    //   .from(Feed, 'feeds')
-    //   .where(`EXISTS (${subQuery.getQuery()})`)
-    //   .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
-    //   .setParameters(subQuery.getParameters())
-    //   .execute();
-    const feedList = await this.feedRepository2.getFeedList(userId, true);
+    const feedList = await this.userFeedMappingRepository.getFeedList(
+      userId,
+      true,
+    );
     if (!feedList) throw new NonExistFeedError();
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
   async getPersonalFeedList(userId: number) {
-    const feedList = await this.feedRepository2.getFeedList(userId, false);
+    const feedList = await this.userFeedMappingRepository.getFeedList(
+      userId,
+      false,
+    );
     if (!feedList) throw new NonExistFeedError();
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
-  async checkFeedOwner(id: number, feedId: string) {
-    const owner = await this.userFeedMappingRepository
-      .createQueryBuilder('user_feed_mapping')
-      .where('user_feed_mapping.userId = :userId', { userId: id })
-      .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
-      .getOne();
+  async checkFeedOwner(id: number, feedid: string) {
+    const feedId = Number(feedid);
+    const owner = await this.userFeedMappingRepository.checkFeedOwner(
+      id,
+      feedId,
+    );
     return owner;
   }
 }
