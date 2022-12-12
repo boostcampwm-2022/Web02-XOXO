@@ -18,11 +18,26 @@
     @include form-wrapper($white, $white);
     width: 100%;
   }
+  .nickname-check-wrapper{
+    width: 100%;
+    @include vcenter;
+    justify-content: space-between;
+    .nickname-check-result {
+      @include bold(3.13vw, $primary-3);
+      @include not-mobile{
+        @include bold(13px, $white);
+      }
+    }
+  }
   .form-button {
-    @include button-large(#fee500, $black);
-    margin-top: 4vw;
+    @include button-large($primary-3, $white);
+    margin-top: 8vw;
     @include not-mobile{
-      margin-top: 17px;
+      margin-top: 34px;
+    }
+    &:disabled {
+      background-color: $primary-2;
+      color: #c66052
     }
   }
 }

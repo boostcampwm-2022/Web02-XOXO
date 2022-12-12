@@ -6,6 +6,7 @@ import defaultUserImage from '@assets/defaultUserImage.svg'
 import useSWR from 'swr'
 import { useParams } from 'react-router-dom'
 import ImageSlider from './ImageSlider'
+
 const Posting = () => {
   const { feedId, postingId } = useParams()
   const {
@@ -16,7 +17,6 @@ const Posting = () => {
       sender: { nickname, thumbnail }
     }
   } = useSWR(`/posting/${feedId!}/${postingId!}`)
-
   return (
     <div className="posting-page">
       <Header page="posting" text={name} />

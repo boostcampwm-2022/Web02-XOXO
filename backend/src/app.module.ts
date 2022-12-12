@@ -14,11 +14,13 @@ import AppController from './app.controller';
 import AppService from './app.service';
 import configuration from '../configuration';
 
+const envFilePathPrevfix =
+  process.env.NODE_ENV === 'production' ? '/root' : process.cwd();
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `${process.cwd()}/config/.${process.env.NODE_ENV}.env`,
+      envFilePath: `${envFilePathPrevfix}/config/.${process.env.NODE_ENV}.env`,
       load: [configuration],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()

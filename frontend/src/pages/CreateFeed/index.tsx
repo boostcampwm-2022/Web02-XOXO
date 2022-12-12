@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/dot-notation */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react'
 import './style.scss'
 
@@ -8,127 +5,94 @@ import defaultUserImage from '@assets/defaultUserImage.svg'
 import Header from '@src/components/Header'
 import Input from '@src/components/Input'
 import GroupMember from './GroupMember'
-import { compressImage } from '@src/util/imageCompress'
-import usePost from '@hooks/usePost'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   getWarningDuedate,
   getWarningDescription,
   getWarningName,
-  validName,
+  getWarningMembers,
   validDescription,
   validDuedate,
   validMembers,
-  getWarningMembers
+  validName
 } from '@src/util/validation'
 import Toast from '@src/components/Toast'
-import { toast } from 'react-toastify'
 import { isEmpty } from 'lodash'
-import { ISuggestion } from '@src/types'
-import { yyyymmdd } from '@src/util'
+import CreateFeedButton from './CreateFeedButton'
+import { IFeedForm, ISuggestion } from './types'
+import { toast } from 'react-toastify'
+import { uploadImage } from '@src/util/uploadImage'
+import usePost from '@src/hooks/usePost'
 
-interface ICreateFeed {
-  path: string
-}
-
-interface feedForm {
-  name?: string
-  thumbnail?: string
-  description?: string
-  dueDate?: string
-  memberIdList?: number[]
-}
-
-const CreateFeed = ({ path }: ICreateFeed) => {
+const CreateFeed = () => {
   const nameRef = useRef<HTMLInputElement>(null)
   const [thumbnail, setThumbnail] = useState<File>()
   const descriptionRef = useRef<HTMLInputElement>(null)
   const dueDateRef = useRef<HTMLInputElement>(null)
-
   const [members, setMembers] = useState<ISuggestion[]>([])
 
-  const feedThumbnail = useRef<HTMLInputElement>(null)
+  const thumbnailInput = useRef<HTMLInputElement>(null)
   const [thumbnailSrc, setThumbnailSrc] = useState('')
-  const postImage = usePost('/image')
-  const postPersonalFeed = usePost('/feed')
-  const postGroupFeed = usePost('/feed/group')
   const navigate = useNavigate()
+  const postImage = usePost('/image')
+
+  const { path } = useParams<{ path: string }>()
 
   useEffect(() => {
-    if (!isEmpty(dueDateRef.current)) {
-      const min = new Date()
-      min.setDate(min.getDate() + 1)
-      dueDateRef.current.min = yyyymmdd(min)
-    }
-  })
+    if (!(path === 'group' || path === 'personal')) navigate('/404')
+  }, [path])
 
-  const onChangeFeedThumbnail = async (e: any) => {
-    const url = URL.createObjectURL(e.target.files[0])
-    setThumbnailSrc(url)
-
-    const compressedImage = await compressImage(e.target.files[0])
-    setThumbnail(compressedImage)
+  const onChangeFeedThumbnail = (e: any) => {
+    setThumbnail(e.target.files[0])
+    setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
   }
 
   const onThumbnailUploadClicked = (e: any) => {
-    if (!isEmpty(feedThumbnail.current)) feedThumbnail.current.click()
+    if (!isEmpty(thumbnailInput.current)) thumbnailInput.current.click()
   }
-
-  const onFeedBtnClicked = async () => {
+  const getFeedInfos = async (): Promise<IFeedForm | undefined> => {
     if (isEmpty(nameRef.current) || isEmpty(descriptionRef.current) || isEmpty(dueDateRef.current)) {
       toast('페이지에 오류가 있습니다. 새로고침 후 다시 작성해주세요.')
-      return
+      return undefined
     }
-    const formData: feedForm = {}
-
-    if (validName(nameRef.current.value)) formData.name = nameRef.current.value
-    else {
+    if (!validName(nameRef.current.value)) {
       toast(getWarningName(nameRef.current.value))
-      return
+      return undefined
     }
 
-    if (validDescription(descriptionRef.current.value)) formData.description = descriptionRef.current.value
-    else {
-      toast(getWarningDescription(nameRef.current.value))
-      return
+    if (!validDescription(descriptionRef.current.value)) {
+      toast(getWarningDescription(descriptionRef.current.value))
+      return undefined
     }
 
-    if (validDuedate(dueDateRef.current.value)) formData.dueDate = dueDateRef.current.value
-    else {
+    if (validDuedate(dueDateRef.current.value)) {
       toast(getWarningDuedate(dueDateRef.current.value))
-      return
+      return undefined
     }
 
-    const [thumbnail] = await uploadImage()
-    formData.thumbnail = thumbnail
+    if (path === 'group' && !validMembers(members!)) {
+      toast(getWarningMembers(members!))
+      return undefined
+    }
 
-    if (path === 'group') {
-      if (validMembers(members)) {
-        const memberIdList = members.map(({ id }) => Number(id))
-        formData.memberIdList = memberIdList
-      } else {
-        toast(getWarningMembers(members))
-      }
+    const formData: IFeedForm = {
+      name: nameRef.current.value,
+      description: descriptionRef.current.value,
+      dueDate: dueDateRef.current.value,
+      thumbnail: await getThumbnailUrl()
     }
-    console.log(formData)
-
-    if (path === 'personal') {
-      const { success, data }: { success: boolean, data: string } = await postPersonalFeed(formData)
-      if (success) navigate(`/feed/${data}`)
-    }
-    if (path === 'group') {
-      const { success, data }: { success: boolean, data: string } = await postGroupFeed(formData)
-      if (success) navigate(`/feed/${data}`)
-    }
+    const memberIdList = getMembers()
+    if (!isEmpty(members)) formData.memberIdList = memberIdList
+    return formData
   }
-
-  const uploadImage = async () => {
-    const formData = new FormData()
-    if (isEmpty(thumbnail)) return ''
-    formData.append('image', thumbnail)
-    const { success, data } = await postImage(formData)
-    if (success === false) toast('이미지 업로드 중 문제가 발생했습니다.')
-    return data
+  const getThumbnailUrl = async () => {
+    if (thumbnail === undefined) return ''
+    const [thumbnailUrl] = await uploadImage([thumbnail], postImage)
+    return thumbnailUrl as string
+  }
+  const getMembers = () => {
+    if (path !== 'group') return undefined
+    return members.map(({ id }) => Number(id))
   }
   return (
     <div className="createfeed-page">
@@ -139,7 +103,7 @@ const CreateFeed = ({ path }: ICreateFeed) => {
             <div className="profile-pic-circle">
               <img
                 src={thumbnailSrc}
-                alt=""
+                alt="프로필 썸네일 미리보기"
                 onLoad={() => {
                   URL.revokeObjectURL(thumbnailSrc)
                 }}
@@ -150,7 +114,7 @@ const CreateFeed = ({ path }: ICreateFeed) => {
             </div>
             <span>피드 사진 생성</span>
           </button>
-          <input type="file" accept="image/*" ref={feedThumbnail} onChange={onChangeFeedThumbnail} />
+          <input type="file" accept="image/*" ref={thumbnailInput} onChange={onChangeFeedThumbnail} />
         </div>
         <Input label="제목" placeholder="피드의 제목을 입력해주세요" bind={nameRef} validate={getWarningName} />
         <Input
@@ -167,9 +131,7 @@ const CreateFeed = ({ path }: ICreateFeed) => {
           validate={getWarningDuedate}
         />
         {path === 'group' && <GroupMember members={members} setMembers={setMembers} />}
-        <button className="button-large" onClick={onFeedBtnClicked}>
-          피드 생성하기
-        </button>
+        <CreateFeedButton getFeedInfos={getFeedInfos} />
         <Toast />
       </div>
     </div>

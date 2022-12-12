@@ -6,9 +6,9 @@ export const yyyymmdd = (date: Date) =>
   `${date.getFullYear()}-${date.getMonth() + 1 < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-${
     date.getDate() < 9 ? `0${date.getDate()}` : date.getDate()
   }`
-export const remainDueDate = (dueDate: string) => {
+export const remainDueDate = (dueDate: string, serverDate: string) => {
   const future = new Date(dueDate)
-  const present = new Date()
+  const present = new Date(serverDate)
   const diff = future.getTime() - present.getTime()
   const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24))
   const diffHour = Math.floor((diff / (1000 * 60 * 60)) % 24)

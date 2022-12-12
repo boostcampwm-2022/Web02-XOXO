@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './style.scss'
 import { ReactComponent as WarningIcon } from '@assets/warningIcon.svg'
+import { debounce } from 'lodash'
 
 interface IInput {
   label?: string
@@ -19,9 +20,10 @@ const Input = ({
   onChangeCb = (str: string) => {}
 }: IInput) => {
   const [warningText, setWarningText] = useState('')
+  const debouncedValidate = debounce(validate, 500)
 
   const handleEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = validate(e.target.value)
+    const text = debouncedValidate(e.target.value) ?? ''
     setWarningText(text)
     onChangeCb(e.target.value)
   }

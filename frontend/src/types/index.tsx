@@ -1,4 +1,5 @@
-export interface ISuggestion {
-  id: string
-  nickname: string
+export interface IResponse {
+  success: boolean
+  data: any
+  status: number
 }

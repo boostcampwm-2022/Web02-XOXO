@@ -2,7 +2,7 @@ import React from 'react'
 import useSWR from 'swr'
 import fetcher from '@src/util/fetcher'
 import { isEmpty } from 'lodash'
-import { ISuggestion } from '@src/types'
+import { ISuggestion } from '../types'
 interface ISuggestions {
   nickname: string
   setMembers: (s: ISuggestion) => void

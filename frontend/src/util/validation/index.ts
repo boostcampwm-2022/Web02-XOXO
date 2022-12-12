@@ -1,4 +1,4 @@
-import { ISuggestion } from '@src/types'
+import { ISuggestion } from '@src/pages/CreateFeed/types'
 import { isEmpty } from 'lodash'
 import { between, containsEmoji, isFuture, isYYYYMMDD, longer } from './bool'
 
