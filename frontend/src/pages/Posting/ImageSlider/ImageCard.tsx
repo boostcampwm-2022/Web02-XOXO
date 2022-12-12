@@ -3,7 +3,7 @@ import { IImageCard } from './types'
 
 const ImageCard = ({ src }: IImageCard) => {
   return (
-    <div key={src} className="image-container">
+    <div className="image-container">
       <div>
         <img src={src} />
       </div>

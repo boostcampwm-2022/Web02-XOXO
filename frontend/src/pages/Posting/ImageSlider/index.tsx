@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import ImageCard from './ImageCard'
 import { IImageCard } from './types'
 import { getoriginalUrl, getthumbUrl } from './imageQuery'
+import { isEmpty } from 'lodash'
 
 interface IImageSlider {
   images: string[]
@@ -21,7 +22,18 @@ const ImageSlider = ({ images }: IImageSlider) => {
       }
     })
   )
-  const imageCards = images.map(({ src }: IImageCard) => <ImageCard src={src} key={src} />)
+  useEffect(() => {
+    if (page + 2 < imageStatus.length && !isEmpty(imageStatus[page + 2].isLq)) {
+      setImageStatus((imageStatus) => {
+        const newImageStatus = [...imageStatus]
+        const target = newImageStatus[page + 2]
+        target.isLq = false
+        target.src = getoriginalUrl(target.url!)
+        newImageStatus[page + 2] = target
+        return newImageStatus
+      })
+    }
+  }, [page])
   const settings = {
     dots: true,
     infinite: true,
@@ -29,13 +41,17 @@ const ImageSlider = ({ images }: IImageSlider) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
-    beforeChange: (_, index: number) => {
+    beforeChange: (before: number, index: number) => {
       setPage(index)
     }
   }
   return (
     <div className="image-carousel-container">
-      <Slider {...settings}>{imageCards}</Slider>
+      <Slider {...settings}>
+        {imageStatus.map(({ src }) => (
+          <ImageCard src={src} key={src} />
+        ))}
+      </Slider>
     </div>
   )
 }
