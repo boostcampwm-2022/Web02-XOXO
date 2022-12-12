@@ -7,8 +7,8 @@ const usePost = (url: string) => {
       try {
         const response = await axios.post(`/api${url}`, body, { ...options, withCredentials: true })
         return response.data
-      } catch (err) {
-        console.log(err)
+      } catch (err: any) {
+        return err.response.data
       }
     },
     [url]
