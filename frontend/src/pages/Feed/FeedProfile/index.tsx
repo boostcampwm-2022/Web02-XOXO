@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useEffect } from 'react'
+import useSWR from 'swr'
 import './style.scss'
 import { ReactComponent as ShareIcon } from '@assets/shareIcon.svg'
 import { ReactComponent as EditIcon } from '@assets/editIcon.svg'
 import DefaultUserImage from '@assets/defaultUserImage.svg'
 import { remainDueDate } from '@util/index'
+import fetcher from '@util/fetcher'
 
 interface IProps {
   thumbnail: string
@@ -16,6 +18,7 @@ interface IProps {
 }
 
 const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isGroupFeed }: IProps) => {
+  const { data: serverDate } = useSWR('/serverTime', fetcher)
   const kakaoJavascriptKey = process.env.REACT_APP_KAKAO_JAVASCRIPT_KEY
   const kakaoMessageTemplate = Number(process.env.REACT_APP_KAKAO_MESSAGE_TEMPLATE)
   useEffect(() => {
@@ -46,7 +49,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
                 <div className="feed-profile-status">
                     <span className="feed-post-number">게시물 수 <span className="bold">{postingCnt}</span></span>
                     <span className="line"></span>
-                    <span className="feed-remaining-time">남은 시간 <span className="bold">{remainDueDate(dueDate)}</span></span>
+                    <span className="feed-remaining-time">남은 시간 <span className="bold">{remainDueDate(dueDate, serverDate)}</span></span>
                 </div>
             </div>
         </div>

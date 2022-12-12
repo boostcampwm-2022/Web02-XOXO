@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/no-floating-promises */
@@ -8,8 +9,9 @@ import useSWRInfinite from 'swr/infinite'
 import { toast } from 'react-toastify'
 import Toast from '@components/Toast'
 import { ReactComponent as PlusIcon } from '@assets/plusIcon.svg'
+import useGet from '@hooks/useGet'
 import useInfiniteScroll from '@hooks/useInfiniteScroll'
-import { isFuture } from '@util/validation/bool'
+import { isFutureRatherThanServer } from '@util/validation/bool'
 import { remainDueDate } from '@util/index'
 import fetcher from '@util/fetcher'
 import ObserverElement from './ObserverElement'
@@ -37,6 +39,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     return `/feed/scroll/${feedId}?size=${SCROLL_SIZE}&index=${previousPageData[previousPageData.length - 1].id}`
   }
   const { data: postings, error, size, setSize } = useSWRInfinite(getKey, fetcher, { initialSize: 1, revalidateFirstPage: false })
+  const getServerDate = useGet('/serverTime')
 
   // 리스트 로딩중일 때
   const isLoading = (!postings && !error) || (size > 0 && postings && typeof postings[size - 1] === 'undefined')
@@ -57,11 +60,12 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     if (isEmpty) toast('아직 작성된 포스팅이 없습니다')
   }, [isEmpty])
 
-  const checkReadable = (id: string) => {
+  const checkReadable = async (id: string) => {
+    const { data: serverDate } = await getServerDate()
     if (!isOwner) {
       toast('피드의 주인만 포스팅을 열람할 수 있습니다.')
-    } else if (isFuture(dueDate)) {
-      toast(`게시물이 공개되기까지 ${remainDueDate(dueDate)} 남았어요`)
+    } else if (isFutureRatherThanServer(dueDate, serverDate)) {
+      toast(`게시물이 공개되기까지 ${remainDueDate(dueDate, serverDate)} 남았어요`)
     } else navigate(`${id}`)
   }
 
