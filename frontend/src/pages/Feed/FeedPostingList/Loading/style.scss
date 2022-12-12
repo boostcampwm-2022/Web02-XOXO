@@ -6,6 +6,9 @@
   background-color: $white;
   animation-delay: 0.7s;
   padding: 4vw 0;
+  @include not-mobile{
+    padding: 17px 0;
+  }
 }
 
 @keyframes hideLoadingScreen {
@@ -27,6 +30,11 @@
   display: flex;
   justify-content: center;
   animation: loadingCircle 1s ease-in-out infinite;
+  @include not-mobile{
+    width: 21px;
+    height: 21px;
+    border: 4px solid #DDDDDD;
+  }
 }
 
 @keyframes loadingCircle {
@@ -44,4 +52,9 @@
   width: 3vw;
   height: 4vw;
   top: -1vw;
+  @include not-mobile{
+    width: 12px;
+    height: 17px;
+    top: -4px;
+  }
 }

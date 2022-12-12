@@ -4,8 +4,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 
 import { DueDateGuard } from '@common/guard/DueDate.guard';
-import { ServerErrorHandlingFilter } from '@root/common/filters/ServerErrorHandlingFilter';
-import { HttpExceptionFilter } from '@root/common/filters/http-exception.filter';
+import { ServerErrorExceptionFilter } from '@root/common/filters/server.error.exception.filter';
+import { HttpExceptionFilter } from '@root/common/filters/http.exception.filter';
 import { FeedService } from '@root/feed/feed.service';
 import {
   AccessAfterDueDateError,
@@ -46,7 +46,7 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalFilters(
-      new ServerErrorHandlingFilter(),
+      new ServerErrorExceptionFilter(),
       new HttpExceptionFilter(),
     );
     dueDateGuard = moduleFixture.get(DueDateGuard);
@@ -58,7 +58,10 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
       const mockParam = { feedId: 2 };
-      const mockRoute = { path: '/posting/:feedId', methods: { post: true } };
+      const mockRoute = {
+        path: '/api/posting/:feedId',
+        methods: { post: true },
+      };
 
       Object.assign(req, { route: mockRoute });
       Object.assign(req, { params: mockParam });
@@ -70,7 +73,10 @@ describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
       const mockContext = createMock<ExecutionContext>();
       const req = mockContext.switchToHttp().getRequest();
       const mockParam = { feedId: 1 };
-      const mockRoute = { path: '/posting/:feedId', methods: { post: true } };
+      const mockRoute = {
+        path: '/api/posting/:feedId',
+        methods: { post: true },
+      };
 
       Object.assign(req, { route: mockRoute });
       Object.assign(req, { params: mockParam });

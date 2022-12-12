@@ -39,6 +39,7 @@ export class FeedService {
           description: true,
           thumbnail: true,
           dueDate: true,
+          isGroupFeed: true,
         },
       });
       const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
@@ -125,7 +126,7 @@ export class FeedService {
         .getRepository(User)
         .update({ id: userId }, { lastVistedFeed: feed.id });
       await queryRunner.commitTransaction();
-      return FeedResponseDto.makeFeedResponseDto(feed, false).encryptedId;
+      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
     } catch (e) {
       await queryRunner.rollbackTransaction();
       throw e;
@@ -249,14 +250,13 @@ export class FeedService {
 
     const feedList = await this.dataSource
       .createQueryBuilder()
-      .select(['id AS feed_id', 'name AS feed_name', 'thumbnail'])
+      .select(['id', 'name', 'thumbnail'])
       .from(Feed, 'feeds')
       .where(`EXISTS (${subQuery.getQuery()})`)
       .andWhere('isGroupFeed = :isGroupFeed', { isGroupFeed: true })
       .setParameters(subQuery.getParameters())
       .execute();
-    if (!feedList) throw new NonExistFeedError();
-    return FeedResponseDto.makeFeedResponseArray(feedList, true);
+    return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
   async getPersonalFeedList(userId: number) {
@@ -271,8 +271,7 @@ export class FeedService {
       .where('feeds.isGroupFeed = :isGroupFeed', { isGroupFeed: 0 })
       .andWhere('user_feed_mapping.userId = :userId', { userId })
       .getRawMany();
-    if (!feedList) throw new NonExistFeedError();
-    return FeedResponseDto.makeFeedResponseArray(feedList, false);
+    return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
   async checkFeedOwner(id: number, feedId: string) {

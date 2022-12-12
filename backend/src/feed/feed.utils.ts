@@ -2,6 +2,7 @@ import { NonExistFeedError } from '@root/custom/customError/serverError';
 import { createCipheriv, createDecipheriv } from 'crypto';
 
 export function encrypt(text: string) {
+  if (!text) return null;
   const iv = Buffer.from(process.env.IV);
   const key = process.env.SECRET_KEY;
 

@@ -11,8 +11,13 @@ import Info from '@pages/Info'
 import Error from '@pages/Error'
 import AuthRoute from '@components/AuthRoute'
 import SigninRoute from '@components/SigninRoute'
+import { ReactComponent as DesktopSideImage } from '@assets/desktopSideImage.svg'
+import './global.scss'
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
+  <>
+  <div className='image-wrapper' ><DesktopSideImage width={240}/></div>
   <BrowserRouter>
     <Routes>
       <Route path="/Feed">
@@ -29,4 +34,5 @@ root.render(
       <Route path="/*" element={<Error />} />
     </Routes>
   </BrowserRouter>
+  </>
 )
