@@ -28,6 +28,6 @@ export default class CookieDto {
   }
 
   get option() {
-    return { domain: process.env.CLIENT_URL_PREFIX, ...this.Option };
+    return { domain: process.env.SERVICE_DOMAIN, ...this.Option };
   }
 }
