@@ -1,6 +1,6 @@
 export const cropImg = async (file: File) => {
   const canvas = document.createElement('canvas') as HTMLCanvasElement
-  const img = (await loadImage(file)) as HTMLImageElement
+  const img = await loadImage(file)
   const ctx = canvas?.getContext('2d')
   const { width, height } = img
   const sx = width >= height ? (width - height) / 2 : 0
@@ -16,7 +16,7 @@ const loadImage = (file: File) => {
   const img = document.createElement('img') as HTMLImageElement
   const src = URL.createObjectURL(file)
   img.src = src
-  return new Promise((resolve) => {
+  return new Promise<HTMLImageElement>((resolve) => {
     img.onload = () => {
       URL.revokeObjectURL(src)
       resolve(img)
