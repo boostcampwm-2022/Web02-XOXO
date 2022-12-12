@@ -56,7 +56,3 @@ jobs:
           s3 cp ./build.zip
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy/build.zip
           
-      - name: start ncloud SourceDeploy
-        run:
-          curl --request POST \
-          --url ${{SOURCEDEPLOY_API_URL}}/project/${{projectId}}/stage/${{stageId}}/scenario/${{scenarioId}}/deploy
