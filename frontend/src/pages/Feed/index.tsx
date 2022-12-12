@@ -21,12 +21,11 @@ interface IFeedInfo {
 const MainPage = () => {
   const navigate = useNavigate()
   const { feedId } = useParams<{ feedId: string }>()
-  const { data: feedInfo, error: feedError } = useSWR<IFeedInfo>(`/feed/info/${feedId}`, fetcher)
+  const { data: feedInfo, error: feedError } = useSWR<IFeedInfo>(feedId !== undefined ? `/feed/info/${feedId}` : null, fetcher)
   useEffect(() => {
     // 올바른 경로가 아니라면 에러를 404 페이지로 리다이렉트
     if (feedError) {
-      const { error } = feedError.response.data.data
-      if (error === 'NonExistFeedIdException') navigate('/404')
+      console.log(feedError)
     }
   }, [feedError])
   useEffect(() => {
