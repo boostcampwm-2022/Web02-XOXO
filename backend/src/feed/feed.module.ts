@@ -12,11 +12,16 @@ import UsersModule from '@users/users.module';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { FeedController } from '@feed/feed.controller';
 import { FeedService } from '@feed/feed.service';
+import { UserFeedMappingRepository } from './user.feed.mapping.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Feed, UserFeedMapping]),
-    TypeOrmCustomModule.forCustomRepository([FeedRepository, UserRepository]),
+    TypeOrmCustomModule.forCustomRepository([
+      FeedRepository,
+      UserRepository,
+      UserFeedMappingRepository,
+    ]),
     UsersModule,
     CacheModule.register({
       store: redisStore,
