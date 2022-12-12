@@ -30,7 +30,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   await app.listen(process.env.PORT);
-  console.log(`Running on ${process.env.PORT}`);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());

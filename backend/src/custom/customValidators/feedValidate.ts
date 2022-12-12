@@ -22,7 +22,7 @@ export class InvalidFeedName implements ValidatorConstraintInterface {
 }
 
 export default function IsValidFeedName(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
+  return (object: any, propertyName: string) => {
     registerDecorator({
       name: 'IsValidFeedName',
       target: object.constructor,

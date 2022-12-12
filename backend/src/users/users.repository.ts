@@ -37,3 +37,4 @@ export class UserRepository extends Repository<User> {
     await this.update(id, { lastVistedFeed: feed });
   }
 }
+export default UserRepository;
