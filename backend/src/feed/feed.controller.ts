@@ -60,7 +60,8 @@ export class FeedController {
   ) {
     const encryptedFeedID = await this.feedService.createGroupFeed(
       createFeedDto,
-      [...memberIdList, user.id],
+      [...new Set([...memberIdList, user.id])],
+      user.id,
     );
 
     return ResponseDto.CREATED_WITH_DATA(encryptedFeedID);
@@ -77,8 +78,7 @@ export class FeedController {
   ) {
     const feedId = decrypt(encryptedFeedId);
     await this.feedService.editGroupFeed(createFeedDto, Number(feedId), [
-      ...memberIdList,
-      user.id,
+      ...new Set([...memberIdList, user.id]),
     ]);
 
     return ResponseDto.OK();

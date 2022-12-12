@@ -3,12 +3,7 @@ import React, { useRef, useState } from 'react'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
 import Suggestions from './Suggestions'
 import Input from '@src/components/Input'
-import { ISuggestion } from '@src/types'
-
-interface IGroupMember {
-  members: ISuggestion[]
-  setMembers: React.Dispatch<React.SetStateAction<ISuggestion[]>>
-}
+import { IGroupMember, ISuggestion } from '../types'
 
 const GroupMember = ({ members, setMembers }: IGroupMember) => {
   const nicknameRef = useRef<HTMLInputElement>(null)
@@ -30,7 +25,7 @@ const GroupMember = ({ members, setMembers }: IGroupMember) => {
       <Input
         label="그룹원 추가"
         bind={nicknameRef}
-        placeholder="그룹원의 카카오 이메일을 입력해주세요"
+        placeholder="그룹원의 닉네임을 입력해주세요"
         onChangeCb={debouncedSearch}
       />
       {!isEmpty(nickname) && <Suggestions nickname={nickname} setMembers={handleSuggestionClick} />}

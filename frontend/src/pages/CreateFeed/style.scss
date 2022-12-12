@@ -8,19 +8,19 @@
 .createfeed-body {
   @include body;
   @include display-col(1.25vw);
-  @include not-mobile{
+  @include not-mobile {
     @include display-col(5px);
   }
 
   .profile-pic-wrapper {
     @include vcenter;
     @include display-col(3.75vw);
-    @include not-mobile{
+    @include not-mobile {
       @include display-col(16px);
     }
     .profile-pic-circle {
       @include circle(22.5vw, true, $grey);
-      @include not-mobile{
+      @include not-mobile {
         @include circle(95px, true, $grey);
       }
     }
@@ -28,7 +28,7 @@
       @include bold(3.75vw, $primary-3);
       display: block;
       padding: 1.88vw 0 1.88vw 0;
-      @include not-mobile{
+      @include not-mobile {
         @include bold(16px, $primary-3);
         padding: 8px 0 8px 0;
       }
@@ -40,20 +40,20 @@
   .button-large {
     @include button-large;
     margin: 8.75vw 0;
-    @include not-mobile{
+    @include not-mobile {
       margin: 37px 0;
     }
   }
   .form-label {
     @include medium(4.375vw, $black);
     display: block;
-    @include not-mobile{
+    @include not-mobile {
       @include medium(18px, $black);
     }
   }
   .form-no-member {
     @include regular(3.75vw, $grey);
-    @include not-mobile{
+    @include not-mobile {
       @include regular(16px, $grey);
     }
   }
@@ -61,7 +61,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1.25vw;
-    @include not-mobile{
+    @include not-mobile {
       gap: 5px;
     }
     .form-member {
@@ -71,14 +71,14 @@
       border-radius: 4px;
       background-color: $primary-1;
       display: inline;
-      @include not-mobile{
+      @include not-mobile {
         @include regular(16px, $primary-3);
         padding: 5px 8px;
       }
       svg {
         margin-left: 1.25vw;
         padding-bottom: 0.4vw;
-        @include not-mobile{
+        @include not-mobile {
           margin-left: 5px;
           padding-bottom: 2px;
         }
@@ -89,6 +89,7 @@
 .suggestions-wrapper {
   border: 1px solid $grey;
   border-radius: 8px;
+  margin-bottom: 1.25vw;
   .suggestion {
     &-wrapper {
       padding: 2.5vw 5vw;
@@ -96,8 +97,9 @@
       flex-direction: row;
       justify-content: space-between;
       width: calc(100% - 10vw);
-      @include not-mobile{
+      @include not-mobile {
         padding: 10px 20px;
+        width: calc(100% - 40px);
       }
       span {
         display: block;
@@ -105,13 +107,13 @@
     }
     &-nickname {
       @include regular(3.75vw, $black);
-      @include not-mobile{
+      @include not-mobile {
         @include regular(16px, $black);
       }
     }
     &-add {
       @include medium(3.75vw, $black);
-      @include not-mobile{
+      @include not-mobile {
         @include medium(16px, $black);
       }
     }

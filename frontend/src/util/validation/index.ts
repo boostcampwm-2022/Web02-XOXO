@@ -1,4 +1,4 @@
-import { ISuggestion } from '@src/types'
+import { ISuggestion } from '@src/pages/CreateFeed/types'
 import { isEmpty } from 'lodash'
 import { between, containsEmoji, isFuture, isYYYYMMDD, longer } from './bool'
 
@@ -13,7 +13,7 @@ export const getWarningDescription = (str: string): string => {
   return ''
 }
 export const getWarningDuedate = (str: string): string => {
-  if (isEmpty(str)) return '한번 설정한 공개일은 추후에 바꿀 수 없습니다.'
+  if (isEmpty(str)) return '피드 공개일을 설정하지 않았습니다.'
   if (containsEmoji(str)) return '이모지를 포함할 수 없습니다.'
   if (!isYYYYMMDD(str)) return '날짜 형식이 잘못되었습니다.'
   if (!isFuture(str)) return '피드 공개일은 오늘 이후입니다.'

@@ -93,8 +93,8 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Get('search/:nickname')
-  async serachUser(@Param('nickname') nickname: string) {
-    const userList = await this.userService.getUserList(nickname, 10, 10);
+  async serachUser(@Param('nickname') nickname: string, @UserReq() user: User) {
+    const userList = await this.userService.getUserList(nickname, 10, user.id);
     return ResponseDto.OK_WITH_DATA(userList);
   }
 
