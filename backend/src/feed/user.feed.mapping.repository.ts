@@ -17,4 +17,12 @@ export class UserFeedMappingRepository extends Repository<UserFeedMapping> {
       .getRawMany();
     return feedList;
   }
+
+  async checkFeedOwner(userId: number, feedId: number) {
+    const owner = await this.createQueryBuilder('user_feed_mapping')
+      .where('user_feed_mapping.userId = :userId', { userId })
+      .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
+      .getOne();
+    return owner;
+  }
 }

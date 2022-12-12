@@ -1,5 +1,5 @@
 import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
 import { Cache } from 'cache-manager';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
@@ -10,7 +10,7 @@ import {
 import { UserRepository } from '@root/users/users.repository';
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
-import { decrypt, encrypt } from '@feed/feed.utils';
+import { decrypt } from '@feed/feed.utils';
 import FindFeedDto from '@feed/dto/find.feed.dto';
 import FeedInfoDto from '@feed/dto/info.feed.dto';
 import FeedResponseDto from './dto/response/feed.response.dto';
@@ -20,7 +20,7 @@ import { UserFeedMappingRepository } from './user.feed.mapping.repository';
 @Injectable()
 export class FeedService {
   constructor(
-    private feedRepository2: FeedRepository,
+    private feedRepository: FeedRepository,
     private userRepository: UserRepository,
     private userFeedMappingRepository: UserFeedMappingRepository,
     private dataSource: DataSource,
@@ -33,7 +33,7 @@ export class FeedService {
     if (cachedResult) {
       return cachedResult;
     }
-    const feed = await this.feedRepository2.getFeed(id);
+    const feed = await this.feedRepository.getFeed(id);
     const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
     if (feedInfoDto.isOwner) {
       await this.userRepository.updateLastVisitedFeed(userId, id);
@@ -44,7 +44,7 @@ export class FeedService {
   async getFeedById(encryptedFeedID: string) {
     const id = Number(decrypt(encryptedFeedID));
     const findFeedDto = new FindFeedDto(id);
-    const feed = await this.feedRepository2.getFeedByFindFeedDto(findFeedDto);
+    const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }
 
@@ -55,7 +55,7 @@ export class FeedService {
       delete findFeedDto.encryptedId;
       findFeedDto.id = Number(decrypt(encryptId));
     }
-    const feed = await this.feedRepository2.getFeedByFindFeedDto(findFeedDto);
+    const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }
 
@@ -65,7 +65,7 @@ export class FeedService {
     scrollSize: number,
   ) {
     const id = Number(decrypt(encryptedFeedID));
-    const postingThumbnailList = await this.feedRepository2.getThumbnailList(
+    const postingThumbnailList = await this.feedRepository.getThumbnailList(
       startPostingId,
       scrollSize,
       id,
@@ -113,10 +113,10 @@ export class FeedService {
         ...createFeedDto,
         isGroupFeed: true,
       });
-      for await (const userId of memberIdList) {
+      for await (const memberId of memberIdList) {
         await manager.insert(UserFeedMapping, {
           feedId: feed.id,
-          userId,
+          userId: memberId,
         });
       }
       await this.cacheManager.set(`${feed.id}`, createFeedDto);
@@ -126,7 +126,7 @@ export class FeedService {
   }
 
   async editFeed(createFeedDto: CreateFeedDto, feedId: number) {
-    await this.feedRepository2.updateFeed(feedId, createFeedDto);
+    await this.feedRepository.updateFeed(feedId, createFeedDto);
     await this.cacheManager.set(`${feedId}`, createFeedDto);
   }
 
@@ -186,12 +186,12 @@ export class FeedService {
     return FeedResponseDto.makeFeedResponseArray(feedList);
   }
 
-  async checkFeedOwner(id: number, feedId: string) {
-    const owner = await this.userFeedMappingRepository
-      .createQueryBuilder('user_feed_mapping')
-      .where('user_feed_mapping.userId = :userId', { userId: id })
-      .andWhere('user_feed_mapping.feedId = :feedId', { feedId })
-      .getOne();
+  async checkFeedOwner(id: number, feedid: string) {
+    const feedId = Number(feedid);
+    const owner = await this.userFeedMappingRepository.checkFeedOwner(
+      id,
+      feedId,
+    );
     return owner;
   }
 }
