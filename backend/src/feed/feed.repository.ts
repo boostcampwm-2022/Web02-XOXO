@@ -1,6 +1,7 @@
 import { CustomRepository } from '@root/common/typeorm/typeorm.decorator';
 import { Feed } from '@root/entities/Feed.entity';
 import { Repository } from 'typeorm';
+import CreateFeedDto from './dto/create.feed.dto';
 import FindFeedDto from './dto/find.feed.dto';
 
 @CustomRepository(Feed)
@@ -53,5 +54,9 @@ export class FeedRepository extends Repository<Feed> {
       .andWhere('user_feed_mapping.userId = :userId', { userId })
       .getRawMany();
     return feedList;
+  }
+
+  async updateFeed(id: number, createFeedDto: CreateFeedDto) {
+    await this.update(id, createFeedDto);
   }
 }
