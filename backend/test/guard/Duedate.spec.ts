@@ -8,9 +8,19 @@ import { ServerErrorExceptionFilter } from '@root/common/filters/server.error.ex
 import { HttpExceptionFilter } from '@root/common/filters/http.exception.filter';
 import { FeedService } from '@root/feed/feed.service';
 import {
+<<<<<<< HEAD
   AccessAfterDueDateError,
   AccessBeforeDueDateError,
 } from '@root/custom/customError/serverError';
+=======
+  AccessAfterDueDateException,
+  AccessBeforeDueDateException,
+} from '@root/custom/customError/httpException';
+import { DueDateGuard } from '@common/guard/DueDate.guard';
+import { PostingService } from '@root/posting/posting.service';
+import { ServerErrorHandlingFilter } from '@common/filter/ServerErrorHandlingFilter';
+import { HttpExceptionFilter } from '@common/filter/http-exception.filter';
+>>>>>>> c7a7cb2 (refactor: 파일 구조 정리)
 import configuration from '../../configuration';
 
 describe('공개일 접근 가드(DueDateGuard) 동작 unit test', () => {
