@@ -3,7 +3,7 @@ import { ValidationError } from 'class-validator';
 import {
   InvalidFeedNameException,
   InvalidNicknameException,
-} from '../../custom/customError/httpException';
+} from '@root/custom/customError/httpException';
 
 export default class CustomValidationPipe extends ValidationPipe {
   public createExceptionFactory() {
