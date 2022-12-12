@@ -1,7 +1,6 @@
-import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
-import { Cache } from 'cache-manager';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
   GroupFeedMembersCountError,
@@ -24,15 +23,10 @@ export class FeedService {
     private userRepository: UserRepository,
     private userFeedMappingRepository: UserFeedMappingRepository,
     private dataSource: DataSource,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
     const id = Number(decrypt(encryptedFeedID));
-    const cachedResult = await this.cacheManager.get(`${id}`);
-    if (cachedResult) {
-      return cachedResult;
-    }
     const feed = await this.feedRepository.getFeed(id);
     const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
     if (feedInfoDto.isOwner) {
@@ -92,7 +86,6 @@ export class FeedService {
         isGroupFeed: false,
       });
       await manager.insert(UserFeedMapping, { feedId: feed.id, userId });
-      await this.cacheManager.set(`${feed.id}`, createFeedDto);
       await manager.update(User, userId, { lastVistedFeed: feed.id });
     });
     return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
@@ -119,7 +112,6 @@ export class FeedService {
           userId: memberId,
         });
       }
-      await this.cacheManager.set(`${feed.id}`, createFeedDto);
       await manager.update(User, userId, { lastVistedFeed: feed.id });
     });
     return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
@@ -127,7 +119,6 @@ export class FeedService {
 
   async editFeed(createFeedDto: CreateFeedDto, feedId: number) {
     await this.feedRepository.updateFeed(feedId, createFeedDto);
-    await this.cacheManager.set(`${feedId}`, createFeedDto);
   }
 
   async editGroupFeed(
@@ -164,7 +155,6 @@ export class FeedService {
           await manager.save(UserFeedMapping, { feedId, userId });
         }
       }
-      await this.cacheManager.set(`${feedId}`, createFeedDto);
     });
   }
 
