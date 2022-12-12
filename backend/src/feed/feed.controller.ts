@@ -61,6 +61,7 @@ export class FeedController {
     const encryptedFeedID = await this.feedService.createGroupFeed(
       createFeedDto,
       [...memberIdList, user.id],
+      user.id,
     );
 
     return ResponseDto.CREATED_WITH_DATA(encryptedFeedID);
