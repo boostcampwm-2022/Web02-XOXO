@@ -88,7 +88,7 @@ export default class UsersController {
     cookieList.forEach((cookie) => {
       res.cookie(cookie.name, cookie.value, cookie.option);
     });
-    res.send(ResponseDto.CREATED());
+    return ResponseDto.CREATED();
   }
 
   @UseGuards(AccessAuthGuard)
