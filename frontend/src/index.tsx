@@ -20,7 +20,7 @@ root.render(
   <div className='image-wrapper' ><DesktopSideImage width={240}/></div>
   <BrowserRouter>
     <Routes>
-      <Route path="/Feed">
+      <Route path="/Feed" element={<AuthRoute Component={Feed} />}>
         <Route path=":feedId" element={<AuthRoute Component={Feed} />} />
         <Route path=":feedId">
           <Route path=":postingId" element={<AuthRoute Component={Posting} />} />

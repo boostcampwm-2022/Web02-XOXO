@@ -34,8 +34,8 @@ const Info = () => {
 
   const handleNicknameForm = async () => {
     if (userNickname.current === null) return
-    const { success } = await postNickname({ nickname: userNickname.current.value })
-    if (success) navigate('/feeds')
+    const { _success } = await postNickname({ nickname: userNickname.current.value })
+    if (_success) navigate('/feeds')
     else {
       alert('다시 진행해 주세요.')
       navigate('/signin')
