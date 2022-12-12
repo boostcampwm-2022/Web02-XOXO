@@ -86,31 +86,38 @@ export class FeedService {
   }
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const feed = await queryRunner.manager.save(Feed, {
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // await queryRunner.connect();
+    // await queryRunner.startTransaction();
+    // try {
+    //   const feed = await queryRunner.manager.save(Feed, {
+    //     ...createFeedDto,
+    //     isGroupFeed: false,
+    //   });
+    //   await queryRunner.manager
+    //     .getRepository(UserFeedMapping)
+    //     .save({ feedId: feed.id, userId });
+    //   await this.cacheManager.set(`${feed.id}`, createFeedDto);
+    //   await queryRunner.manager.update(User, userId, {
+    //     lastVistedFeed: feed.id,
+    //   });
+    //   await queryRunner.commitTransaction();
+    //   return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
+    // } catch (e) {
+    //   await queryRunner.rollbackTransaction();
+    //   throw e;
+    // } finally {
+    //   await queryRunner.release();
+    // }
+    await this.dataSource.transaction(async (manager) => {
+      const feed = await manager.save(Feed, {
         ...createFeedDto,
         isGroupFeed: false,
       });
-      await queryRunner.manager
-        .getRepository(UserFeedMapping)
-        .save({ feedId: feed.id, userId });
-
+      await manager.save(UserFeedMapping, { feedId: feed.id, userId });
       await this.cacheManager.set(`${feed.id}`, createFeedDto);
-      await queryRunner.manager.update(User, userId, {
-        lastVistedFeed: feed.id,
-      });
-      await queryRunner.commitTransaction();
-      return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+      await manager.update(User, userId, { lastVistedFeed: feed.id });
+    });
   }
 
   async createGroupFeed(createFeedDto: CreateFeedDto, memberIdList: number[]) {
