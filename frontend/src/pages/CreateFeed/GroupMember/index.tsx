@@ -3,12 +3,7 @@ import React, { useRef, useState } from 'react'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
 import Suggestions from './Suggestions'
 import Input from '@src/components/Input'
-import { ISuggestion } from '@src/types'
-
-interface IGroupMember {
-  members: ISuggestion[]
-  setMembers: React.Dispatch<React.SetStateAction<ISuggestion[]>>
-}
+import { IGroupMember, ISuggestion } from '../types'
 
 const GroupMember = ({ members, setMembers }: IGroupMember) => {
   const nicknameRef = useRef<HTMLInputElement>(null)
