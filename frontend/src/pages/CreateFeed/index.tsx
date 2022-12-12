@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useEffect, useRef, useState } from 'react'
 import './style.scss'
 
@@ -23,6 +24,7 @@ import { IFeedForm, ISuggestion } from './types'
 import { toast } from 'react-toastify'
 import { uploadImage } from '@src/util/uploadImage'
 import usePost from '@src/hooks/usePost'
+import { compressImage } from '@src/util/imageCompress'
 
 const CreateFeed = () => {
   const nameRef = useRef<HTMLInputElement>(null)
@@ -42,9 +44,11 @@ const CreateFeed = () => {
     if (!(path === 'group' || path === 'personal')) navigate('/404')
   }, [path])
 
-  const onChangeFeedThumbnail = (e: any) => {
-    setThumbnail(e.target.files[0])
+  const onChangeFeedThumbnail = async (e: any) => {
     setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
+    setThumbnail(undefined)
+    const compressedImage = await compressImage(e.target.files[0])
+    setThumbnail(compressedImage)
   }
 
   const onThumbnailUploadClicked = (e: any) => {
@@ -65,13 +69,18 @@ const CreateFeed = () => {
       return undefined
     }
 
-    if (validDuedate(dueDateRef.current.value)) {
+    if (!validDuedate(dueDateRef.current.value)) {
       toast(getWarningDuedate(dueDateRef.current.value))
       return undefined
     }
 
     if (path === 'group' && !validMembers(members!)) {
       toast(getWarningMembers(members!))
+      return undefined
+    }
+
+    if (thumbnail === undefined) {
+      toast('썸네일 압축 중 입니다.')
       return undefined
     }
 
@@ -86,8 +95,7 @@ const CreateFeed = () => {
     return formData
   }
   const getThumbnailUrl = async () => {
-    if (thumbnail === undefined) return ''
-    const [thumbnailUrl] = await uploadImage([thumbnail], postImage)
+    const [thumbnailUrl] = await uploadImage([thumbnail!], postImage)
     return thumbnailUrl as string
   }
   const getMembers = () => {

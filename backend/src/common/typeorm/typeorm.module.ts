@@ -5,7 +5,7 @@ import { TYPEORM_CUSTOM_REPOSITORY } from './typeorm.decorator';
 
 export default class TypeOrmCustomModule {
   public static forCustomRepository<T extends new (...args: any[]) => any>(
-    ...repositories: T[]
+    repositories: T[],
   ): DynamicModule {
     const providers: Provider[] = [];
 

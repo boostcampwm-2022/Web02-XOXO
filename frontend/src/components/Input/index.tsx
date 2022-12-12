@@ -20,11 +20,11 @@ const Input = ({
   onChangeCb = (str: string) => {}
 }: IInput) => {
   const [warningText, setWarningText] = useState('')
-  const debouncedValidate = debounce(validate, 500)
+  const debouncedWarningText = debounce(setWarningText, 500)
 
   const handleEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = debouncedValidate(e.target.value) ?? ''
-    setWarningText(text)
+    const text = validate(e.target.value)
+    debouncedWarningText(text)
     onChangeCb(e.target.value)
   }
 

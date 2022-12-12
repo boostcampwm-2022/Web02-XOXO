@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './styles.scss'
 import Header from '@src/components/Header'
 import useSWR from 'swr'
@@ -7,7 +7,7 @@ import fetcher from '@src/util/fetcher'
 import CreateFeedButton from './CreateFeedButton'
 
 interface IFeed {
-  id: string
+  encryptedId: string
   name: string
   thumbnail: string
 }
@@ -15,8 +15,11 @@ interface IFeed {
 const Feeds = () => {
   const { data: personalFeeds } = useSWR('/feed/list', fetcher)
   const { data: groupFeeds } = useSWR('/feed/group/list', fetcher)
-  const feed = ({ id, name, thumbnail }: IFeed) => (
-    <Link className="feeds-card" to={`/Feed/${id}`}>
+  useEffect(() => {
+    console.log(personalFeeds)
+  }, [personalFeeds])
+  const feed = ({ encryptedId, name, thumbnail }: IFeed) => (
+    <Link className="feeds-card" to={`/Feed/${encryptedId}`} key={encryptedId}>
       <div className="feeds-card-circle basic">
         <img src={thumbnail} alt="feedThumbnail" />
       </div>
