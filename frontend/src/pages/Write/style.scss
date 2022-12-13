@@ -49,7 +49,7 @@
         right: -12px;
         top: -12px;
       }
-      .svg-wrapper{
+      svg {
         @include vhcenter;
         width: 3vw;
         height: 3vw;
@@ -90,6 +90,14 @@
   height: 12.5vw;
   border-top: solid 1px $grey;
   border-bottom: solid 1px $grey;
+  svg {
+    width: 4vw;
+    height: 4vw;
+    @include not-mobile{
+      width: 18px;
+      height: 18px;
+    }
+  }
   @include not-mobile{
     padding: 0 16px;
     height: 53px;
@@ -104,15 +112,6 @@
       @include not-mobile{
         @include bold(13px, $grey-font);
       }
-    }
-  }
-  .svg-wrapper {
-    @include vhcenter;
-    width: 3.2vw;
-    height: 3vw;
-    @include not-mobile{
-      width: 16px;
-      height: 14px;
     }
   }
 }
