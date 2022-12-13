@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ReactComponent as DownIcon } from '@assets/downIcon.svg'
 import { ReactComponent as LogoutIcon } from '@assets/logoutIcon.svg'
 import usePost from '@hooks/usePost'
+import { IResponse } from '@src/types'
 
 interface headerProps {
   page?: string
@@ -14,10 +15,10 @@ interface headerProps {
 
 const Header = ({ page, text }: headerProps) => {
   const postLogout = usePost('/users/logout')
-  const naviate = useNavigate()
+  const navigate = useNavigate()
   const handleLogout = async () => {
-    const response = await postLogout({})
-    if (response) naviate('/signin')
+    const { success }: IResponse = await postLogout({})
+    if (success) navigate('/Signin')
   }
   const handleRenderHeader = () => {
     switch (page) {

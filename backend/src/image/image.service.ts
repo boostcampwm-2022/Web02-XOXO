@@ -32,7 +32,7 @@ const upload = async (file: Express.Multer.File) => {
   }).promise();
 
   // 오브젝트 스토리지 내 이미지 파일 주소
-  const imagePath = `${endpoint}/${bucketName}/${fileName}`;
+  const imagePath = `${fileName}`;
 
   return imagePath;
 };

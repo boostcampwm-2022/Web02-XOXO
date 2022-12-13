@@ -1,5 +1,9 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import {
+  CustomRepositoryCannotInheritRepositoryError,
+  DataSource,
+} from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
@@ -37,18 +41,7 @@ export class FeedService {
 
   async getFeedById(encryptedFeedID: string) {
     const id = Number(decrypt(encryptedFeedID));
-    const findFeedDto = new FindFeedDto(id);
-    const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
-    return feed[0];
-  }
-
-  async getFeed(findFeedReq: FindFeedDto & Record<string, unknown>) {
-    const findFeedDto: FindFeedDto = { ...findFeedReq };
-    const encryptId = findFeedDto.encryptedId;
-    if (encryptId) {
-      delete findFeedDto.encryptedId;
-      findFeedDto.id = Number(decrypt(encryptId));
-    }
+    const findFeedDto: FindFeedDto = { id };
     const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
   }

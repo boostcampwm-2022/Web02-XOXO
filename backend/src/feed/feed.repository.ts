@@ -17,6 +17,7 @@ export class FeedRepository extends Repository<Feed> {
         description: true,
         thumbnail: true,
         dueDate: true,
+        isGroupFeed: true,
       },
     });
     return feed;
