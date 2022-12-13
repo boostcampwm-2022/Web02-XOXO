@@ -197,7 +197,6 @@ body {
   @include desktop {
     width: 100vw;
   }
-  @include scroll;
 }
 #root {
   .image-wrapper{
