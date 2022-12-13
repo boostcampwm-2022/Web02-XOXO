@@ -25,6 +25,8 @@ import { toast } from 'react-toastify'
 import { uploadImage } from '@src/util/uploadImage'
 import usePost from '@src/hooks/usePost'
 import { compressImage } from '@src/util/imageCompress'
+import { cropImg } from '@src/util/cropImg'
+import { canvasToFile } from '@src/util/canvasToFile'
 
 const CreateFeed = () => {
   const nameRef = useRef<HTMLInputElement>(null)
@@ -47,7 +49,9 @@ const CreateFeed = () => {
   const onChangeFeedThumbnail = async (e: any) => {
     setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
     setThumbnail(undefined)
-    const compressedImage = await compressImage(e.target.files[0])
+    const croppedCanvas = await cropImg(e.target.files[0])
+    const croppedFile = await await canvasToFile(croppedCanvas)
+    const compressedImage = await compressImage(croppedFile)
     setThumbnail(compressedImage)
   }
 
