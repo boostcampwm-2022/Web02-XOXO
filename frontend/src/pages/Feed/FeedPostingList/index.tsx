@@ -14,6 +14,7 @@ import useInfiniteScroll from '@hooks/useInfiniteScroll'
 import { isFutureRatherThanServer } from '@util/validation/bool'
 import { remainDueDate } from '@util/index'
 import fetcher from '@util/fetcher'
+import getThumbUrl from '@pages/Feed/imageQuery'
 import ObserverElement from './ObserverElement'
 import Loading from './Loading'
 import './style.scss'
@@ -75,7 +76,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     <button key={posting.id} className="posting-container" onClick={() => checkReadable(posting.id)} >
       <img key={posting.id}
         className="posting"
-        src={posting.thumbanil}
+        src={getThumbUrl(posting.thumbanil)}
       />
     </button>
     )
