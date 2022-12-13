@@ -1,6 +1,8 @@
+import { canvasToFile } from '@src/util/canvasToFile'
 import { cropImg } from '@src/util/cropImg'
+import { compressImage } from '@src/util/imageCompress'
 import React, { useEffect, useState } from 'react'
-import { ImagePixelated } from 'react-pixelate'
+import { ImagePixelated } from './pixelate'
 
 interface IPixelatedGenerator {
   imageFile: File
@@ -10,28 +12,36 @@ const PixelatedGenerator = ({ imageFile, setPixelatedFile }: IPixelatedGenerator
   const [croppedURL, setCroppedURL] = useState<string>('')
   useEffect(() => {
     void (async () => {
-      const url = await cropImg(imageFile)
-      setCroppedURL(url)
-      const pixelatedCanvas = document.querySelector('canvas') as HTMLCanvasElement
-      pixelatedCanvas.toBlob(
-        (blob) => {
-          const convertedFile = new File([blob as BlobPart], 'name.jpeg', { type: 'image/jpeg' })
-          setPixelatedFile(convertedFile)
-        },
-        'image/jpeg',
-        100
-      )
+      const croppedCanvas = await cropImg(imageFile)
+      const croppedFile = await canvasToFile(croppedCanvas)
+      const compressedImage = await compressImage(croppedFile)
+      setCroppedURL(URL.createObjectURL(compressedImage))
     })()
-  }, [imageFile, croppedURL])
+  }, [imageFile])
+  useEffect(() => {
+    if (croppedURL.length > 0) {
+      console.log('cropped!', croppedURL)
+      void (async () => {
+        const pixelatedCanvas = document.querySelector('canvas') as HTMLCanvasElement
+        const convertedFile = await canvasToFile(pixelatedCanvas)
+
+        setPixelatedFile(convertedFile)
+      })()
+    }
+  }, [croppedURL])
+
   return (
-    <ImagePixelated
-      src={croppedURL}
-      width={240}
-      height={240}
-      pixelSize={12}
-      centered={true}
-      fillTransparencyColor={'#ffffff'}
-    />
+    <>
+      <ImagePixelated
+        src={croppedURL}
+        width={240}
+        height={240}
+        pixelSize={12}
+        centered={true}
+        fillTransparencyColor={'#ffffff'}
+        callbackFn={setPixelatedFile}
+      />
+    </>
   )
 }
 

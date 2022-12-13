@@ -5,8 +5,9 @@ import { isEmpty } from 'lodash'
 import { IImage, IImageCards } from '../types'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
 
-const ImageCards = ({ images, setImages }: IImageCards) => {
+const ImageCards = ({ images, setImages, setPixelatedFile }: IImageCards) => {
   const handleDeleteButton = (src: string) => {
+    setPixelatedFile(undefined)
     setImages((images) => {
       const newImages = images.filter(({ thumbnailSrc }: IImage) => thumbnailSrc !== src)
       return newImages
@@ -37,7 +38,9 @@ const ImageCards = ({ images, setImages }: IImageCards) => {
             />
           </div>
           <button className="image-delete-button" onClick={() => handleDeleteButton(thumbnailSrc)}>
-            <XIcon width="2.5vw" height="3.75vw" fill="#ffffff" />
+            <div className="svg-wrapper">
+              <XIcon fill="#ffffff" />
+            </div>
           </button>
         </div>
       ))}

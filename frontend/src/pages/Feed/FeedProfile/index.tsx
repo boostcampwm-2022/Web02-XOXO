@@ -5,8 +5,9 @@ import useSWR from 'swr'
 import './style.scss'
 import { ReactComponent as ShareIcon } from '@assets/shareIcon.svg'
 import DefaultUserImage from '@assets/defaultUserImage.svg'
-import getThumbUrl from '@pages/Feed/imageQuery'
+import { getFeedThumbUrl } from '@util/imageQuery'
 import { remainDueDate } from '@util/index'
+import { isFutureRatherThanServer } from '@util/validation/bool'
 import fetcher from '@util/fetcher'
 
 interface IProps {
@@ -41,7 +42,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
         <div className="feed-profile-header">
             <div className="feed-profile-image-wrapper">
                 <div className="feed-profile-image">
-                    <img src={thumbnail !== '' ? getThumbUrl(thumbnail) : DefaultUserImage} alt="유저 프로필 이미지"/>
+                    <img src={thumbnail !== '' ? getFeedThumbUrl(thumbnail) : DefaultUserImage} alt="유저 프로필 이미지"/>
                 </div>
             </div>
             <div className="feed-profile-info-wrapper">
@@ -51,7 +52,14 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
                 <div className="feed-profile-status">
                     <span className="feed-post-number">게시물 수 <span className="bold">{postingCnt}</span></span>
                     <span className="line"></span>
-                    <span className="feed-remaining-time">남은 시간 <span className="bold">{remainDueDate(dueDate, serverDate)}</span></span>
+                    <span className="feed-remaining-time">
+                      남은 시간
+                      <span className="bold">
+                        {!isFutureRatherThanServer(dueDate, serverDate)
+                          ? ' 0일 0시간'
+                          : ` ${remainDueDate(dueDate, serverDate)}`}
+                      </span>
+                    </span>
                 </div>
             </div>
         </div>

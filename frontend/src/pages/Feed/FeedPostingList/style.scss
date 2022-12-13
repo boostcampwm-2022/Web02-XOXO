@@ -2,8 +2,7 @@
 
 .posting-list-wrapper {
     .posting-grid {
-        width: calc(100%+16px);
-        margin: 0 -16px;
+        width: 100%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 1px;

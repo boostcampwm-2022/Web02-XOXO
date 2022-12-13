@@ -114,11 +114,13 @@ const Write = () => {
               <p className="desc">아래 버튼을 눌러 사진을 추가해주세요!</p>
             </button>
           ) : (
-            <ImageCards images={images} setImages={setImages} />
+            <ImageCards images={images} setImages={setImages} setPixelatedFile={setPixelatedFile} />
           )}
         </div>
         <div className="button-bar-wrapper">
-          <CameraIcon onClick={openImageInput} />
+          <div className="svg-wrapper">
+            <CameraIcon onClick={openImageInput} />
+          </div>
           <input
             type="file"
             multiple

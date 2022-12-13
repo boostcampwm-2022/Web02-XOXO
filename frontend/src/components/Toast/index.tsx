@@ -16,6 +16,7 @@ const Toast = () => {
       pauseOnHover
       theme="light"
       closeButton={false}
+      limit={1}
     />
   )
 }

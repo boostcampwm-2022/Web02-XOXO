@@ -15,6 +15,15 @@
     }
   }
 }
+.svg-wrapper{
+  @include vhcenter;
+  width: 5vw;
+  height: 5.5vw;
+  @include not-mobile {
+    width: 15px;
+    height: 17px;
+  }
+}
 .default-header {
   @include vhcenter;
   @include bold(5vw, $black);

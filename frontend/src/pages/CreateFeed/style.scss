@@ -44,43 +44,59 @@
       margin: 37px 0;
     }
   }
-  .form-label {
-    @include medium(4.375vw, $black);
-    display: block;
-    @include not-mobile {
-      @include medium(18px, $black);
+  .add-group-people {
+    @include display-col(1.25vw);
+    @include not-mobile{
+      @include display-col(5px);
     }
-  }
-  .form-no-member {
-    @include regular(3.75vw, $grey);
-    @include not-mobile {
-      @include regular(16px, $grey);
-    }
-  }
-  .form-members-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25vw;
-    @include not-mobile {
-      gap: 5px;
-    }
-    .form-member {
-      @include regular(3.75vw, $primary-3);
-      vertical-align: middle;
-      padding: 1.25vw 1.875vw;
-      border-radius: 4px;
-      background-color: $primary-1;
-      display: inline;
+    .form-label {
+      @include bold(4.375vw, $black);
+      display: block;
       @include not-mobile {
-        @include regular(16px, $primary-3);
-        padding: 5px 8px;
+        @include bold(18px, $black);
       }
-      svg {
-        margin-left: 1.25vw;
-        padding-bottom: 0.4vw;
+    }
+    .form-no-member {
+      @include regular(3.75vw, $grey);
+      margin: 2.5vw 0;
+      @include not-mobile {
+        @include regular(16px, $grey);
+        margin: 10px 0;
+      }
+    }
+    .form-members-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25vw;
+      margin: 2.5vw 0;
+      @include not-mobile {
+        gap: 5px;
+        margin: 10px 0;
+      }
+      .form-member {
+        @include vhcenter;
+        @include regular(3.75vw, $primary-3);
+        vertical-align: middle;
+        padding: 1.25vw 1.875vw;
+        border-radius: 4px;
+        background-color: $primary-1;
+        display: inline;
+        flex-direction: row;
         @include not-mobile {
-          margin-left: 5px;
-          padding-bottom: 2px;
+          @include regular(16px, $primary-3);
+          padding: 5px 8px;
+        }
+        svg {
+          width: 3vw;
+          height: 3vw;
+          margin-left: 1.25vw;
+          padding-bottom: 0.4vw;
+          @include not-mobile {
+            width: 12px;
+            height: 12px;
+            margin-left: 5px;
+            padding-bottom: 2px;
+          }
         }
       }
     }

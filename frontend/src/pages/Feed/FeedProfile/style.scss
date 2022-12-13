@@ -3,6 +3,7 @@
 .feed-profile-header{
     @include vcenter;
     margin: 8px 0 24px 0;
+    padding: 0 8px;
 }
 .feed-profile-image-wrapper{
     position: relative;

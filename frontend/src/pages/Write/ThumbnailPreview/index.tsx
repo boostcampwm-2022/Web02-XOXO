@@ -19,9 +19,6 @@ const ThumbnailPreview = ({ isModalOpen, setModalOpen, imageFile }: propsInterfa
 
   useEffect(() => {
     setImageSrc(URL.createObjectURL(imageFile))
-  }, [imageFile])
-
-  useEffect(() => {
     document.addEventListener('click', handleClickOutModal)
     return () => {
       document.removeEventListener('click', handleClickOutModal)

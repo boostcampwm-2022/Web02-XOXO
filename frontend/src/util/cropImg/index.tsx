@@ -10,7 +10,7 @@ export const cropImg = async (file: File) => {
   canvas.height = min
 
   ctx?.drawImage(img, sx, sy, min, min, 0, 0, min, min)
-  return canvas.toDataURL()
+  return canvas
 }
 const loadImage = (file: File) => {
   const img = document.createElement('img') as HTMLImageElement

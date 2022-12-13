@@ -14,7 +14,7 @@ import useInfiniteScroll from '@hooks/useInfiniteScroll'
 import { isFutureRatherThanServer } from '@util/validation/bool'
 import { remainDueDate } from '@util/index'
 import fetcher from '@util/fetcher'
-import getThumbUrl from '@pages/Feed/imageQuery'
+import { getFeedThumbUrl } from '@util/imageQuery'
 import ObserverElement from './ObserverElement'
 import Loading from './Loading'
 import './style.scss'
@@ -39,7 +39,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     if (pageIndex === 0) return `/feed/scroll/${feedId}?size=${isGroupFeed ? SCROLL_SIZE - 1 : (isOwner ? SCROLL_SIZE : SCROLL_SIZE - 1)}&index=${pageIndex}`
     return `/feed/scroll/${feedId}?size=${SCROLL_SIZE}&index=${previousPageData[previousPageData.length - 1].id}`
   }
-  const { data: postings, error, size, setSize } = useSWRInfinite(getKey, fetcher, { initialSize: 1, revalidateFirstPage: false })
+  const { data: postings, error, size, setSize } = useSWRInfinite(getKey, fetcher, { initialSize: 1 })
   const getServerDate = useGet('/serverTime')
 
   // 리스트 로딩중일 때
@@ -76,7 +76,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     <button key={posting.id} className="posting-container" onClick={() => checkReadable(posting.id)} >
       <img key={posting.id}
         className="posting"
-        src={getThumbUrl(posting.thumbanil)}
+        src={getFeedThumbUrl(posting.thumbanil)}
       />
     </button>
     )
