@@ -66,11 +66,14 @@ export default class UsersController {
 
   @UseGuards(AccessAuthGuard)
   @Post('logout')
-  async logoutUser(@UserReq() user: User, @Res() res: Response) {
+  async logoutUser(
+    @UserReq() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
     await this.userService.removeRefreshToken(user.id);
-    return res.redirect(process.env.CLIENT_URL_PREFIX);
+    return ResponseDto.CREATED_WITH_DATA(true);
   }
 
   @Post('join')
