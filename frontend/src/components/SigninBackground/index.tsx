@@ -3,7 +3,7 @@ import './style.scss'
 const SigninBackground = () => {
   return (
     <div className="signin-bg">
-      {Array(100)
+      {Array(30)
         .fill(0)
         .map((x: number, y: number) => x + y)
         .map((n) => (
