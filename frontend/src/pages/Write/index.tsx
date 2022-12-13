@@ -1,6 +1,6 @@
 /* eslint-disable multiline-ternary */
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import React, { useState, useRef, ChangeEventHandler } from 'react'
+import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import Toast from '@src/components/Toast'
 import Header from '@components/Header'
@@ -14,6 +14,7 @@ import { uploadImage } from '@src/util/uploadImage'
 import { IImage, IPosting } from './types'
 import CreatePostingButton from './CreatePostingButton'
 import ImageCards from './ImageCards'
+import PixelatedGenerator from './PixelatedGenerator'
 
 const Write = () => {
   const [images, setImages] = useState<IImage[]>([])
@@ -23,6 +24,12 @@ const Write = () => {
   const [isModalOpen, setModalOpen] = useState(false)
   const postImage = usePost('/image')
   const { feedId } = useParams()
+  const [originalImage, setOriginalImage] = useState<File>()
+
+  useEffect(() => {
+    if (!isEmpty(images)) setOriginalImage(images[0].originalImage)
+    else setPixelatedFile(undefined)
+  }, [images])
 
   const handleImageState: ChangeEventHandler<HTMLInputElement> = async (event: any) => {
     const newImages: FileList = event.target.files
@@ -30,16 +37,20 @@ const Write = () => {
       toast('이미지는 최대 10장만 업로드 가능합니다.')
       return
     }
-    setImages((prev) => [
-      ...prev,
-      ...Array.from(newImages).map((image): IImage => {
-        return {
-          originalImage: image,
-          compressedImage: undefined,
-          thumbnailSrc: URL.createObjectURL(image)
-        }
-      })
-    ])
+    setImages((prev) => {
+      const tempImages = [
+        ...prev,
+        ...Array.from(newImages).map((image): IImage => {
+          return {
+            originalImage: image,
+            compressedImage: undefined,
+            thumbnailSrc: URL.createObjectURL(image)
+          }
+        })
+      ]
+
+      return tempImages
+    })
   }
 
   const openImageInput = () => {
@@ -90,14 +101,10 @@ const Write = () => {
 
   return (
     <div className="write-page">
-      {isModalOpen && !isEmpty(images) && (
-        <ThumbnailPreview
-          isModalOpen={isModalOpen}
-          setModalOpen={setModalOpen}
-          imageFile={images[0].originalImage}
-          setPixelatedFile={setPixelatedFile}
-        />
+      {isModalOpen && pixelatedFile !== undefined && (
+        <ThumbnailPreview isModalOpen={isModalOpen} setModalOpen={setModalOpen} imageFile={pixelatedFile} />
       )}
+
       <Header text="업로드" />
       <div className="write-body">
         <div className="image-list">
@@ -120,7 +127,7 @@ const Write = () => {
             ref={imageRef}
             onChange={handleImageState}
           />
-          {!isEmpty(images) && (
+          {pixelatedFile !== undefined && (
             <button className="thumbnail-preview" onClick={handleThumbnailModal}>
               썸네일 미리보기
             </button>
@@ -129,6 +136,9 @@ const Write = () => {
         <textarea className="text-area" placeholder="글 내용을 입력해주세요" ref={letterRef} />
         <CreatePostingButton getPostingInfos={getPostingInfos} />
         <Toast />
+        {originalImage !== undefined && (
+          <PixelatedGenerator imageFile={originalImage} setPixelatedFile={setPixelatedFile} />
+        )}
       </div>
     </div>
   )

@@ -20,7 +20,7 @@ const CreatePostingButton = ({ getPostingInfos }: ICreatePostingButton) => {
       return
     }
     const { success } = await postPosting(formData)
-    if (success === true) navigate('/feed')
+    if (success === true) navigate(`/Feed/${feedId}`)
   }
   return (
     <button className="write-button" onClick={handleUploadPosting} disabled={isButtonDisabled}>
