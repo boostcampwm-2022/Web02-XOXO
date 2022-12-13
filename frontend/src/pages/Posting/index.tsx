@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useEffect } from 'react'
 
 import './styles.scss'
 import Header from '@src/components/Header'
@@ -6,35 +7,30 @@ import defaultUserImage from '@assets/defaultUserImage.svg'
 import useSWR from 'swr'
 import { useParams } from 'react-router-dom'
 import ImageSlider from './ImageSlider'
+import fetcher from '@src/util/fetcher'
 
 const Posting = () => {
   const { feedId, postingId } = useParams()
-  const {
-    data: {
-      name,
-      letter,
-      imageList: images,
-      sender: { nickname, thumbnail }
-    }
-  } = useSWR(`/posting/${feedId!}/${postingId!}`)
+  const { data } = useSWR(`/posting/${feedId!}/${postingId!}`, fetcher)
+  if (data === undefined) return <></>
   return (
     <div className="posting-page">
-      <Header page="posting" text={name} />
+      <Header page="posting" text={data.feed.name} />
       <div className="posting-body">
         <div className="info-header">
           <div className="info-header-picture">
             <img
-              src={thumbnail}
+              src={data.sender.profile}
               onError={(e: any) => {
                 e.target.src = defaultUserImage
               }}
             />
           </div>
-          <span>{nickname}</span>
+          <span>{data.sender.nickname}</span>
         </div>
-        <ImageSlider images={images} />
+        <ImageSlider images={data.imageList} />
         <div className="letter-container">
-          <span>{letter}</span>
+          <span>{data.letter}</span>
         </div>
       </div>
     </div>
