@@ -2,10 +2,10 @@
 .feed-page{
     @include page;
     height: 100vh;
-    padding: 0;
 }
 .feed-body{
     @include body;
+    padding: 0;
 }
 
 
