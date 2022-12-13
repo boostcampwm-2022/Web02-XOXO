@@ -12,6 +12,7 @@ export interface IPosting {
 export interface IImageCards {
   images: IImage[]
   setImages: React.Dispatch<React.SetStateAction<IImage[]>>
+  setPixelatedFile: React.Dispatch<React.SetStateAction<File | undefined>>
 }
 export interface ICreatePostingButton {
   getPostingInfos: () => Promise<IPosting | undefined>

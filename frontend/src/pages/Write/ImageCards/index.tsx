@@ -5,8 +5,9 @@ import { isEmpty } from 'lodash'
 import { IImage, IImageCards } from '../types'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
 
-const ImageCards = ({ images, setImages }: IImageCards) => {
+const ImageCards = ({ images, setImages, setPixelatedFile }: IImageCards) => {
   const handleDeleteButton = (src: string) => {
+    setPixelatedFile(undefined)
     setImages((images) => {
       const newImages = images.filter(({ thumbnailSrc }: IImage) => thumbnailSrc !== src)
       return newImages
