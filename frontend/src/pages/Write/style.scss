@@ -49,6 +49,15 @@
         right: -12px;
         top: -12px;
       }
+      .svg-wrapper{
+        @include vhcenter;
+        width: 3vw;
+        height: 3vw;
+        @include not-mobile{
+          width: 12px;
+          height: 12px;
+        }
+      }
     }
   }
   .text-container {
@@ -95,6 +104,15 @@
       @include not-mobile{
         @include bold(13px, $grey-font);
       }
+    }
+  }
+  .svg-wrapper {
+    @include vhcenter;
+    width: 3.2vw;
+    height: 3vw;
+    @include not-mobile{
+      width: 16px;
+      height: 14px;
     }
   }
 }
