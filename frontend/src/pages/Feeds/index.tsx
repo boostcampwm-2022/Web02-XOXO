@@ -4,6 +4,7 @@ import Header from '@src/components/Header'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import fetcher from '@src/util/fetcher'
+import { getFeedsThumbUrl } from '@util/imageQuery'
 import CreateFeedButton from './CreateFeedButton'
 
 interface IFeed {
@@ -21,7 +22,7 @@ const Feeds = () => {
   const feed = ({ encryptedId, name, thumbnail }: IFeed) => (
     <Link className="feeds-card" to={`/Feed/${encryptedId}`} key={encryptedId}>
       <div className="feeds-card-circle basic">
-        <img src={thumbnail} alt="feedThumbnail" />
+        <img src={getFeedsThumbUrl(thumbnail)} alt="feedThumbnail" />
       </div>
       <span className="feeds-card-text basic">{name}</span>
     </Link>
