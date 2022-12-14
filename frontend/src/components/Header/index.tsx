@@ -28,10 +28,14 @@ const Header = ({ page, text }: headerProps) => {
           <div className="feed-header">
             <Link className="text-wrapper" to="/feeds">
               <span className="text">{text}</span>
-              <DownIcon />
+              <div className="svg-wrapper">
+                <DownIcon />
+              </div>
             </Link>
             <button onClick={handleLogout}>
-              <LogoutIcon />
+              <div className="svg-wrapper">
+                <LogoutIcon />
+              </div>
             </button>
           </div>
         )

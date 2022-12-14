@@ -29,31 +29,33 @@ const GroupMember = ({ members, setMembers }: IGroupMember) => {
         onChangeCb={debouncedSearch}
       />
       {!isEmpty(nickname) && <Suggestions nickname={nickname} setMembers={handleSuggestionClick} />}
-      <label className="form-label" htmlFor="">
-        그룹원 목록
-      </label>
-      {
-        // eslint-disable-next-line multiline-ternary
-        isEmpty(members) ? (
-          <span className="form-no-member">현재 추가된 그룹원이 없습니다</span>
-        ) : (
-          <div className="form-members-wrapper">
-            {members.map(({ nickname, id }) => (
-              <button
-                key={id}
-                className="form-member"
-                onClick={(e) => {
-                  e.preventDefault()
-                  setMembers(members.filter((member) => member.id !== id))
-                }}
-              >
-                <span>{nickname}</span>
-                <XIcon fill="#ea4b35" />
-              </button>
-            ))}
-          </div>
-        )
-      }
+      <div className="add-group-people">
+        <label className="form-label" htmlFor="">
+          그룹원 목록
+        </label>
+        {
+          // eslint-disable-next-line multiline-ternary
+          isEmpty(members) ? (
+            <span className="form-no-member">현재 추가된 그룹원이 없습니다</span>
+          ) : (
+            <div className="form-members-wrapper">
+              {members.map(({ nickname, id }) => (
+                <button
+                  key={id}
+                  className="form-member"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMembers(members.filter((member) => member.id !== id))
+                  }}
+                >
+                  <span>{nickname}</span>
+                    <XIcon fill="#ea4b35" />
+                </button>
+              ))}
+            </div>
+          )
+        }
+      </div>
     </div>
   )
 }

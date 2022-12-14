@@ -118,7 +118,9 @@ const Write = () => {
           )}
         </div>
         <div className="button-bar-wrapper">
-          <CameraIcon onClick={openImageInput} />
+          <div className="svg-wrapper">
+            <CameraIcon onClick={openImageInput} />
+          </div>
           <input
             type="file"
             multiple

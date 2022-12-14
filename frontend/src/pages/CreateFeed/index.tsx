@@ -50,7 +50,7 @@ const CreateFeed = () => {
     setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
     setThumbnail(undefined)
     const croppedCanvas = await cropImg(e.target.files[0])
-    const croppedFile = await await canvasToFile(croppedCanvas)
+    const croppedFile = await canvasToFile(croppedCanvas)
     const compressedImage = await compressImage(croppedFile)
     setThumbnail(compressedImage)
   }

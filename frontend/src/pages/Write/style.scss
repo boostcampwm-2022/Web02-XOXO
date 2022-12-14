@@ -49,6 +49,15 @@
         right: -12px;
         top: -12px;
       }
+      svg {
+        @include vhcenter;
+        width: 3vw;
+        height: 3vw;
+        @include not-mobile{
+          width: 12px;
+          height: 12px;
+        }
+      }
     }
   }
   .text-container {
@@ -81,6 +90,14 @@
   height: 12.5vw;
   border-top: solid 1px $grey;
   border-bottom: solid 1px $grey;
+  svg {
+    width: 4vw;
+    height: 4vw;
+    @include not-mobile{
+      width: 18px;
+      height: 18px;
+    }
+  }
   @include not-mobile{
     padding: 0 16px;
     height: 53px;

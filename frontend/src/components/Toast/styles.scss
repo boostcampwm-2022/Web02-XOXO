@@ -1,21 +1,27 @@
 @import '@src/global';
 .Toastify {
   &__toast {
-    @include regular(3vw, $black);
+    @include medium(3vw, $black);
     border-radius: 32px;
-    border: 1px solid $primary-3;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
     word-break: unset;
     background-color: $white;
     min-height: max-content;
+    @include not-mobile {
+      @include medium(12px, $black);
+    }
     &-body {
-      padding: 0;
+      padding: 4px;
       margin: 0;
     }
     &-container {
       width: max-content;
+      bottom: 1vh;
       left: 50%;
-      transform: translateX(-50%);
-      bottom: 3vw;
+      transform: translate(-50%, -50%);
+      @include desktop {
+        left: calc(50% + 120px);
+      }
     }
   }
 }

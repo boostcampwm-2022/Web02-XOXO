@@ -38,7 +38,9 @@ const ImageCards = ({ images, setImages, setPixelatedFile }: IImageCards) => {
             />
           </div>
           <button className="image-delete-button" onClick={() => handleDeleteButton(thumbnailSrc)}>
-            <XIcon width="2.5vw" height="3.75vw" fill="#ffffff" />
+            <div className="svg-wrapper">
+              <XIcon fill="#ffffff" />
+            </div>
           </button>
         </div>
       ))}

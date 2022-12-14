@@ -39,6 +39,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
   }
   return (
     <div>
+      <div className="feed-profile-header-wrapper">
         <div className="feed-profile-header">
             <div className="feed-profile-image-wrapper">
                 <div className="feed-profile-image">
@@ -56,7 +57,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
                       남은 시간
                       <span className="bold">
                         {!isFutureRatherThanServer(dueDate, serverDate)
-                          ? ' 0일 0시간'
+                          ? ' 없음'
                           : ` ${remainDueDate(dueDate, serverDate)}`}
                       </span>
                     </span>
@@ -72,6 +73,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
           </button>
         }
     </div>
+  </div>
   )
 }
 
