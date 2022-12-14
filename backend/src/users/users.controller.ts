@@ -70,8 +70,8 @@ export default class UsersController {
     @UserReq() user: User,
     @Res({ passthrough: true }) res: Response,
   ) {
-    res.clearCookie('refreshToken');
-    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken', { domain: process.env.SERVICE_DOMAIN });
+    res.clearCookie('accessToken', { domain: process.env.SERVICE_DOMAIN });
     await this.userService.removeRefreshToken(user.id);
     return ResponseDto.CREATED_WITH_DATA(true);
   }
