@@ -44,12 +44,12 @@ export class FeedService {
           dueDate: true,
           isGroupFeed: true,
         },
-      })[0];
+      });
       const user = await manager.find(UserFeedMapping, {
         where: { feedId: id, userId },
-      })[0];
+      });
 
-      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed, user);
+      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], user[0]);
       if (feedInfoDto.isOwner) {
         await manager.update(User, userId, { lastVistedFeed: id });
       }
