@@ -66,12 +66,16 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
   }, [isEmpty])
 
   useEffect(() => {
-    const { result, remainTime } = checkDate()
-    checkWritable(result)
     if (postingId) {
+      const { result, remainTime } = checkDate()
       checkReadable(postingId, result, remainTime)
     }
   }, [isClickPosting])
+
+  useEffect(() => {
+    const { result } = checkDate()
+    checkWritable(result)
+  }, [serverTime])
 
   const checkDate = () => {
     return { result: isFutureRatherThanServer(dueDate, serverTime), remainTime: remainDueDate(dueDate, serverTime) }
