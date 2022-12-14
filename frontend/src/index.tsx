@@ -24,12 +24,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/Signin" />} />
-        <Route path="/Feed">
-          <Route path=":feedId" element={<FeedRoute Component={Feed} />} />
-          <Route path=":feedId">
-            <Route path=":postingId" element={<AuthRoute Component={Posting} />} />
-          </Route>
-        </Route>
+        <Route path="/Feed/:feedId" element={<FeedRoute Component={Feed} />} />
+        <Route path="/Feed/:feedId/:postingId" element={<AuthRoute Component={Posting} />} />
         <Route path="/Write/:feedId" element={<AuthRoute Component={Write} />} />
         <Route path="/SignIn/Info" element={<SigninRoute Component={Info} />} />
         <Route path="/SignIn" element={<SigninRoute Component={SignIn} />} />
