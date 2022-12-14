@@ -6,25 +6,23 @@ import { decrypt } from '@root/feed/feed.utils';
 import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
 import LookingPostingDto from './dto/looking.posting.dto';
+import { PostingRepository } from './posting.repository';
 
 @Injectable()
 export class PostingService {
   constructor(
     @InjectRepository(Posting) private postingRepository: Repository<Posting>,
+    private postingRepository2: PostingRepository,
     private dataSource: DataSource,
   ) {}
 
-  async getPosting(postindId: number, encryptedFeedId: string) {
+  async getPosting(postingId: number, encryptedFeedId: string) {
     const feedId = Number(decrypt(encryptedFeedId));
-    const posting = await this.postingRepository.find({
-      where: { id: postindId, feed: { id: feedId } },
-      relations: ['images', 'sender', 'feed'],
-      select: {
-        images: { url: true },
-        sender: { nickname: true, profile: true },
-        feed: { name: true },
-      },
-    });
+    const posting = await this.postingRepository2.getPosting(
+      postingId,
+      encryptedFeedId,
+      feedId,
+    );
     return LookingPostingDto.createLookingPostingDto(posting[0]);
   }
 
@@ -32,30 +30,19 @@ export class PostingService {
     { letter, thumbnail, senderId, encryptedFeedId }: CreatePostingDto,
     imageUrlList: string[],
   ) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const feedId = Number(decrypt(encryptedFeedId));
-      const posting = await queryRunner.manager
-        .getRepository(Posting)
-        .save({ letter, thumbnail, senderId, feedId });
-
-      // Images 테이블에 삽입
-      for await (const ImageUrl of imageUrlList) {
-        await queryRunner.manager
-          .getRepository(Image)
-          .insert({ posting, url: ImageUrl });
+    const feedId = Number(decrypt(encryptedFeedId));
+    let posting;
+    await this.dataSource.transaction(async (manager) => {
+      posting = manager.save(Posting, {
+        letter,
+        thumbnail,
+        senderId,
+        feedId,
+      });
+      for await (const imageUrl of imageUrlList) {
+        await manager.insert(Image, { posting, url: imageUrl });
       }
-
-      await queryRunner.commitTransaction();
-      return posting.id;
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    });
+    return posting.id;
   }
 }
