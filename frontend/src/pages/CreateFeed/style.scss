@@ -50,10 +50,10 @@
       @include display-col(5px);
     }
     .form-label {
-      @include bold(4.375vw, $black);
+      @include medium(4.375vw, $black);
       display: block;
       @include not-mobile {
-        @include bold(18px, $black);
+        @include medium(18px, $black);
       }
     }
     .form-no-member {
