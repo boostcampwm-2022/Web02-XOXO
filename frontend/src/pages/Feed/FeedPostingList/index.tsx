@@ -3,13 +3,14 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import React, { useEffect } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 import { toast } from 'react-toastify'
 import Toast from '@components/Toast'
 import { ReactComponent as PlusIcon } from '@assets/plusIcon.svg'
-import useGet from '@hooks/useGet'
 import useInfiniteScroll from '@hooks/useInfiniteScroll'
 import { isFutureRatherThanServer } from '@util/validation/bool'
 import { remainDueDate } from '@util/index'
@@ -33,6 +34,9 @@ const SCROLL_SIZE = 15
 const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
   const navigate = useNavigate()
   const { feedId } = useParams<{ feedId: string }>()
+  const [postingId, setPostingId] = useState<string | null>(null)
+  const [isWritabble, setIsWritabble] = useState<boolean>(false)
+  const [isClickPosting, setIsClickPosting] = useState<boolean>(false)
 
   const getKey = (pageIndex: number, previousPageData: Iposting[]) => {
     if (previousPageData && !previousPageData.length) return null
@@ -40,7 +44,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     return `/feed/scroll/${feedId}?size=${SCROLL_SIZE}&index=${previousPageData[previousPageData.length - 1].id}`
   }
   const { data: postings, error, size, setSize } = useSWRInfinite(getKey, fetcher, { initialSize: 1 })
-  const getServerDate = useGet('/serverTime')
+  const { data: serverTime, mutate: mutateTime } = useSWR('/serverTime', fetcher)
 
   // 리스트 로딩중일 때
   const isLoading = (!postings && !error) || (size > 0 && postings && typeof postings[size - 1] === 'undefined')
@@ -61,19 +65,42 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     if (isEmpty) toast('아직 작성된 포스팅이 없습니다')
   }, [isEmpty])
 
-  const checkReadable = async (id: string) => {
-    const { data: serverDate } = await getServerDate()
+  useEffect(() => {
+    const { result, remainTime } = checkDate()
+    checkWritable(result)
+    if (postingId) {
+      checkReadable(postingId, result, remainTime)
+    }
+  }, [isClickPosting])
+
+  const checkDate = () => {
+    return { result: isFutureRatherThanServer(dueDate, serverTime), remainTime: remainDueDate(dueDate, serverTime) }
+  }
+
+  const checkReadable = (id: string, result: boolean, remainTime: string) => {
     if (!isOwner) {
       toast('피드의 주인만 포스팅을 열람할 수 있습니다.')
-    } else if (isFutureRatherThanServer(dueDate, serverDate)) {
-      toast(`게시물이 공개되기까지 ${remainDueDate(dueDate, serverDate)} 남았어요`)
+    } else if (result) {
+      toast(`게시물이 공개되기까지 ${remainTime} 남았어요`)
     } else navigate(`${id}`)
   }
 
+  const checkWritable = (result: boolean) => {
+    if (!result) return setIsWritabble(false)
+    else if (isGroupFeed) return setIsWritabble(true)
+    else if (!isOwner) return setIsWritabble(true)
+    else return setIsWritabble(false)
+  }
+
+  const handleClickPosting = (postingId: string) => {
+    mutateTime()
+    setPostingId(postingId)
+    setIsClickPosting(!isClickPosting)
+  }
+
   const postingList = postings?.flat().map((posting: Iposting) => {
-    console.log(isLoading, isEmpty, isReachingEnd, postings, isOwner, isGroupFeed, (isGroupFeed || (!isOwner && !isGroupFeed)), postings[0]?.length < SCROLL_SIZE - 1)
     return (
-    <button key={posting.id} className="posting-container" onClick={() => checkReadable(posting.id)} >
+    <button key={posting.id} className="posting-container" onClick={() => handleClickPosting(posting.id)} >
       <img key={posting.id}
         className="posting"
         src={getFeedThumbUrl(posting.thumbanil)}
@@ -93,7 +120,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     <div className='posting-list-wrapper'>
     <div>
       <div className="posting-grid">
-        {isGroupFeed ? writePostingButton : !isOwner && writePostingButton }
+        {isWritabble && writePostingButton}
         {!isEmpty && postingList}
       </div>
     </div>

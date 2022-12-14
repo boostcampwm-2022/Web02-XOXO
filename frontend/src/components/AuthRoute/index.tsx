@@ -7,7 +7,7 @@ interface IAuthRoute {
   Component: () => ReactElement
 }
 const AuthRoute = ({ Component }: IAuthRoute) => {
-  const { data: isLoggined } = useSWR<boolean>('/users', fetcher, { revalidateOnFocus: false })
+  const { data: isLoggined } = useSWR<boolean>('/users', fetcher, { revalidateOnFocus: false, dedupingInterval: 0 })
   if (isLoggined === undefined) return <></>
   return isLoggined ? <Component /> : <Navigate to="/Signin" />
 }

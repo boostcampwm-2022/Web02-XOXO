@@ -12,5 +12,7 @@ export const remainDueDate = (dueDate: string, serverDate: string) => {
   const diff = future.getTime() - present.getTime()
   const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24))
   const diffHour = Math.floor((diff / (1000 * 60 * 60)) % 24)
-  return `${diffDay}일 ${diffHour}시간`
+  const diffMinute = Math.floor((diff / (1000 * 60) % 60))
+  const diffSecond = Math.floor((diff / 1000 % 60))
+  return (diffDay <= 0 && diffHour <= 0) ? `${diffMinute}분 ${diffSecond}초` : `${diffDay}일 ${diffHour}시간`
 }
