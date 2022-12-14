@@ -32,6 +32,7 @@ export class FeedService {
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
     const id = Number(decrypt(encryptedFeedID));
+    let feedInfoDto;
     await this.dataSource.transaction(async (manager) => {
       const feed = await manager.find(Feed, {
         where: { id },
@@ -49,19 +50,20 @@ export class FeedService {
       const postingCnt = await manager
         .getRepository(Posting)
         .createQueryBuilder()
-        .select('count(*)')
+        .select('count(*) as count')
         .where('feedId = :id', { id })
         .execute();
-      const feedInfoDto = FeedInfoDto.createFeedInfoDto(
+
+      feedInfoDto = FeedInfoDto.createFeedInfoDto(
         feed[0],
         user[0],
-        postingCnt,
+        postingCnt[0],
       );
       if (feedInfoDto.isOwner) {
         await manager.update(User, userId, { lastVistedFeed: id });
       }
-      return feedInfoDto;
     });
+    return feedInfoDto;
   }
 
   async getFeedById(encryptedFeedID: string) {
