@@ -35,9 +35,7 @@ export class FeedService {
     await this.dataSource.transaction(async (manager) => {
       const feed = await manager.find(Feed, {
         where: { id },
-        relations: ['postings'],
         select: {
-          postings: { id: true },
           name: true,
           description: true,
           thumbnail: true,
@@ -48,8 +46,17 @@ export class FeedService {
       const user = await manager.find(UserFeedMapping, {
         where: { feedId: id, userId },
       });
-
-      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], user[0]);
+      const postingCnt = await manager
+        .getRepository(Posting)
+        .createQueryBuilder()
+        .select('count(*)')
+        .where('feedId =: id', { id })
+        .execute();
+      const feedInfoDto = FeedInfoDto.createFeedInfoDto(
+        feed[0],
+        user[0],
+        postingCnt,
+      );
       if (feedInfoDto.isOwner) {
         await manager.update(User, userId, { lastVistedFeed: id });
       }

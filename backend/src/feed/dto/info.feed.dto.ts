@@ -14,14 +14,14 @@ export default class FeedInfoDto extends PickType(Feed, [
 
   isOwner: boolean;
 
-  constructor(feed: Feed, user: UserFeedMapping) {
+  constructor(feed: Feed, user: UserFeedMapping, postingCnt: number) {
     super();
     this.name = feed.name;
     this.thumbnail = feed.thumbnail;
     this.description = feed.description;
     this.dueDate = feed.dueDate;
     this.isGroupFeed = feed.isGroupFeed;
-    this.getPostingCnt(feed.postings);
+    this.postingCnt = postingCnt;
     this.checkIsOwner(user);
   }
 
@@ -34,8 +34,12 @@ export default class FeedInfoDto extends PickType(Feed, [
     else this.isOwner = true;
   }
 
-  static createFeedInfoDto(feed: Feed, user: UserFeedMapping) {
+  static createFeedInfoDto(
+    feed: Feed,
+    user: UserFeedMapping,
+    postingCnt: number,
+  ) {
     if (!feed) throw new NonExistFeedError();
-    return new FeedInfoDto(feed, user);
+    return new FeedInfoDto(feed, user, postingCnt);
   }
 }
