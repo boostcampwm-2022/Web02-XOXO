@@ -56,7 +56,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
                       남은 시간
                       <span className="bold">
                         {!isFutureRatherThanServer(dueDate, serverDate)
-                          ? ' 0일 0시간'
+                          ? ' 없음'
                           : ` ${remainDueDate(dueDate, serverDate)}`}
                       </span>
                     </span>
