@@ -19,6 +19,8 @@ const CreatePostingButton = ({ getPostingInfos }: ICreatePostingButton) => {
       setIsButtonDisabled(false)
       return
     }
+    console.log(formData)
+
     const { success } = await postPosting(formData)
     if (success === true) navigate(`/Feed/${feedId}`)
   }

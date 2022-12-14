@@ -36,6 +36,8 @@ const Info = () => {
     if (userNickname.current === null) return
     const { success } = await postNickname({ nickname: userNickname.current.value })
     const feedId = window.localStorage.getItem('feedId')
+    console.log(feedId)
+
     if (success) {
       if (feedId !== null) {
         navigate(`/Feed/${feedId}`)

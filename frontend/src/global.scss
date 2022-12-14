@@ -57,7 +57,7 @@ $error: #fd4747;
   height: 100vh;
   background-color: transparent;
   position: relative;
-  @include not-mobile{
+  @include not-mobile {
     width: 425px;
   }
 }
@@ -106,7 +106,7 @@ a {
     cursor: default;
     background-color: $primary-2;
   }
-  @include not-mobile{
+  @include not-mobile {
     @include bold(16px, $font-color);
     padding: 16px 0;
   }
@@ -121,19 +121,19 @@ a {
   border-bottom: 1px solid $grey;
   margin: 2.5vw 0;
   color: $color;
-  @include not-mobile{
+  @include not-mobile {
     @include regular(16px, $color);
     height: 28px;
     margin: 10px 0;
   }
-  @include desktop{
+  @include desktop {
     @include regular(16px, $color);
     height: 28px;
     margin: 10px 0;
   }
   &::placeholder {
     @include regular(3.75vw, $grey-font);
-    @include not-mobile{
+    @include not-mobile {
       @include regular(16px, $grey-font);
     }
   }
@@ -168,12 +168,12 @@ a {
 
 @mixin form-wrapper($label-color: $black, $font-color: $black) {
   @include display-col(1.25vw);
-  @include not-mobile{
+  @include not-mobile {
     @include display-col(5px);
   }
   .form-label {
     @include medium(4.375vw, $label-color);
-    @include not-mobile{
+    @include not-mobile {
       @include bold(18px, $label-color);
     }
   }
@@ -182,7 +182,7 @@ a {
   }
   .form-warning {
     @include regular(2.5vw, $error);
-    @include not-mobile{
+    @include not-mobile {
       @include bold(10px, $error);
     }
   }
@@ -192,14 +192,17 @@ html,
 body {
   margin: 0;
   max-width: 100%;
+  // position: fixed;
   overflow-x: hidden;
+  // transform: translate3d(0, 0, 0);
+  // -webkit-transform: translateZ(0);
   @include vhcenter;
   @include desktop {
     width: 100vw;
   }
 }
 #root {
-  .image-wrapper{
+  .image-wrapper {
     display: none;
   }
   @include desktop {

@@ -12,6 +12,7 @@ const FeedRoute = ({ Component }: IFeedRoute) => {
   useEffect(() => {
     if (feedId !== undefined) {
       window.localStorage.setItem('feedId', feedId)
+      console.log(window.localStorage.getItem('feedId'))
     }
   }, [feedId])
   useEffect(() => {
