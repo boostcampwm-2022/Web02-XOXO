@@ -14,6 +14,7 @@ import { UserRepository } from '@root/users/users.repository';
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt } from '@feed/feed.utils';
+import Posting from '@root/entities/Posting.entity';
 import FindFeedDto from '@feed/dto/find.feed.dto';
 import FeedInfoDto from '@feed/dto/info.feed.dto';
 import { FeedRepository } from '@feed/feed.repository';
@@ -31,12 +32,29 @@ export class FeedService {
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
     const id = Number(decrypt(encryptedFeedID));
-    const feed = await this.feedRepository.getFeed(id);
-    const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
-    if (feedInfoDto.isOwner) {
-      await this.userRepository.updateLastVisitedFeed(userId, id);
-    }
-    return feedInfoDto;
+    await this.dataSource.transaction(async (manager) => {
+      const feed = await manager.find(Feed, {
+        where: { id },
+        relations: ['postings'],
+        select: {
+          postings: { id: true },
+          name: true,
+          description: true,
+          thumbnail: true,
+          dueDate: true,
+          isGroupFeed: true,
+        },
+      })[0];
+      const user = await manager.find(UserFeedMapping, {
+        where: { feedId: id, userId },
+      })[0];
+
+      const feedInfoDto = FeedInfoDto.createFeedInfoDto(feed, user);
+      if (feedInfoDto.isOwner) {
+        await manager.update(User, userId, { lastVistedFeed: id });
+      }
+      return feedInfoDto;
+    });
   }
 
   async getFeedById(encryptedFeedID: string) {
