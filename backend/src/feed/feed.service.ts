@@ -50,7 +50,7 @@ export class FeedService {
         .getRepository(Posting)
         .createQueryBuilder()
         .select('count(*)')
-        .where('feedId =: id', { id })
+        .where('feedId = :id', { id })
         .execute();
       const feedInfoDto = FeedInfoDto.createFeedInfoDto(
         feed[0],
