@@ -1,76 +1,77 @@
 @import "@src/global";
 
-.feed-profile-header{
-    @include vcenter;
-    margin: 8px 0 24px 0;
+.feed-profile-header-wrapper{
     padding: 0 8px;
-}
-.feed-profile-image-wrapper{
-    position: relative;
-    width: 20vw;
-    margin-right: 4vw;
-    @include not-mobile{
-        width: 85px;
-        margin-right: 17px;
+    .feed-profile-header{
+        @include vcenter;
+        margin: 8px 0 24px 0;
     }
-}
-.feed-profile-image{
-    @include circle(20vw, true, $grey-font);
-    background-color: $grey;
-    @include not-mobile{
-        @include circle(85px, true, $grey-font);
-    }
-}
-.edit-button{
-    @include circle(6vw, true, $white);
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    background-color: $primary-3;
-    @include not-mobile{
-        @include circle(25px, true, $white);
-    }
-}
-.feed-profile-info-wrapper {
-    @include hcenter;
-    flex-direction: column;
-    .feed-profile-description {
-        display: block;
-        @include regular(3.13vw);
-        line-height: 160%;
+    .feed-profile-image-wrapper{
+        position: relative;
+        width: 20vw;
+        margin-right: 4vw;
         @include not-mobile{
-            @include regular(13px);
+            width: 85px;
+            margin-right: 17px;
         }
     }
-    .feed-profile-status {
-        margin-top: 0.6em;
-        @include regular(3.13vw);
+    .feed-profile-image{
+        @include circle(20vw, true, $grey-font);
+        background-color: $grey;
         @include not-mobile{
-            @include regular(13px);
+            @include circle(85px, true, $grey-font);
         }
-        .line{
-            height: 3vw;
-            width: 0px;
-            border-right: 2px solid $grey-font;
-            margin: 0 1vw;
+    }
+    .edit-button{
+        @include circle(6vw, true, $white);
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+        background-color: $primary-3;
+        @include not-mobile{
+            @include circle(25px, true, $white);
+        }
+    }
+    .feed-profile-info-wrapper {
+        @include hcenter;
+        flex-direction: column;
+        .feed-profile-description {
+            display: block;
+            @include regular(3.13vw);
+            line-height: 160%;
             @include not-mobile{
-                height: 12px;
-                margin: 0 4px;
+                @include regular(13px);
             }
         }
-        .bold{
-            @include bold(3.13vw);
+        .feed-profile-status {
+            margin-top: 0.6em;
+            @include regular(3.13vw);
             @include not-mobile{
-                @include bold(13px);
+                @include regular(13px);
+            }
+            .line{
+                height: 3vw;
+                width: 0px;
+                border-right: 2px solid $grey-font;
+                margin: 0 1vw;
+                @include not-mobile{
+                    height: 12px;
+                    margin: 0 4px;
+                }
+            }
+            .bold{
+                @include bold(3.13vw);
+                @include not-mobile{
+                    @include bold(13px);
+                }
             }
         }
     }
-}
-
-.feed-share-button{
-    @include button-large;
-    span {
-        margin-left: 4px;
+    .feed-share-button{
+        @include button-large;
+        span {
+            margin-left: 4px;
+        }
+        margin-bottom: 32px;
     }
-    margin-bottom: 32px;
 }

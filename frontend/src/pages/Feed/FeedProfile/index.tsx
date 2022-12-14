@@ -39,6 +39,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
   }
   return (
     <div>
+      <div className="feed-profile-header-wrapper">
         <div className="feed-profile-header">
             <div className="feed-profile-image-wrapper">
                 <div className="feed-profile-image">
@@ -72,6 +73,7 @@ const FeedProfile = ({ thumbnail, description, dueDate, postingCnt, isOwner, isG
           </button>
         }
     </div>
+  </div>
   )
 }
 
