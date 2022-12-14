@@ -17,8 +17,9 @@ const Header = ({ page, text }: headerProps) => {
   const postLogout = usePost('/users/logout')
   const navigate = useNavigate()
   const handleLogout = async () => {
-    const { success }: IResponse = await postLogout({})
-    if (success) navigate('/Signin')
+    const { data }: IResponse = await postLogout({})
+
+    if (data) navigate('/Signin')
   }
   const handleRenderHeader = () => {
     switch (page) {
