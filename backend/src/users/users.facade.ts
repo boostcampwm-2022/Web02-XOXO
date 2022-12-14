@@ -105,11 +105,21 @@ export default class UserFacade {
     return [accessTokenCookie, refreshTokenCookie];
   }
 
+//   async checkIsDuplicateNickname(nickname: string) {
+//     const res = await this.userService.getUser({
+//       hashedNickname: createHash('md5').update(nickname).digest('hex'),
+//     });
+
+//     return !!res;
+//   }
+  
   async checkIsDuplicateNickname(nickname: string) {
     const res = await this.userService.getUser({
-      hashedNickname: createHash('md5').update(nickname).digest('hex'),
+      nickname,
+      // hashedNickname: createHash('md5').update(nickname).digest('hex'),
     });
 
     return !!res;
   }
+
 }
