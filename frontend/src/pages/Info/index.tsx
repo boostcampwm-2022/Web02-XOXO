@@ -29,14 +29,18 @@ const Info = () => {
   }, [nicknameCheckResult])
 
   useEffect(() => {
-    (nickname === '' || getWarningNickname(nickname) !== '') ? setIsValidNickname(false) : setIsValidNickname(true)
+    nickname === '' || getWarningNickname(nickname) !== '' ? setIsValidNickname(false) : setIsValidNickname(true)
   }, [nickname])
 
   const handleNicknameForm = async () => {
     if (userNickname.current === null) return
     const { success } = await postNickname({ nickname: userNickname.current.value })
-    if (success) navigate('/feeds')
-    else {
+    const feedId = window.localStorage.getItem('feedId')
+    if (success) {
+      if (feedId !== null) {
+        navigate(`/Feed/${feedId}`)
+      } else navigate('/feeds')
+    } else {
       alert('다시 진행해 주세요.')
       navigate('/signin')
     }
@@ -55,7 +59,14 @@ const Info = () => {
           onChangeCb={debouncedSearch}
         />
         <div className="nickname-check-wrapper">
-          <div className="nickname-check-result" style={{ color: isUniqueNickname ? '#1ed551' : '#fd4747', height: '16px' }}>{isValidNickname && isUniqueNickname !== null && (isUniqueNickname ? '사용 가능한 닉네임 입니다.' : '중복된 닉네임입니다.')}</div>
+          <div
+            className="nickname-check-result"
+            style={{ color: isUniqueNickname ? '#1ed551' : '#fd4747', height: '16px' }}
+          >
+            {isValidNickname &&
+              isUniqueNickname !== null &&
+              (isUniqueNickname ? '사용 가능한 닉네임 입니다.' : '중복된 닉네임입니다.')}
+          </div>
         </div>
         <button className="form-button" onClick={handleNicknameForm} disabled={!isValidNickname || !isUniqueNickname}>
           시작하기
