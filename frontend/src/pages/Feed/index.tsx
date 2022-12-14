@@ -1,3 +1,4 @@
+/* eslint-disable multiline-ternary */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -21,7 +22,10 @@ interface IFeedInfo {
 const MainPage = () => {
   const navigate = useNavigate()
   const { feedId } = useParams<{ feedId: string }>()
-  const { data: feedInfo, error: feedError } = useSWR<IFeedInfo>(feedId !== undefined ? `/feed/info/${feedId}` : null, fetcher)
+  const { data: feedInfo, error: feedError } = useSWR<IFeedInfo>(
+    feedId !== undefined ? `/feed/info/${feedId}` : null,
+    fetcher
+  )
 
   // 올바른 경로가 아닐 때 (feed 정보를 불러오는데에 실패 했을 때)
   useEffect(() => {
@@ -36,21 +40,33 @@ const MainPage = () => {
   // feedId를 쓰지 않았을 때 '/feed'로 접근했을 때
   useEffect(() => {
     if (feedId === undefined) navigate('/404')
+    if (window.localStorage.getItem('feedId') !== null) window.localStorage.removeItem('feedId')
   }, [feedId])
 
   return (
     <>
-    {
-      (feedInfo !== undefined)
-        ? <div className="feed-page">
+      {
+        feedInfo !== undefined ? (
+          <div className="feed-page">
             <Header page="feed" text={feedInfo.name} />
             <div className="feed-body">
-              <FeedProfile thumbnail={feedInfo.thumbnail} description={feedInfo.description} dueDate={feedInfo.dueDate} postingCnt={feedInfo.postingCnt} isOwner={feedInfo.isOwner} isGroupFeed={feedInfo.isGroupFeed}/>
-              <FeedPostingList isOwner={feedInfo.isOwner} dueDate={feedInfo.dueDate} isGroupFeed={feedInfo.isGroupFeed}/>
+              <FeedProfile
+                thumbnail={feedInfo.thumbnail}
+                description={feedInfo.description}
+                dueDate={feedInfo.dueDate}
+                postingCnt={feedInfo.postingCnt}
+                isOwner={feedInfo.isOwner}
+                isGroupFeed={feedInfo.isGroupFeed}
+              />
+              <FeedPostingList
+                isOwner={feedInfo.isOwner}
+                dueDate={feedInfo.dueDate}
+                isGroupFeed={feedInfo.isGroupFeed}
+              />
             </div>
-         </div>
-        : null // TODO - 에러처리
-    }
+          </div>
+        ) : null // TODO - 에러처리
+      }
     </>
   )
 }

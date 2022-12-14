@@ -13,6 +13,7 @@ import AuthRoute from '@components/AuthRoute'
 import SigninRoute from '@components/SigninRoute'
 import { ReactComponent as DesktopSideImage } from '@assets/desktopSideImage.svg'
 import './global.scss'
+import FeedRoute from './components/FeedRoute'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -24,7 +25,7 @@ root.render(
       <Routes>
         <Route path="/" element={<Navigate to="/Signin" />} />
         <Route path="/Feed">
-          <Route path=":feedId" element={<AuthRoute Component={Feed} />} />
+          <Route path=":feedId" element={<FeedRoute Component={Feed} />} />
           <Route path=":feedId">
             <Route path=":postingId" element={<AuthRoute Component={Posting} />} />
           </Route>
