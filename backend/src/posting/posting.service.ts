@@ -11,14 +11,13 @@ import { PostingRepository } from './posting.repository';
 @Injectable()
 export class PostingService {
   constructor(
-    @InjectRepository(Posting) private postingRepository: Repository<Posting>,
-    private postingRepository2: PostingRepository,
+    private postingRepository: PostingRepository,
     private dataSource: DataSource,
   ) {}
 
   async getPosting(postingId: number, encryptedFeedId: string) {
     const feedId = Number(decrypt(encryptedFeedId));
-    const posting = await this.postingRepository2.getPosting(
+    const posting = await this.postingRepository.getPosting(
       postingId,
       encryptedFeedId,
       feedId,
@@ -33,7 +32,7 @@ export class PostingService {
     const feedId = Number(decrypt(encryptedFeedId));
     let posting;
     await this.dataSource.transaction(async (manager) => {
-      posting = manager.save(Posting, {
+      posting = await manager.save(Posting, {
         letter,
         thumbnail,
         senderId,
