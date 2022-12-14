@@ -126,7 +126,7 @@ const CreateFeed = () => {
             </div>
             <span>피드 사진 생성</span>
           </button>
-          <input type="file" accept="image/*" ref={thumbnailInput} onChange={onChangeFeedThumbnail} />
+          <input type="file" accept="image/jpeg, image/png" ref={thumbnailInput} onChange={onChangeFeedThumbnail} />
         </div>
         <Input label="제목" placeholder="피드의 제목을 입력해주세요" bind={nameRef} validate={getWarningName} />
         <Input
