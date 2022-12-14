@@ -27,7 +27,7 @@ export class UserRepository extends Repository<User> {
   async findUserList(nickname: string, maxRecord: number) {
     const userList = await this.createQueryBuilder()
       .select(['id', 'nickname'])
-      .where(`MATCH(nickname) AGAINST ('+${nickname}*' IN BOOLEAN MODE)`)
+      .where('nickname like :nickname', { nickname: `%${nickname}%` })
       .limit(maxRecord)
       .execute();
     return userList;
