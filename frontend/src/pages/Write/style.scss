@@ -11,12 +11,13 @@
 }
 .image-list {
   @include vcenter;
+  @include scroll;
   flex-direction: row;
   height: calc(100vw - 16px);
   width: calc(100vw - 16px);
   overflow-x: scroll;
   z-index: 2;
-  @include not-mobile{
+  @include not-mobile {
     height: 409px;
     width: 409px;
   }
@@ -28,7 +29,7 @@
     height: 80vw;
     margin-right: 32px;
     background-color: #000;
-    @include not-mobile{
+    @include not-mobile {
       width: 340px;
       height: 340px;
     }
@@ -44,7 +45,7 @@
       right: -3vw;
       top: -3vw;
       background-color: $primary-3;
-      @include not-mobile{
+      @include not-mobile {
         @include circle(25px);
         right: -12px;
         top: -12px;
@@ -53,7 +54,7 @@
         @include vhcenter;
         width: 3vw;
         height: 3vw;
-        @include not-mobile{
+        @include not-mobile {
           width: 12px;
           height: 12px;
         }
@@ -68,13 +69,13 @@
     line-height: 0;
     .title {
       @include medium(4.38vw);
-      @include not-mobile{
+      @include not-mobile {
         @include medium(18px);
       }
     }
     .desc {
       @include regular(3.13vw, $grey-font);
-      @include not-mobile{
+      @include not-mobile {
         @include regular(13px, $grey-font);
       }
     }
@@ -93,23 +94,23 @@
   svg {
     width: 4vw;
     height: 4vw;
-    @include not-mobile{
+    @include not-mobile {
       width: 18px;
       height: 18px;
     }
   }
-  @include not-mobile{
+  @include not-mobile {
     padding: 0 16px;
     height: 53px;
   }
   .thumbnail-preview {
     @include bold(3.13vw);
-    @include not-mobile{
+    @include not-mobile {
       @include bold(13px);
     }
     &:disabled {
       @include bold(3.13vw, $grey-font);
-      @include not-mobile{
+      @include not-mobile {
         @include bold(13px, $grey-font);
       }
     }
@@ -120,7 +121,7 @@
   padding: 5vw;
   border: 0;
   @include regular(3.13vw);
-  @include not-mobile{
+  @include not-mobile {
     width: 340px;
     padding: 21px;
     @include regular(13px);
@@ -128,4 +129,8 @@
 }
 canvas {
   display: none;
+}
+textarea {
+  @include scroll;
+  resize: none;
 }
