@@ -188,6 +188,11 @@ a {
   }
 }
 
+@mixin word-break {
+  white-space: normal;
+  word-break: break-all;
+}
+
 html,
 body {
   margin: 0;
