@@ -64,11 +64,11 @@ const FeedProfile = ({ name, thumbnail, description, dueDate, postingCnt, isOwne
             </div>
           </div>
         </div>
-        {!isGroupFeed && isOwner && (
+        {isOwner && (
           <button className="feed-share-button" onClick={sendKakaoMessage}>
             <div>
               <ShareIcon />
-              <span>내 피드 공유하기</span>
+              <span>피드 공유하기</span>
             </div>
           </button>
         )}
