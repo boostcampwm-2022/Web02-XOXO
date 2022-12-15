@@ -4,7 +4,6 @@ import JoinCookieDto from '@users/dto/join.cookie.dto';
 import UsersService from '@users/users.service';
 import { AuthenticationService } from '@root/authentication/authentication.service';
 import { encrypt } from '@root/feed/feed.utils';
-import { createHash } from 'crypto';
 import { OauthService } from '../oauth/oauth.service';
 import JoinRequestDto from './dto/join.request.dto';
 import CookieDto from './dto/cookie.info.dto';
@@ -105,14 +104,14 @@ export default class UserFacade {
     return [accessTokenCookie, refreshTokenCookie];
   }
 
-//   async checkIsDuplicateNickname(nickname: string) {
-//     const res = await this.userService.getUser({
-//       hashedNickname: createHash('md5').update(nickname).digest('hex'),
-//     });
+  //   async checkIsDuplicateNickname(nickname: string) {
+  //     const res = await this.userService.getUser({
+  //       hashedNickname: createHash('md5').update(nickname).digest('hex'),
+  //     });
 
-//     return !!res;
-//   }
-  
+  //     return !!res;
+  //   }
+
   async checkIsDuplicateNickname(nickname: string) {
     const res = await this.userService.getUser({
       nickname,
@@ -121,5 +120,4 @@ export default class UserFacade {
 
     return !!res;
   }
-
 }
