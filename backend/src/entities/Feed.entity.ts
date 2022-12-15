@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsUrl, MaxLength } from 'class-validator';
 
 import {
   Entity,
@@ -27,7 +27,8 @@ export class Feed implements FeedInterface {
   thumbnail: string;
 
   @IsNotEmpty()
-  @Column({ type: 'varchar', nullable: false })
+  @MaxLength(100)
+  @Column({ type: 'varchar', length: 100, nullable: false })
   description: string;
 
   @IsNotEmpty()

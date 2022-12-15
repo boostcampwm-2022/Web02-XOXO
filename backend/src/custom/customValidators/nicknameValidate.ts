@@ -12,7 +12,7 @@ import {
 export class InvalidNickname implements ValidatorConstraintInterface {
   async validate(nickname: string, args: ValidationArguments) {
     if (!nickname) return false;
-    return nickname.length < 10;
+    return nickname.length <= 15;
   }
 
   defaultMessage(args: ValidationArguments) {
