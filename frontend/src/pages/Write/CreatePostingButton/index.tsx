@@ -5,6 +5,7 @@ import usePost from '@src/hooks/usePost'
 import { isEmpty } from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ICreatePostingButton } from '../types'
+import { toast } from 'react-toastify'
 
 const CreatePostingButton = ({ getPostingInfos }: ICreatePostingButton) => {
   const { feedId } = useParams<{ feedId: string }>()
@@ -21,8 +22,13 @@ const CreatePostingButton = ({ getPostingInfos }: ICreatePostingButton) => {
     }
     console.log(formData)
 
-    const { success } = await postPosting(formData)
+    const { success, data } = await postPosting(formData)
     if (success === true) navigate(`/Feed/${feedId}`)
+    else {
+      toast('오류가 발생했습니다. 다시 클릭해주세요.')
+      setIsButtonDisabled(false)
+      console.log(data)
+    }
   }
   return (
     <button className="write-button" onClick={handleUploadPosting} disabled={isButtonDisabled}>
