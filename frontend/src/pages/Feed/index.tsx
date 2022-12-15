@@ -68,6 +68,7 @@ const MainPage = () => {
             <Header page="feed" text={feedInfo.name} />
             <div className="feed-body">
               <FeedProfile
+                name={feedInfo.name}
                 thumbnail={feedInfo.thumbnail}
                 description={feedInfo.description}
                 dueDate={feedInfo.dueDate}
