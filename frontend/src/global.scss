@@ -64,12 +64,16 @@ $error: #fd4747;
 
 @mixin header {
   @include vcenter;
-  @include bold(18px);
-  // @include shadow-bottom;
-  width: calc(100% - 16px);
-  height: 40px;
-  margin: 0;
-  padding: 0px 8px;
+  @include bold(5vw, $black);
+  margin-top: 3vw;
+  padding: 0 24px;
+  justify-content: space-between;
+  height: 16vw;
+  @include not-mobile {
+    @include bold(22px, $black);
+    height: 68px;
+    margin: 12px;
+  }
 }
 
 @mixin body {

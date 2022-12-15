@@ -2,20 +2,14 @@
 
 .feed-header {
   @include header;
-  background-color: $white;
-  justify-content: space-between;
   .text-wrapper {
     @include vcenter;
     .text {
-      @include bold(5vw, $black);
       margin-right: 4px;
-      @include not-mobile{
-        @include bold(22px, $black);
-      }
     }
   }
 }
-.svg-wrapper{
+.svg-wrapper {
   @include vhcenter;
   width: 5vw;
   height: 5.5vw;
@@ -25,11 +19,5 @@
   }
 }
 .default-header {
-  @include vhcenter;
-  @include bold(5vw, $black);
-  height: 16vw;
-  @include not-mobile{
-    @include bold(22px, $black);
-    height: 68px
-  }
+  @include header;
 }
