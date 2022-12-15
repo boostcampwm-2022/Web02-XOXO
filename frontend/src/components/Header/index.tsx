@@ -7,14 +7,18 @@ import { ReactComponent as DownIcon } from '@assets/downIcon.svg'
 import { ReactComponent as LogoutIcon } from '@assets/logoutIcon.svg'
 import usePost from '@hooks/usePost'
 import { IResponse } from '@src/types'
+import useSWR from 'swr'
 
 interface headerProps {
   page?: string
-  text: string
+  text?: string
 }
 
 const Header = ({ page, text }: headerProps) => {
   const postLogout = usePost('/users/logout')
+  const { data: nickname } = useSWR('/users/nickname', () => {
+    return '하드코딩된닉네임'
+  })
   const navigate = useNavigate()
   const handleLogout = async () => {
     const { data }: IResponse = await postLogout({})
@@ -27,7 +31,7 @@ const Header = ({ page, text }: headerProps) => {
         return (
           <div className="feed-header">
             <Link className="text-wrapper" to="/feeds">
-              <span className="text">{text}</span>
+              <span className="text">{nickname}</span>
               <div className="svg-wrapper">
                 <DownIcon />
               </div>

@@ -65,7 +65,7 @@ const MainPage = () => {
       {
         feedInfo !== undefined ? (
           <div className="feed-page">
-            <Header page="feed" text={feedInfo.name} />
+            <Header page="feed" />
             <div className="feed-body">
               <FeedProfile
                 name={feedInfo.name}
