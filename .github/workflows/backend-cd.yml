@@ -56,3 +56,24 @@ jobs:
           s3 cp ./build.zip
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy/build.zip
           
+      - name: Start Deploy Scenario
+        run:
+          timestamp=$(echo $(($(date +%s%N)/1000000)))
+          function makeSignature(){
+            METHOD="POST"
+            URI="/api/v1/project/${{ secrets.DEPLOY_PROJECT_ID }}/stage/${{ secrets.DEPLOY_STAGE_ID }}/scenario/${{ secrets.DEPLOY_SCENARIO_ID }}/deploy"
+
+            SIG="$METHOD"' '"$URI"
+            SIG+="\n$timestamp\n"
+            SIG+="${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}"
+
+            SIGNATURE=$(echo -n -e "$SIG"|iconv -t utf8 |openssl dgst -sha256 -hmac ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }} -binary|openssl enc -base64)
+          }
+          
+          makeSignature
+          curl -v -i -X POST \
+          -H "x-ncp-apigw-timestamp:${timestamp}" \
+          -H "x-ncp-iam-access-key:${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}" \
+          -H "x-ncp-apigw-signature-v2:${SIGNATURE}" \
+          -H "x-ncp-region_code: KR" \ 
+          'https://sourcedeploy.apigw.ntruss.com/api/v1/project/5043/stage/5806/scenario/6091/deploy'
