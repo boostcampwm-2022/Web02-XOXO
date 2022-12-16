@@ -34,10 +34,19 @@ jobs:
       - name: build
         run: npm run build
 
-      - name: compress build file
-        run: zip ./build.zip -r ./dist
+      - name: make deploy directory
+        run: mkdir ./build
+      
+      - name: copy .json files
+        run: cp package*.json ./build
+      
+      - name: copy build file
+        run: cp -r ./dist ./build
 
-      - name: Deploy
+      - name: compress build file
+        run: zip ./build.zip -r ./build
+
+      - name: Deploy source
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
@@ -60,3 +69,11 @@ jobs:
 
             SIGNATURE=$(echo -n -e "$SIG"|iconv -t utf8 |openssl dgst -sha256 -hmac ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }} -binary|openssl enc -base64)
           }
+          
+          makeSignature
+          curl -v -i -X POST \
+          -H "x-ncp-apigw-timestamp:${timestamp}" \
+          -H "x-ncp-iam-access-key:${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}" \
+          -H "x-ncp-apigw-signature-v2:${SIGNATURE}" \
+          -H "x-ncp-region_code: KR" \ 
+          'https://sourcedeploy.apigw.ntruss.com/api/v1/project/5043/stage/5806/scenario/6091/deploy'
