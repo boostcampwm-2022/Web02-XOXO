@@ -1,7 +1,7 @@
 name: Backend CD Github Action
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀🚀🚀🚀
 on:
-  push:
+  pull_request:
     branches:
       - deploy
 jobs:
@@ -33,10 +33,19 @@ jobs:
       - name: build
         run: npm run build
 
-      - name: compress build file
-        run: zip ./build.zip -r ./dist
+      - name: make deploy directory
+        run: mkdir ./build
+      
+      - name: copy .json files
+        run: cp package*.json ./build
+      
+      - name: copy build file
+        run: cp -r ./dist ./build
 
-      - name: Deploy
+      - name: compress build file
+        run: zip ./build.zip -r ./build
+
+      - name: Deploy source
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
@@ -50,3 +59,4 @@ jobs:
           accessKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
           secretKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
         run: bash deploy.sh
+
