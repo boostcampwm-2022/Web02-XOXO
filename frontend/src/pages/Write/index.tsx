@@ -125,7 +125,7 @@ const Write = () => {
             type="file"
             multiple
             className="image-input"
-            accept="image/*"
+            accept="image/jpeg, image/png"
             ref={imageRef}
             onChange={handleImageState}
           />

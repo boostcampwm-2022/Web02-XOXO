@@ -5,6 +5,7 @@ import { IResponse } from '@src/types'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ICreateFeedButton } from '../types'
 import { isEmpty } from 'lodash'
+import { toast } from 'react-toastify'
 
 const CreateFeedButton = ({ getFeedInfos }: ICreateFeedButton) => {
   const postPersonalFeed = usePost('/feed')
@@ -22,10 +23,20 @@ const CreateFeedButton = ({ getFeedInfos }: ICreateFeedButton) => {
     if (path === 'personal') {
       const { success, data }: IResponse = await postPersonalFeed(formData)
       if (success) navigate(`/Feed/${data as string}`)
+      else {
+        toast('오류가 발생했습니다. 다시 클릭해주세요.')
+        setIsButtonDisabled(false)
+        console.log(data)
+      }
     }
     if (path === 'group') {
       const { success, data }: IResponse = await postGroupFeed(formData)
       if (success) navigate(`/Feed/${data as string}`)
+      else {
+        toast('오류가 발생했습니다. 다시 클릭해주세요.')
+        setIsButtonDisabled(false)
+        console.log(data)
+      }
     }
   }
   return (
