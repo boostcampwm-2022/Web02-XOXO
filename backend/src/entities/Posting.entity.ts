@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumberString, IsString, IsUrl } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsString,
+  IsUrl,
+  MaxLength,
+} from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -21,7 +27,8 @@ export default class Posting implements PostingInterface {
 
   @IsNotEmpty()
   @IsString()
-  @Column('varchar')
+  @MaxLength(2000)
+  @Column({ type: 'text' })
   letter: string;
 
   @IsNotEmpty()
