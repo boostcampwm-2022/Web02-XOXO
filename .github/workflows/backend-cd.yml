@@ -59,6 +59,7 @@ jobs:
       - name: Start Deploy Scenario
         run:
           timestamp=$(echo $(($(date +%s%N)/1000000)))
+          region='KR'
           function makeSignature(){
             METHOD="POST"
             URI="/api/v1/project/${{ secrets.DEPLOY_PROJECT_ID }}/stage/${{ secrets.DEPLOY_STAGE_ID }}/scenario/${{ secrets.DEPLOY_SCENARIO_ID }}/deploy"
@@ -74,6 +75,6 @@ jobs:
           curl -v -i -X POST \
           -H "x-ncp-apigw-timestamp:${timestamp}" \
           -H "x-ncp-iam-access-key:${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}" \
-          -H "x-ncp-apigw-signature-v2:${SIGNATURE}" \
-          -H "x-ncp-region_code: KR" \ 
+          -H "x-ncp-apigw-signature-v2:${SIGNATURE}" \ 
+          -H "x-ncp-region_code:${region}" \
           'https://sourcedeploy.apigw.ntruss.com/api/v1/project/5043/stage/5806/scenario/6091/deploy'
