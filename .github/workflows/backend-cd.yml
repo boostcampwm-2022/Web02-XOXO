@@ -52,7 +52,7 @@ jobs:
           timestamp=$(echo $(($(date +%s%N)/1000000)))
           function makeSignature(){
             METHOD="POST"
-            URI="/api/v1/project/${{ secrets.DEPLOY_PROJECT_ID }}/stage/${{ secrets.STAGE_ID }}/scenario/${{ secrets.DEPLOY_SCENARIO_ID }}/deploy"
+            URI="/api/v1/project/${{ secrets.DEPLOY_PROJECT_ID }}/stage/${{ secrets.DEPLOY_STAGE_ID }}/scenario/${{ secrets.DEPLOY_SCENARIO_ID }}/deploy"
 
             SIG="$METHOD"' '"$URI"
             SIG+="\n$timestamp\n"
