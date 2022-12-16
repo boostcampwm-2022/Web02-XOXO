@@ -59,4 +59,3 @@ jobs:
           accessKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
           secretKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
         run: bash deploy.sh
-
