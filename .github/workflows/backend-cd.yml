@@ -57,6 +57,9 @@ jobs:
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy/build.zip
           
       - name: Start Deploy Scenario
+        env:
+          accessKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
+          secretKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
         run: |
           timestamp=$(echo $(($(date +%s%N)/1000000)))
           function makeSignature(){
@@ -65,9 +68,9 @@ jobs:
 
             SIG="$METHOD"' '"$URI"
             SIG+="\n$timestamp\n"
-            SIG+="${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}"
+            SIG+="$accessKey"
 
-            SIGNATURE=$(echo -n -e "$SIG"|iconv -t utf8 |openssl dgst -sha256 -hmac ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }} -binary|openssl enc -base64)
+            SIGNATURE=$(echo -n -e "$SIG"|iconv -t utf8 |openssl dgst -sha256 -hmac $secretKey -binary|openssl enc -base64)
           }
           
           makeSignature
