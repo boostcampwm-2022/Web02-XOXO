@@ -1,7 +1,7 @@
 name: Backend CD Github Action
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀🚀🚀🚀
 on:
-  pull_request:
+  push:
     branches:
       - deploy
 jobs:
