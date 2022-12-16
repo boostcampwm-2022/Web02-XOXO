@@ -57,7 +57,7 @@ jobs:
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy/build.zip
           
       - name: Start Deploy Scenario
-        run:
+        run: |
           timestamp=$(echo $(($(date +%s%N)/1000000)))
           function makeSignature(){
             METHOD="POST"
