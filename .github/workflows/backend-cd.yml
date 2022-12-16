@@ -10,14 +10,13 @@ jobs:
     defaults:
       run:
         working-directory: "./backend"
-    
+
     steps:
       - name: checkout
         uses: actions/checkout@v3
-        
+
       - name: nodeJS
         uses: actions/setup-node@v3
-
 
       - name: Cache node modules
         uses: actions/cache@v3
@@ -51,30 +50,13 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
           AWS_DEFAULT_REGION: ap-northeast-2
-        run: 
-          aws --endpoint-url=https://kr.object.ncloudstorage.com  
+        run: aws --endpoint-url=https://kr.object.ncloudstorage.com
           s3 cp ./build.zip
           s3://${{ secrets.NCLOUD_DEPLOY_BUCKET_NAME }}/deploy/build.zip
-          
+
       - name: Start Deploy Scenario
-        run:
-          timestamp=$(echo $(($(date +%s%N)/1000000)))
-          region='KR'
-          function makeSignature(){
-            METHOD="POST"
-            URI="/api/v1/project/${{ secrets.DEPLOY_PROJECT_ID }}/stage/${{ secrets.DEPLOY_STAGE_ID }}/scenario/${{ secrets.DEPLOY_SCENARIO_ID }}/deploy"
+        env:
+          accessKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}
+          secretKey: ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }}
+        run: bash deploy.sh
 
-            SIG="$METHOD"' '"$URI"
-            SIG+="\n$timestamp\n"
-            SIG+="${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}"
-
-            SIGNATURE=$(echo -n -e "$SIG"|iconv -t utf8 |openssl dgst -sha256 -hmac ${{ secrets.DEPLOY_OBJECT_STORAGE_SECRET_KEY }} -binary|openssl enc -base64)
-          }
-          
-          makeSignature
-          curl -v -i -X POST \
-          -H "x-ncp-apigw-timestamp:${timestamp}" \
-          -H "x-ncp-iam-access-key:${{ secrets.DEPLOY_OBJECT_STORAGE_ACCESS_KEY }}" \
-          -H "x-ncp-apigw-signature-v2:${SIGNATURE}" \ 
-          -H "x-ncp-region_code:${region}" \
-          'https://sourcedeploy.apigw.ntruss.com/api/v1/project/5043/stage/5806/scenario/6091/deploy'
