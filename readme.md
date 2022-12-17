@@ -68,7 +68,7 @@ XOXO를 통해 우리만의 추억을 공유해보세요 😉
    <tbody>
       <tr width="600px">
          <td>
-            <img src="https://user-images.githubusercontent.com/58061756/208255721-a2dc1003-71df-46cf-83cc-97f23742b70e.gif">
+            <img src="https://user-images.githubusercontent.com/58061756/208261817-97ccb68a-fea8-4eb0-9a11-42eaf2d16ad8.gif">
          </td>
          <td>
 		 <img src="https://user-images.githubusercontent.com/58061756/208255766-1052d4f9-40ed-455e-a31c-d5e3d2e79939.gif">
