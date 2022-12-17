@@ -1,5 +1,8 @@
 
 ![대표이미지](https://user-images.githubusercontent.com/58061756/205224750-21562b0f-8430-4a83-90c3-46b095834e60.png)
+
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"><img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"><img src="https://img.shields.io/badge/sass-CC6699?style=for-the-badge&logo=SASS&logoColor=white"><img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=Nginx&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=NestJS&logoColor=white"><img src="https://img.shields.io/badge/github_actions-2088FF?style=for-the-badge&logo=GitHubActions&logoColor=white">
+
 # 📸 남이 꾸며주는 내 피드!
 
 **my feed, our memory!**
@@ -7,7 +10,7 @@
 XOXO를 통해 우리만의 추억을 공유해보세요 😉
 ## 🔗 바로가기
 
-[**🎨 Figma**](https://www.figma.com/file/K0yjvdx9wh8zgwbCCp0m98/web02-xoxo?node-id=0%3A1&t=vBAEWgvNcUjFYlEv-0) / [**📃 Wiki**](https://github.com/boostcampwm-2022/Web02-XOXO/wiki) / [**💭 Notion**](https://www.notion.so/ebf0ede8ade04eb297fa9bb3697984bd) / [**🎄 배포 링크**](http://www.xoxoforyou.me)
+[**🎨 Figma**](https://www.figma.com/file/K0yjvdx9wh8zgwbCCp0m98/web02-xoxo?node-id=0%3A1&t=vBAEWgvNcUjFYlEv-0) / [**📃 Wiki**](https://github.com/boostcampwm-2022/Web02-XOXO/wiki) / [**💭 Notion**](https://www.notion.so/ebf0ede8ade04eb297fa9bb3697984bd) / [**🎄 배포 링크**](http://www.xoxoforyou.me) / [**🎞 데모 영상**](https://www.youtube.com/watch?v=g6SQzZQf7bU) /  [**👩‍🏫 발표 영상**](https://www.youtube.com/watch?v=bMe18DwLIXo)
 ## 🚊 #신분당선#자만추
 
 [J095 백규현](https://github.com/edhz8) | [J114 양은서](https://github.com/yess98) | [J132 윤정민](https://github.com/jungmiin) | [J212 최현서](https://github.com/CHOIHYEONSEO)
