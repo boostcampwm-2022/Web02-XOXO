@@ -15,6 +15,10 @@ XOXO를 통해 우리만의 추억을 공유해보세요 😉
 
 [J095 백규현](https://github.com/edhz8) | [J114 양은서](https://github.com/yess98) | [J132 윤정민](https://github.com/jungmiin) | [J212 최현서](https://github.com/CHOIHYEONSEO)
 
+## 👩‍💻 저희가 했던 기술적인 도전들이 궁금하시다면?!
+
+[**이 곳**](https://www.notion.so/8465824e696e422da9eaf09af34633e3?v=689d0d5587c64edba4e2241cdab0ad51)에서 확인하실 수 있습니다!
+
 ## 🎄서비스 소개
 
 일반 SNS와 달리 **상대방이 내 피드를 꾸며주는🎨** 서비스 입니다.
