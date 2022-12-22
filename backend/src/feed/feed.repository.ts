@@ -11,21 +11,6 @@ export class FeedRepository extends Repository<Feed> {
     return feed;
   }
 
-  async getThumbnailList(
-    startPostingId: number,
-    scrollSize: number,
-    id: number,
-  ) {
-    const postingThumbnaillist = await this.createQueryBuilder('feed')
-      .innerJoin('feed.postings', 'posting')
-      .select(['posting.id as id', 'posting.thumbnail as thumbanil'])
-      .where('feed.id = :id', { id })
-      .andWhere('posting.id > :startPostingId', { startPostingId })
-      .limit(scrollSize)
-      .getRawMany();
-    return postingThumbnaillist;
-  }
-
   async updateFeed(id: number, createFeedDto: CreateFeedDto) {
     await this.update(id, createFeedDto);
   }

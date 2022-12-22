@@ -7,6 +7,7 @@ import Image from '@root/entities/Image.entity';
 import { CreatePostingDto } from './dto/create.posting.dto';
 import LookingPostingDto from './dto/looking.posting.dto';
 import { PostingRepository } from './posting.repository';
+import PostingScrollDto from './dto/posting.scroll.dto';
 
 @Injectable()
 export class PostingService {
@@ -43,5 +44,17 @@ export class PostingService {
       }
     });
     return posting.id;
+  }
+
+  async getPostingThumbnails(
+    encryptedFeedId: string,
+    postingScrollDto: PostingScrollDto,
+  ) {
+    const feedId = Number(decrypt(encryptedFeedId));
+    const postingThumbnailList = await this.postingRepository.getThumbnailList(
+      postingScrollDto,
+      feedId,
+    );
+    return postingThumbnailList;
   }
 }
