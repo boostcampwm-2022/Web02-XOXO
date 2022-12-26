@@ -4,6 +4,7 @@ import { compressImage } from '@src/util/imageCompress'
 import { isEmpty } from 'lodash'
 import { IImage, IImageCards } from '../types'
 import { ReactComponent as XIcon } from '@assets/XIcon.svg'
+import { toast } from 'react-toastify'
 
 const ImageCards = ({ images, setImages, setPixelatedFile }: IImageCards) => {
   const handleDeleteButton = (src: string) => {
@@ -25,7 +26,10 @@ const ImageCards = ({ images, setImages, setPixelatedFile }: IImageCards) => {
               onLoad={async (e) => {
                 URL.revokeObjectURL(thumbnailSrc)
                 if (isEmpty(compressedImage)) {
+                  const start = new Date().getTime()
                   const compressedImage = await compressImage(originalImage)
+                  const end = new Date().getTime()
+                  toast(`압축시간 : ${end - start}`)
                   setImages((images) => {
                     const newImages = images.map((item) => {
                       if (item.thumbnailSrc === thumbnailSrc) item.compressedImage = compressedImage
