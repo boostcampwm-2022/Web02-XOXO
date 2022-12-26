@@ -20,7 +20,6 @@ export class PostingRepository extends Repository<Posting> {
 
   async getThumbnailList(postingScrollDto: PostingScrollDto, feedId: number) {
     const { index: startPostingId, size: scrollSize } = postingScrollDto;
-    console.log(startPostingId, scrollSize);
 
     const whereOption = startPostingId
       ? { feedId, id: LessThan(startPostingId) }

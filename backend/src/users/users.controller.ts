@@ -36,6 +36,12 @@ export default class UsersController {
     return ResponseDto.OK_WITH_DATA(true);
   }
 
+  @UseGuards(AccessAuthGuard)
+  @Get('nickname')
+  async getNickname(@UserReq() user: User) {
+    return ResponseDto.OK_WITH_DATA(user.nickname);
+  }
+
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
   async refreshToken(@UserReq() user: User, @Res() res: Response) {
