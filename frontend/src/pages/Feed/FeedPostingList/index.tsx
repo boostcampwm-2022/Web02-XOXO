@@ -22,7 +22,7 @@ import './style.scss'
 
 interface Iposting {
   id: string
-  thumbanil: string
+  thumbnail: string
 }
 interface IProps {
   isOwner: boolean
@@ -40,8 +40,8 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
 
   const getKey = (pageIndex: number, previousPageData: Iposting[]) => {
     if (previousPageData && !previousPageData.length) return null
-    if (pageIndex === 0) return `/feed/scroll/${feedId}?size=${isGroupFeed ? SCROLL_SIZE - 1 : (isOwner ? SCROLL_SIZE : SCROLL_SIZE - 1)}&index=${pageIndex}`
-    return `/feed/scroll/${feedId}?size=${SCROLL_SIZE}&index=${previousPageData[previousPageData.length - 1].id}`
+    if (pageIndex === 0) return `/posting/scroll/${feedId}?size=${isGroupFeed ? SCROLL_SIZE - 1 : (isOwner ? SCROLL_SIZE : SCROLL_SIZE - 1)}`
+    return `/posting/scroll/${feedId}?size=${SCROLL_SIZE}&index=${previousPageData[previousPageData.length - 1].id}`
   }
   const { data: postings, error, size, setSize } = useSWRInfinite(getKey, fetcher, { initialSize: 1 })
   const { data: serverTime, mutate: mutateTime } = useSWR('/serverTime', fetcher)
@@ -98,6 +98,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
 
   const handleClickPosting = (postingId: string) => {
     mutateTime()
+    console.log(postingId)
     setPostingId(postingId)
     setIsClickPosting(!isClickPosting)
   }
@@ -107,7 +108,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     <button key={posting.id} className="posting-container" onClick={() => handleClickPosting(posting.id)} >
       <img key={posting.id}
         className="posting"
-        src={getFeedThumbUrl(posting.thumbanil)}
+        src={getFeedThumbUrl(posting.thumbnail)}
       />
     </button>
     )
