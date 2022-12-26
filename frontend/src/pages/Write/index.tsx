@@ -48,6 +48,10 @@ const Write = () => {
       toast('이미지는 최대 10장만 업로드 가능합니다.')
       return
     }
+    if (Array.from(newImages).some(({ type }) => type !== 'image/jpeg' && type !== 'image/png')) {
+      toast('jpg,png 파일만 업로드 가능합니다.')
+      return
+    }
 
     setImages((prev) => {
       const tempImages = [
