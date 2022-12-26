@@ -1,16 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import {
-  CustomRepositoryCannotInheritRepositoryError,
-  DataSource,
-} from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
   GroupFeedMembersCountError,
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
-import { UserRepository } from '@root/users/users.repository';
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt } from '@feed/feed.utils';
@@ -20,12 +16,12 @@ import FeedInfoDto from '@feed/dto/info.feed.dto';
 import { FeedRepository } from '@feed/feed.repository';
 import FeedResponseDto from './dto/response/feed.response.dto';
 import { UserFeedMappingRepository } from './user.feed.mapping.repository';
+import FeedMembersDto from './dto/members.feed.dto';
 
 @Injectable()
 export class FeedService {
   constructor(
     private feedRepository: FeedRepository,
-    private userRepository: UserRepository,
     private userFeedMappingRepository: UserFeedMappingRepository,
     private dataSource: DataSource,
   ) {}
@@ -64,6 +60,18 @@ export class FeedService {
       }
     });
     return feedInfoDto;
+  }
+
+  async getFeedMemberList(encryptedFeedID: string, userId: number) {
+    const feedId = Number(decrypt(encryptedFeedID));
+    const memberList = await this.userFeedMappingRepository.getFeedMemberList(
+      userId,
+      feedId,
+    );
+    const feedMemberDtoList: FeedMembersDto[] = memberList.map((member) => {
+      return FeedMembersDto.createFeedMemberDto(member);
+    });
+    return feedMemberDtoList;
   }
 
   async getFeedById(encryptedFeedID: string) {
