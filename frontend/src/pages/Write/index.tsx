@@ -14,7 +14,8 @@ import { uploadImage } from '@src/util/uploadImage'
 import { IImage, IPosting } from './types'
 import CreatePostingButton from './CreatePostingButton'
 import ImageCards from './ImageCards'
-import PixelatedGenerator from './PixelatedGenerator'
+import { cropImg } from '@src/util/cropImg'
+import { pixelateCanvas } from '@src/util/pixelateCanvas'
 
 const Write = () => {
   const [images, setImages] = useState<IImage[]>([])
@@ -24,12 +25,22 @@ const Write = () => {
   const [isModalOpen, setModalOpen] = useState(false)
   const postImage = usePost('/image')
   const { feedId } = useParams()
-  const [originalImage, setOriginalImage] = useState<File>()
 
   useEffect(() => {
-    if (!isEmpty(images)) setOriginalImage(images[0].originalImage)
-    else setPixelatedFile(undefined)
+    if (!isEmpty(images)) {
+      if (images[0].compressedImage !== undefined) {
+        void (async () => {
+          await generatePixelatedFile(images[0].compressedImage!)
+        })()
+      }
+    } else setPixelatedFile(undefined)
   }, [images])
+
+  const generatePixelatedFile = async (imageFile: File) => {
+    const croppedCanvas = await cropImg(imageFile)
+    const file = await pixelateCanvas(croppedCanvas)
+    setPixelatedFile(file)
+  }
 
   const handleImageState: ChangeEventHandler<HTMLInputElement> = async (event: any) => {
     const newImages: FileList = event.target.files
@@ -37,6 +48,7 @@ const Write = () => {
       toast('이미지는 최대 10장만 업로드 가능합니다.')
       return
     }
+
     setImages((prev) => {
       const tempImages = [
         ...prev,
@@ -138,9 +150,6 @@ const Write = () => {
         <textarea className="text-area" placeholder="글 내용을 입력해주세요" ref={letterRef} />
         <CreatePostingButton getPostingInfos={getPostingInfos} />
         <Toast />
-        {originalImage !== undefined && (
-          <PixelatedGenerator imageFile={originalImage} setPixelatedFile={setPixelatedFile} />
-        )}
       </div>
     </div>
   )
