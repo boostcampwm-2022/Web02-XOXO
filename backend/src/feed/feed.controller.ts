@@ -108,17 +108,4 @@ export class FeedController {
     const feedInfo = await this.feedService.getFeedInfo(encryptedId, userId);
     return ResponseDto.OK_WITH_DATA(feedInfo);
   }
-
-  @Get('scroll/:feedId')
-  async getFeedPostingThumbnail(
-    @Param('feedId') encryptedId: string,
-    @Query() { size: scrollSize, index: startPostingId }: FeedScrollDto,
-  ) {
-    const postingThumbnailList = await this.feedService.getPostingThumbnails(
-      encryptedId,
-      startPostingId,
-      scrollSize,
-    );
-    return ResponseDto.OK_WITH_DATA(postingThumbnailList);
-  }
 }

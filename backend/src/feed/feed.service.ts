@@ -73,31 +73,6 @@ export class FeedService {
     return feed[0];
   }
 
-  async getPostingThumbnails(
-    encryptedFeedID: string,
-    startPostingId: number,
-    scrollSize: number,
-  ) {
-    const id = Number(decrypt(encryptedFeedID));
-    const postingThumbnailList = await this.feedRepository.getThumbnailList(
-      startPostingId,
-      scrollSize,
-      id,
-    );
-
-    // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교
-    // const postingThumbnailList2 = await this.dataSource
-    //   .getRepository(Feed)
-    //   .find({
-    //     select: { postings: { id: true, thumbnail: true } },
-    //     relations: ['postings'],
-    //     where: { id, postings: { id: MoreThan(startPostingId) } },
-    //     take: postingCount,
-    //   });
-
-    return postingThumbnailList;
-  }
-
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
     let feed: Feed;
     await this.dataSource.transaction(async (manager) => {
