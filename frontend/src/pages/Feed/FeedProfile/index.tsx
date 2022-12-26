@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import useSWR from 'swr'
 import './style.scss'
 import { ReactComponent as ShareIcon } from '@assets/shareIcon.svg'
+import { ReactComponent as EditIcon } from '@assets/editIcon.svg'
 import DefaultUserImage from '@assets/defaultUserImage.svg'
 import { getFeedThumbUrl } from '@util/imageQuery'
 import { remainDueDate } from '@util/index'
@@ -38,6 +39,10 @@ const FeedProfile = ({ name, thumbnail, description, dueDate, postingCnt, isOwne
       }
     })
   }
+  const editButton =
+  <Link className="edit-button" to={`/EditFeed/${isGroupFeed ? 'group' : 'personal'}/${feedId}`}>
+    <EditIcon/>
+  </Link>
   return (
     <div>
       <div className="feed-profile-header-wrapper">
@@ -46,6 +51,7 @@ const FeedProfile = ({ name, thumbnail, description, dueDate, postingCnt, isOwne
             <div className="feed-profile-image">
               <img src={thumbnail !== '' ? getFeedThumbUrl(thumbnail) : DefaultUserImage} alt="유저 프로필 이미지" />
             </div>
+            {isOwner && editButton}
           </div>
           <div className="feed-profile-info-wrapper">
             <span className="feed-profile-name">{name}</span>
