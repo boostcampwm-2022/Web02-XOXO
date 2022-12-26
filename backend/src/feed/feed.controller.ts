@@ -19,7 +19,7 @@ import { AuthorizationGuard } from '@root/common/guard/authorization.guard';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import { FeedService } from '@feed/feed.service';
-import { decrypt } from '@feed/feed.utils';
+import { decrypt, encrypt } from '@feed/feed.utils';
 import ResponseDto from '@root/common/response/response.dto';
 import FeedScrollDto from './dto/request/feed.scroll.dto';
 
@@ -107,5 +107,19 @@ export class FeedController {
     const userId = user.id;
     const feedInfo = await this.feedService.getFeedInfo(encryptedId, userId);
     return ResponseDto.OK_WITH_DATA(feedInfo);
+  }
+
+  @UseGuards(AuthorizationGuard)
+  @Get('members/:feedId')
+  async getFeedMemberList(
+    @Param('feedId') encryptedId: string,
+    @UserReq() user: User,
+  ) {
+    const userId = user.id;
+    const feedMemberList = await this.feedService.getFeedMemberList(
+      encryptedId,
+      userId,
+    );
+    return ResponseDto.OK_WITH_DATA(feedMemberList);
   }
 }

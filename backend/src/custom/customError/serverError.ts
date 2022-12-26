@@ -39,7 +39,11 @@ export class GroupFeedMembersCountError extends CustomError {
     );
   }
 }
-
+export class NonExistMemberError extends CustomError {
+  constructor() {
+    super('존재하지 않는 멤버입니다.', HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+}
 export class DuplicateNicknameError extends CustomError {
   constructor() {
     super('중복된 닉네임 입니다.', HttpStatus.CONFLICT);
