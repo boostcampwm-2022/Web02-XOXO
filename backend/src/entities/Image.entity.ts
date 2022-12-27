@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsUrl } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,

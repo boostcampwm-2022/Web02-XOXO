@@ -1,21 +1,12 @@
-import {
-  Controller,
-  Param,
-  UseGuards,
-  Get,
-  Post,
-  Body,
-  Query,
-} from '@nestjs/common';
+import { Controller, Param, UseGuards, Get, Post, Query } from '@nestjs/common';
 import { DueDateGuard } from '@root/common/guard/duedate.guard';
 import { PostingService } from '@posting/posting.service';
 import { AccessAuthGuard } from '@root/common/guard/accesstoken.guard';
-import { UserReq } from '@root/users/decorators/users.decorators';
-import User from '@root/entities/User.entity';
 import { NonExistPostingError } from '@root/custom/customError/serverError';
 import ResponseDto from '@root/common/response/response.dto';
-import { CreatePostingReqDto } from './dto/create.posting.dto';
+import CustomValidationPipe from '@root/common/pipes/customValidationPipe';
 import PostingScrollDto from './dto/posting.scroll.dto';
+import CreatePosting from './decorators/create.posting.decorator';
 
 @Controller('posting')
 export class PostingController {
@@ -24,18 +15,11 @@ export class PostingController {
   @UseGuards(DueDateGuard, AccessAuthGuard)
   @Post('/:feedId')
   async createPosting(
-    @UserReq() user: User,
-    @Param('feedId') encryptedFeedId: string,
-    @Body() createPostingReq: CreatePostingReqDto,
+    @CreatePosting(new CustomValidationPipe({ validateCustomDecorators: true }))
+    createPostingDecoratorDto,
   ) {
     const postingId = await this.postingService.createPosting(
-      {
-        letter: createPostingReq.letter,
-        thumbnail: createPostingReq.thumbnail,
-        senderId: user.id,
-        encryptedFeedId,
-      },
-      createPostingReq.images,
+      createPostingDecoratorDto,
     );
     return ResponseDto.CREATED_WITH_DATA(postingId);
   }
