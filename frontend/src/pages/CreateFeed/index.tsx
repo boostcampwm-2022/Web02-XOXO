@@ -41,16 +41,14 @@ const CreateFeed = () => {
   const [thumbnailSrc, setThumbnailSrc] = useState('')
   const navigate = useNavigate()
   const postImage = usePost('/image')
+  const [isThumbnailExist, setIsThumbnailExist] = useState(false)
 
   const { path } = useParams<{ path: string }>()
-
-  // useEffect(() => {
-  //   if (!(path === 'group' || path === 'personal')) navigate('/404')
-  // }, [path])
 
   const onChangeFeedThumbnail = async (e: any) => {
     setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
     setThumbnail(undefined)
+    setIsThumbnailExist(true)
     const croppedCanvas = await cropImg(e.target.files[0])
     const croppedFile = await canvasToFile(croppedCanvas)
     const compressedImage = await compressImage(croppedFile)
@@ -69,6 +67,7 @@ const CreateFeed = () => {
       toast(getWarningName(nameRef.current.value))
       return undefined
     }
+    console.log(validDescription(descriptionRef.current.value))
 
     if (!validDescription(descriptionRef.current.value)) {
       toast(getWarningDescription(descriptionRef.current.value))
@@ -85,7 +84,7 @@ const CreateFeed = () => {
       return undefined
     }
 
-    if (thumbnail === undefined) {
+    if (isThumbnailExist && thumbnail === undefined) {
       toast('썸네일 압축 중 입니다.')
       return undefined
     }
@@ -93,8 +92,10 @@ const CreateFeed = () => {
     const formData: IFeedForm = {
       name: nameRef.current.value,
       description: descriptionRef.current.value,
-      dueDate: dueDateRef.current.value,
-      thumbnail: await getThumbnailUrl()
+      dueDate: dueDateRef.current.value
+    }
+    if (isThumbnailExist) {
+      formData.thumbnail = await getThumbnailUrl()
     }
     const memberIdList = getMembers()
     if (!isEmpty(members)) formData.memberIdList = memberIdList
