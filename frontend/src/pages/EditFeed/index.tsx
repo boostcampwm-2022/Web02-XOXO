@@ -57,14 +57,10 @@ const EditFeed = () => {
 
   useEffect(() => {
     if (feedInfo !== undefined) {
-      setThumbnailSrc(getFeedThumbUrl(feedInfo?.thumbnail as string))
+      setThumbnailSrc(getFeedThumbUrl(feedInfo.thumbnail as string))
       setIsExistThumb(true)
     }
   }, [feedInfo])
-
-  useEffect(() => {
-    console.log('thumbnailSrc : ', thumbnailSrc)
-  }, [thumbnailSrc])
 
   const onChangeFeedThumbnail = async (e?: any, defaultImage?: string) => {
     setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
@@ -137,8 +133,9 @@ const EditFeed = () => {
                 onLoad={() => {
                   URL.revokeObjectURL(thumbnailSrc)
                 }}
-                onError={(e) => {
-                  setThumbnailSrc(defaultUserImage)
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null
+                  currentTarget.src = defaultUserImage
                 }}
               />
             </div>
