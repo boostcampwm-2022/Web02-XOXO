@@ -62,6 +62,10 @@ const EditFeed = () => {
     }
   }, [feedInfo])
 
+  useEffect(() => {
+    console.log('thumbnailSrc : ', thumbnailSrc)
+  }, [thumbnailSrc])
+
   const onChangeFeedThumbnail = async (e?: any, defaultImage?: string) => {
     setThumbnailSrc(URL.createObjectURL(e.target.files[0]))
     setThumbnail(undefined)
