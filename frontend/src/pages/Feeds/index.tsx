@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import './styles.scss'
 import Header from '@src/components/Header'
 import useSWR from 'swr'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import fetcher from '@src/util/fetcher'
 import { getFeedsThumbUrl } from '@util/imageQuery'
 import CreateFeedButton from './CreateFeedButton'
@@ -27,6 +27,9 @@ const Feeds = () => {
       <span className="feeds-card-text basic">{name}</span>
     </Link>
   )
+  if (window.localStorage.getItem('feedId') !== null) {
+    return <Navigate to={`/Feed/${window.localStorage.getItem('feedId')!}`} />
+  }
   return (
     <div className="feeds-page">
       <Header page="feeds" text={'내 피드'} />
