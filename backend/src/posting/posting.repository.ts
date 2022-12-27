@@ -1,12 +1,15 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { CustomRepository } from '@root/common/typeorm/typeorm.decorator';
+import Image from '@root/entities/Image.entity';
 import Posting from '@root/entities/Posting.entity';
-import { LessThan, Repository } from 'typeorm';
+import { DataSource, LessThan, Repository } from 'typeorm';
+import { CreatePostingDecoratorDto } from './dto/create.posting.dto';
 import PostingScrollDto from './dto/posting.scroll.dto';
 
 @CustomRepository(Posting)
 export class PostingRepository extends Repository<Posting> {
-  async getPosting(postingId: number, encryptedFeedId: string, feedId: number) {
-    const posting = this.find({
+  async getPosting(postingId: number, feedId: number) {
+    const posting = await this.find({
       where: { id: postingId, feed: { id: feedId } },
       relations: ['images', 'sender', 'feed'],
       select: {
@@ -18,9 +21,31 @@ export class PostingRepository extends Repository<Posting> {
     return posting;
   }
 
+  async savePosting({
+    createPostingDto,
+    imageList,
+  }: CreatePostingDecoratorDto) {
+    let posting: Posting;
+    await this.manager.transaction(async (manager) => {
+      posting = await manager.save(Posting, createPostingDto);
+
+      const insertImageList = imageList.map((imageUrl) => {
+        return { posting, url: imageUrl };
+      });
+
+      await manager
+        .createQueryBuilder()
+        .insert()
+        .into(Image)
+        .values(insertImageList)
+        .updateEntity(false)
+        .execute();
+    });
+    return posting.id;
+  }
+
   async getThumbnailList(postingScrollDto: PostingScrollDto, feedId: number) {
     const { index: startPostingId, size: scrollSize } = postingScrollDto;
-    console.log(startPostingId, scrollSize);
 
     const whereOption = startPostingId
       ? { feedId, id: LessThan(startPostingId) }

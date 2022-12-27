@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsUrl } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -22,6 +22,11 @@ export default class Image implements ImageInterface {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @IsNotEmpty()
+  @IsNumberString()
+  @Column({ type: 'int' })
+  postingId: number;
 
   @ManyToOne('Posting', 'images', { onDelete: 'CASCADE' })
   posting: PostingInterface;
