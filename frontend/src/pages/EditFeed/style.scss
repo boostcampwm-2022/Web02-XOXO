@@ -1,0 +1,141 @@
+@import '@src/global';
+.createfeed-page {
+  @include page;
+}
+.createfeed-header {
+  @include header;
+}
+.createfeed-body {
+  @include body;
+  @include display-col(1.25vw);
+  @include not-mobile {
+    @include display-col(5px);
+  }
+
+  .profile-pic-wrapper {
+    @include vcenter;
+    @include display-col(3.75vw);
+    @include not-mobile {
+      @include display-col(16px);
+    }
+    .profile-pic-circle {
+      @include circle(22.5vw, true, $grey);
+      @include not-mobile {
+        @include circle(95px, true, $grey);
+      }
+    }
+    span {
+      @include bold(3.75vw, $primary-3);
+      display: block;
+      padding: 1.88vw 0 1.88vw 0;
+      @include not-mobile {
+        @include bold(16px, $primary-3);
+        padding: 8px 0 8px 0;
+      }
+    }
+    input {
+      display: none;
+    }
+  }
+  .button-large {
+    @include button-large;
+    margin: 8.75vw 0;
+    @include not-mobile {
+      margin: 37px 0;
+    }
+  }
+  .add-group-people {
+    .form-label {
+      margin-top: 1.25vw;
+      @include medium(4.375vw, $black);
+      display: block;
+      @include not-mobile {
+        margin-top: 5px;
+        @include medium(18px, $black);
+      }
+    }
+    .form-no-member {
+      @include regular(3.75vw, $grey);
+      margin: 2.5vw 0;
+      @include not-mobile {
+        @include regular(16px, $grey);
+        margin: 10px 0;
+      }
+    }
+    .form-members-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25vw;
+      margin: 2.5vw 0;
+      @include not-mobile {
+        gap: 5px;
+        margin: 10px 0;
+      }
+      .form-member {
+        @include vhcenter;
+        @include regular(3.75vw, $primary-3);
+        vertical-align: middle;
+        padding: 1.25vw 1.875vw;
+        border-radius: 4px;
+        background-color: $primary-1;
+        display: inline;
+        flex-direction: row;
+        @include not-mobile {
+          @include regular(16px, $primary-3);
+          padding: 5px 8px;
+        }
+        svg {
+          width: 3vw;
+          height: 3vw;
+          margin-left: 1.25vw;
+          padding-bottom: 0.4vw;
+          @include not-mobile {
+            width: 12px;
+            height: 12px;
+            margin-left: 5px;
+            padding-bottom: 2px;
+          }
+        }
+      }
+    }
+  }
+}
+.suggestions-wrapper {
+  border: 1px solid $grey;
+  border-radius: 8px;
+  margin-bottom: 1.25vw;
+  .suggestion {
+    &-wrapper {
+      padding: 2.5vw 5vw;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: calc(100% - 10vw);
+      @include not-mobile {
+        padding: 10px 20px;
+        width: calc(100% - 40px);
+      }
+      .suggestion-nickname {
+        @include regular(3.75vw, $black);
+        @include not-mobile {
+          @include regular(16px, $black);
+        }
+      }
+      .suggestion-add {
+        @include medium(3.75vw, $black);
+        @include not-mobile {
+          @include medium(16px, $black);
+        }
+      }
+      &:disabled {
+        .suggestion-add {
+          @include medium(3.75vw, $grey-font);
+          @include not-mobile {
+            @include medium(16px, $grey-font);
+          }
+        }
+      }
+    }
+
+  }
+}

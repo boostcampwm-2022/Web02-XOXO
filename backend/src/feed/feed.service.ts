@@ -147,7 +147,7 @@ export class FeedService {
         select: { userId: true },
       });
       const prevMemberIdList = prevMemberList.map((member) => member.userId);
-      for await (const userId of memberIdList) {
+      for await (const userId of prevMemberIdList) {
         if (!memberIdList.includes(userId)) {
           await manager.delete(UserFeedMapping, { userId });
         }
