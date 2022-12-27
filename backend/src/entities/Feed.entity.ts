@@ -21,9 +21,8 @@ export class Feed implements FeedInterface {
   @Column({ type: 'varchar', length: 15, nullable: false })
   name: string;
 
-  @IsUrl()
-  @Column({ type: 'varchar', nullable: false })
-  thumbnail: string;
+  @Column({ type: 'varchar', nullable: true })
+  thumbnail: string | null;
 
   @IsNotEmpty()
   @MaxLength(100)
