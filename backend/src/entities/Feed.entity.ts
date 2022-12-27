@@ -22,7 +22,6 @@ export class Feed implements FeedInterface {
   name: string;
 
   @IsUrl()
-  @IsNotEmpty()
   @Column({ type: 'varchar', nullable: false })
   thumbnail: string;
 
