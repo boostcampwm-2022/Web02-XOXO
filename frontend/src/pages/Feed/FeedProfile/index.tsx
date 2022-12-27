@@ -39,17 +39,24 @@ const FeedProfile = ({ name, thumbnail, description, dueDate, postingCnt, isOwne
       }
     })
   }
-  const editButton =
-  <Link className="edit-button" to={`/EditFeed/${isGroupFeed ? 'group' : 'personal'}/${feedId}`}>
-    <EditIcon/>
-  </Link>
+  const editButton = (
+    <Link className="edit-button" to={`/EditFeed/${isGroupFeed ? 'group' : 'personal'}/${feedId}`}>
+      <EditIcon />
+    </Link>
+  )
   return (
     <div>
       <div className="feed-profile-header-wrapper">
         <div className="feed-profile-header">
           <div className="feed-profile-image-wrapper">
             <div className="feed-profile-image">
-              <img src={thumbnail !== '' ? getFeedThumbUrl(thumbnail) : DefaultUserImage} alt="유저 프로필 이미지" />
+              <img
+                src={thumbnail !== '' ? getFeedThumbUrl(thumbnail) : DefaultUserImage}
+                alt="유저 프로필 이미지"
+                onError={(e: any) => {
+                  e.target.src = DefaultUserImage
+                }}
+              />
             </div>
             {isOwner && editButton}
           </div>
