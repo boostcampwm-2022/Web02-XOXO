@@ -5,7 +5,28 @@
   .text-wrapper {
     @include vcenter;
     .text {
+      @include vcenter;
+      @include regular(5vw, $black);
       margin-right: 4px;
+    }
+    .nickname {
+      max-width: 40vw;
+      margin-left: 1vw;
+      @include bold(5vw, $black);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      display:inline-block;
+    }
+    @include not-mobile {
+      .text {
+        @include regular(21px, $black);
+      }
+      .nickname {
+        max-width: 180px;
+        margin-left: 6px;
+        @include bold(21px, $black);
+      }
     }
   }
 }
@@ -20,4 +41,7 @@
 }
 .default-header {
   @include header;
+  &-shadow {
+    @include header;
+  }
 }

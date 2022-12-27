@@ -24,7 +24,6 @@ const Header = ({ page, text }: headerProps) => {
   const navigate = useNavigate()
   const handleLogout = async () => {
     const { data }: IResponse = await postLogout({})
-
     if (data) navigate('/Signin')
   }
   const handleModalOpen = (e: any) => {
@@ -37,7 +36,7 @@ const Header = ({ page, text }: headerProps) => {
         return (
           <div className="feed-header">
             <Link className="text-wrapper" to="/feeds">
-              <span className="text">{nickname}</span>
+              <div className="text">안녕하세요<div className="nickname">{nickname}</div>님!</div>
               <div className="svg-wrapper">
                 <DownIcon />
               </div>
