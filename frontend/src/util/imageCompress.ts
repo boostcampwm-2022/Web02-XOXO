@@ -2,7 +2,7 @@ import imageCompression from 'browser-image-compression'
 
 export const compressImage = async (imageFile: File) => {
   const options = {
-    maxSizeMB: 0.5,
+    maxWidthOrHeight: 4000,
     fileType: 'image/jpeg'
   }
 

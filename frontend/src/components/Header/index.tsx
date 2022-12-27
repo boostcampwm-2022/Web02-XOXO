@@ -10,6 +10,7 @@ import usePost from '@hooks/usePost'
 import { IResponse } from '@src/types'
 import useSWR from 'swr'
 import InfoModal from '../InfoModal'
+import fetcher from '@src/util/fetcher'
 
 interface headerProps {
   page?: string
@@ -19,9 +20,7 @@ interface headerProps {
 const Header = ({ page, text }: headerProps) => {
   const postLogout = usePost('/users/logout')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { data: nickname } = useSWR('/users/nickname', () => {
-    return '하드코딩된닉네임'
-  })
+  const { data: nickname } = useSWR('/users/nickname', fetcher)
   const navigate = useNavigate()
   const handleLogout = async () => {
     const { data }: IResponse = await postLogout({})

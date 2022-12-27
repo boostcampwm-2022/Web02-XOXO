@@ -25,4 +25,14 @@ export class UserFeedMappingRepository extends Repository<UserFeedMapping> {
       .getOne();
     return owner;
   }
+
+  async getFeedMemberList(userId: number, feedId: number) {
+    const feedMemberList = await this.createQueryBuilder('user_feed_mapping')
+      .innerJoin('user_feed_mapping.user', 'users')
+      .select(['users.id as id', 'users.nickname as nickname'])
+      .where('user_feed_mapping.feedId  = :feedId', { feedId })
+      .andWhere('user_feed_mapping.userId != :userId', { userId })
+      .getRawMany();
+    return feedMemberList;
+  }
 }

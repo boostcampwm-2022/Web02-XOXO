@@ -1,16 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import {
-  CustomRepositoryCannotInheritRepositoryError,
-  DataSource,
-} from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Feed } from '@root/entities/Feed.entity';
 import UserFeedMapping from '@root/entities/UserFeedMapping.entity';
 import {
   GroupFeedMembersCountError,
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
-import { UserRepository } from '@root/users/users.repository';
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt } from '@feed/feed.utils';
@@ -20,12 +16,12 @@ import FeedInfoDto from '@feed/dto/info.feed.dto';
 import { FeedRepository } from '@feed/feed.repository';
 import FeedResponseDto from './dto/response/feed.response.dto';
 import { UserFeedMappingRepository } from './user.feed.mapping.repository';
+import FeedMembersDto from './dto/members.feed.dto';
 
 @Injectable()
 export class FeedService {
   constructor(
     private feedRepository: FeedRepository,
-    private userRepository: UserRepository,
     private userFeedMappingRepository: UserFeedMappingRepository,
     private dataSource: DataSource,
   ) {}
@@ -66,36 +62,23 @@ export class FeedService {
     return feedInfoDto;
   }
 
+  async getFeedMemberList(encryptedFeedID: string, userId: number) {
+    const feedId = Number(decrypt(encryptedFeedID));
+    const memberList = await this.userFeedMappingRepository.getFeedMemberList(
+      userId,
+      feedId,
+    );
+    const feedMemberDtoList: FeedMembersDto[] = memberList.map((member) => {
+      return FeedMembersDto.createFeedMemberDto(member);
+    });
+    return feedMemberDtoList;
+  }
+
   async getFeedById(encryptedFeedID: string) {
     const id = Number(decrypt(encryptedFeedID));
     const findFeedDto: FindFeedDto = { id };
     const feed = await this.feedRepository.getFeedByFindFeedDto(findFeedDto);
     return feed[0];
-  }
-
-  async getPostingThumbnails(
-    encryptedFeedID: string,
-    startPostingId: number,
-    scrollSize: number,
-  ) {
-    const id = Number(decrypt(encryptedFeedID));
-    const postingThumbnailList = await this.feedRepository.getThumbnailList(
-      startPostingId,
-      scrollSize,
-      id,
-    );
-
-    // 쿼리 2번 - 추후쿼리 최적화 때 속도 비교
-    // const postingThumbnailList2 = await this.dataSource
-    //   .getRepository(Feed)
-    //   .find({
-    //     select: { postings: { id: true, thumbnail: true } },
-    //     relations: ['postings'],
-    //     where: { id, postings: { id: MoreThan(startPostingId) } },
-    //     take: postingCount,
-    //   });
-
-    return postingThumbnailList;
   }
 
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
@@ -164,7 +147,7 @@ export class FeedService {
         select: { userId: true },
       });
       const prevMemberIdList = prevMemberList.map((member) => member.userId);
-      for await (const userId of memberIdList) {
+      for await (const userId of prevMemberIdList) {
         if (!memberIdList.includes(userId)) {
           await manager.delete(UserFeedMapping, { userId });
         }

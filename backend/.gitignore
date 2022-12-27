@@ -39,3 +39,4 @@ lerna-debug.log*
 
 #local test
 /test/localtest
+script.js

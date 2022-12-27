@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { ReactElement, useEffect, useState } from 'react'
-import { Navigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 
 interface IFeedRoute {
   Component: () => ReactElement
@@ -8,13 +8,24 @@ interface IFeedRoute {
 const FeedRoute = ({ Component }: IFeedRoute) => {
   const [isLoggined, setIsLoggined] = useState<Boolean | undefined>(undefined)
   const { feedId } = useParams<{ feedId: string }>()
+  const navigate = useNavigate()
 
   useEffect(() => {
+    const storedId = window.localStorage.getItem('feedId')
     if (feedId !== undefined) {
-      window.localStorage.setItem('feedId', feedId)
-      console.log(window.localStorage.getItem('feedId'))
+      if (isLoggined === false) {
+        window.localStorage.setItem('feedId', feedId)
+      } else {
+        if (storedId !== null) {
+          if (feedId === storedId) {
+            window.localStorage.removeItem('feedId')
+          } else {
+            navigate(`/Feed/${storedId}`)
+          }
+        }
+      }
     }
-  }, [feedId])
+  }, [feedId, isLoggined])
   useEffect(() => {
     void (async () => {
       const response = await axios.get('/api/users')

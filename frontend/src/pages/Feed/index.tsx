@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable multiline-ternary */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import React, { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import React from 'react'
+import { useParams } from 'react-router-dom'
 import useSWR from 'swr'
 import './style.scss'
 import fetcher from '@util/fetcher'
@@ -23,32 +23,11 @@ interface IFeedInfo {
 }
 
 const MainPage = () => {
-  const navigate = useNavigate()
   const { feedId } = useParams<{ feedId: string }>()
   const { data: feedInfo, error: feedError } = useSWR<IFeedInfo>(
     feedId !== undefined ? `/feed/info/${feedId}` : null,
     fetcher
   )
-
-  useEffect(() => {
-    if (window.localStorage.getItem('feedId') !== null) window.localStorage.removeItem('feedId')
-  }, [feedId])
-
-  // // 올바른 경로가 아닐 때 (feed 정보를 불러오는데에 실패 했을 때)
-  // useEffect(() => {
-  //   if (feedError !== undefined) navigate('/404')
-  // }, [feedError])
-
-  // // 그룹 피드의 주인이 아닐 때
-  // useEffect(() => {
-  //   if (feedInfo !== undefined) feedInfo.isGroupFeed && !feedInfo.isOwner && navigate('/404')
-  // }, [feedInfo])
-
-  // // feedId를 쓰지 않았을 때 '/feed'로 접근했을 때
-  // useEffect(() => {
-  //   if (feedId === undefined) navigate('/404')
-  //   if (window.localStorage.getItem('feedId') !== null) window.localStorage.removeItem('feedId')
-  // }, [feedId])
 
   // 올바른 경로가 아닐 때 (feed 정보를 불러오는데에 실패 했을 때)
   if (feedError !== undefined) {
