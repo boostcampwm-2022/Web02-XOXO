@@ -57,7 +57,7 @@ const EditFeed = () => {
 
   useEffect(() => {
     if (feedInfo !== undefined) {
-      setThumbnailSrc(getFeedThumbUrl(feedInfo?.thumbnail as string))
+      setThumbnailSrc(getFeedThumbUrl(feedInfo.thumbnail as string))
       setIsExistThumb(true)
     }
   }, [feedInfo])
@@ -133,8 +133,9 @@ const EditFeed = () => {
                 onLoad={() => {
                   URL.revokeObjectURL(thumbnailSrc)
                 }}
-                onError={(e) => {
-                  setThumbnailSrc(defaultUserImage)
+                onError={({ currentTarget }) => {
+                  currentTarget.onerror = null
+                  currentTarget.src = defaultUserImage
                 }}
               />
             </div>

@@ -16,7 +16,6 @@ import FeedInfoDto from '@feed/dto/info.feed.dto';
 import { FeedRepository } from '@feed/feed.repository';
 import FeedResponseDto from './dto/response/feed.response.dto';
 import { UserFeedMappingRepository } from './user.feed.mapping.repository';
-import FeedMembersDto from './dto/members.feed.dto';
 
 @Injectable()
 export class FeedService {
@@ -68,10 +67,8 @@ export class FeedService {
       userId,
       feedId,
     );
-    const feedMemberDtoList: FeedMembersDto[] = memberList.map((member) => {
-      return FeedMembersDto.createFeedMemberDto(member);
-    });
-    return feedMemberDtoList;
+    if (!memberList) throw new NonExistFeedError();
+    return memberList;
   }
 
   async getFeedById(encryptedFeedID: string) {
