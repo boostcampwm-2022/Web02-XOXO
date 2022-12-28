@@ -1,8 +1,8 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { CustomRepository } from '@root/common/typeorm/typeorm.decorator';
 import Image from '@root/entities/Image.entity';
 import Posting from '@root/entities/Posting.entity';
-import { DataSource, LessThan, Repository } from 'typeorm';
+import { LicenseManagerUserSubscriptions } from 'aws-sdk';
+import { LessThan, Repository } from 'typeorm';
 import { CreatePostingDecoratorDto } from './dto/create.posting.dto';
 import PostingScrollDto from './dto/posting.scroll.dto';
 

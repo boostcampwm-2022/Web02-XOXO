@@ -7,12 +7,12 @@ import FindUserDto from './dto/find.user.dto';
 @CustomRepository(User)
 export class UserRepository extends Repository<User> {
   async joinUser(user: JoinRequestDto) {
-    const userId = await this.createQueryBuilder()
+    const insertedUser = await this.createQueryBuilder()
       .insert()
       .into(User)
       .values(user)
       .execute();
-    return userId.raw.insertId;
+    return insertedUser.raw.insertId;
   }
 
   async findUser(findUserInterface: FindUserDto) {
