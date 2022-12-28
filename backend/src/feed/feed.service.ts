@@ -8,6 +8,7 @@ import {
   NonExistFeedError,
 } from '@root/custom/customError/serverError';
 import User from '@root/entities/User.entity';
+import { UserReq } from '@root/users/decorators/users.decorators';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt } from '@feed/feed.utils';
 import FindFeedDto from '@feed/dto/find.feed.dto';
@@ -117,36 +118,31 @@ export class FeedService {
     createFeedDto: CreateFeedDto,
     feedId: number,
     memberIdList: number[],
+    userId: number,
   ) {
     // 그룹 피드 멤버 2명 이상 100명 미만인지 체크
-    if (!memberIdList || memberIdList.length < 2 || memberIdList.length > 100)
+    if (!memberIdList || memberIdList.length < 1 || memberIdList.length > 99)
       throw new GroupFeedMembersCountError();
 
     await this.dataSource.transaction(async (manager) => {
-      await manager.update(
-        Feed,
-        { id: feedId },
-        {
-          ...createFeedDto,
-          isGroupFeed: true,
-        },
+      await manager
+        .withRepository(this.feedRepository)
+        .updateFeed(feedId, createFeedDto);
+      const prevMemberList = await manager
+        .withRepository(this.userFeedMappingRepository)
+        .getFeedMemberList(userId, feedId);
+      const deleteList = prevMemberList.filter(
+        (member) => !memberIdList.includes(member),
       );
-      const prevMemberList = await manager.find(UserFeedMapping, {
-        where: { feedId },
-        select: { userId: true },
-      });
-      const prevMemberIdList = prevMemberList.map((member) => member.userId);
-      for await (const userId of prevMemberIdList) {
-        if (!memberIdList.includes(userId)) {
-          await manager.delete(UserFeedMapping, { userId });
-        }
-      }
-
-      for await (const userId of memberIdList) {
-        if (!prevMemberIdList.includes(userId)) {
-          await manager.save(UserFeedMapping, { feedId, userId });
-        }
-      }
+      await manager
+        .withRepository(this.userFeedMappingRepository)
+        .deleteUserFeedMapping(deleteList);
+      const insertList = memberIdList.filter(
+        (member) => !prevMemberList.includes(member),
+      );
+      await manager
+        .withRepository(this.userFeedMappingRepository)
+        .saveUserFeedMappingBulk(insertList, feedId);
     });
   }
 

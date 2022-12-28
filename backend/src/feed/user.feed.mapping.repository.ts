@@ -52,4 +52,10 @@ export class UserFeedMappingRepository extends Repository<UserFeedMapping> {
       .updateEntity(false)
       .execute();
   }
+
+  async deleteUserFeedMapping(userList: number[]) {
+    for await (const user of userList) {
+      await this.delete({ userId: user });
+    }
+  }
 }
