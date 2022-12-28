@@ -63,7 +63,7 @@ $error: #fd4747;
 
 @mixin header {
   @include vcenter;
-  @include bold(5vw, $black);
+  @include bold(4.5vw, $black);
   padding-top: 3vw;
   padding: 0 24px;
   justify-content: space-between;
@@ -74,7 +74,7 @@ $error: #fd4747;
   background-color: $white;
   @include not-mobile {
     width: 378px;
-    @include bold(22px, $black);
+    @include bold(18px, $black);
     height: 68px;
   }
   z-index: 990;

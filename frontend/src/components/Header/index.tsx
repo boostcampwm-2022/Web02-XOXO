@@ -36,7 +36,7 @@ const Header = ({ page, text }: headerProps) => {
         return (
           <div className="feed-header">
             <Link className="text-wrapper" to="/feeds">
-              <div className="text">안녕하세요<div className="nickname">{nickname}</div>님!</div>
+              <span className="text">{nickname}</span>
               <div className="svg-wrapper">
                 <DownIcon />
               </div>
