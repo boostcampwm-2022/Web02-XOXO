@@ -77,9 +77,12 @@ export class FeedController {
     createFeedDto: CreateFeedDto,
   ) {
     const feedId = decrypt(encryptedFeedId);
-    await this.feedService.editGroupFeed(createFeedDto, Number(feedId), [
-      ...new Set([...memberIdList, user.id]),
-    ]);
+    await this.feedService.editGroupFeed(
+      createFeedDto,
+      Number(feedId),
+      memberIdList,
+      user.id,
+    );
 
     return ResponseDto.OK();
   }

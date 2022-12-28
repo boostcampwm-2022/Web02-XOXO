@@ -35,4 +35,27 @@ export class UserFeedMappingRepository extends Repository<UserFeedMapping> {
       .getRawMany();
     return feedMemberList;
   }
+
+  async saveUserFeedMapping(feedId: number, userId: number) {
+    await this.save({ feedId, userId });
+  }
+
+  async saveUserFeedMappingBulk(memberList: number[], feedId: number) {
+    const userFeedMappingList = memberList.map((member) => {
+      return { feedId, userId: member };
+    });
+
+    await this.createQueryBuilder()
+      .insert()
+      .into(UserFeedMapping)
+      .values(userFeedMappingList)
+      .updateEntity(false)
+      .execute();
+  }
+
+  async deleteUserFeedMapping(userList: number[]) {
+    for await (const user of userList) {
+      await this.delete({ userId: user });
+    }
+  }
 }
