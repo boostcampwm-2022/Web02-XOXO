@@ -14,4 +14,9 @@ export class FeedRepository extends Repository<Feed> {
   async updateFeed(id: number, createFeedDto: CreateFeedDto) {
     await this.update(id, createFeedDto);
   }
+
+  async saveFeed(createFeedDto: CreateFeedDto, isGroupFeed: boolean) {
+    const feed = await this.save({ ...createFeedDto, isGroupFeed });
+    return feed;
+  }
 }

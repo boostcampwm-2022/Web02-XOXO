@@ -11,6 +11,7 @@ import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt } from '@feed/feed.utils';
 import FindFeedDto from '@feed/dto/find.feed.dto';
+import UserRepository from '@root/users/users.repository';
 import { FeedRepository } from '@feed/feed.repository';
 import FeedResponseDto from './dto/response/feed.response.dto';
 import { UserFeedMappingRepository } from './user.feed.mapping.repository';
@@ -21,6 +22,7 @@ export class FeedService {
   constructor(
     private feedRepository: FeedRepository,
     private userFeedMappingRepository: UserFeedMappingRepository,
+    private userRepository: UserRepository,
     private dataSource: DataSource,
   ) {}
 
@@ -68,12 +70,15 @@ export class FeedService {
   async createFeed(createFeedDto: CreateFeedDto, userId: number) {
     let feed: Feed;
     await this.dataSource.transaction(async (manager) => {
-      feed = await manager.save(Feed, {
-        ...createFeedDto,
-        isGroupFeed: false,
-      });
-      await manager.insert(UserFeedMapping, { feedId: feed.id, userId });
-      await manager.update(User, userId, { lastVistedFeed: feed.id });
+      feed = await manager
+        .withRepository(this.feedRepository)
+        .saveFeed(createFeedDto, false);
+      await manager
+        .withRepository(this.userFeedMappingRepository)
+        .saveUserFeedMapping(feed.id, userId);
+      await manager
+        .withRepository(this.userRepository)
+        .updateLastVisitedFeed(userId, feed.id);
     });
     return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
   }
@@ -89,17 +94,17 @@ export class FeedService {
 
     let feed: Feed;
     await this.dataSource.transaction(async (manager) => {
-      feed = await manager.save(Feed, {
-        ...createFeedDto,
-        isGroupFeed: true,
-      });
-      for await (const memberId of memberIdList) {
-        await manager.insert(UserFeedMapping, {
-          feedId: feed.id,
-          userId: memberId,
-        });
-      }
-      await manager.update(User, userId, { lastVistedFeed: feed.id });
+      const feedRepository = manager.withRepository(this.feedRepository);
+      feed = await feedRepository.saveFeed(createFeedDto, true);
+      const userFeedMappingRepository = manager.withRepository(
+        this.userFeedMappingRepository,
+      );
+      await userFeedMappingRepository.saveUserFeedMappingBulk(
+        memberIdList,
+        feed.id,
+      );
+      const userRepository = manager.withRepository(this.userRepository);
+      await userRepository.updateLastVisitedFeed(userId, feed.id);
     });
     return FeedResponseDto.makeFeedResponseDto(feed).encryptedId;
   }
