@@ -31,18 +31,9 @@ export class FeedService {
     const id = Number(decrypt(encryptedFeedID));
     let feedInfoDto: FeedInfoDto;
     await this.dataSource.transaction(async (manager) => {
-      const feed = await manager.find(Feed, {
-        where: { id },
-        relations: ['postings', 'users'],
-        select: {
-          postings: { id: true },
-          users: { userId: true },
-          name: true,
-          description: true,
-          thumbnail: true,
-          dueDate: true,
-        },
-      });
+      const feed = await manager
+        .withRepository(this.feedRepository)
+        .findFeed(id);
       feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
       if (feedInfoDto.isOwner) {
         await manager.update(User, userId, { lastVistedFeed: id });
