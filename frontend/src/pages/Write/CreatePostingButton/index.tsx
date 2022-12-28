@@ -31,9 +31,11 @@ const CreatePostingButton = ({ getPostingInfos }: ICreatePostingButton) => {
     }
   }
   return (
-    <button className="write-button" onClick={handleUploadPosting} disabled={isButtonDisabled}>
-      게시물 업로드 하기
-    </button>
+    <div className="button-wrapper">
+      <button className="write-button" onClick={handleUploadPosting} disabled={isButtonDisabled}>
+        게시물 업로드 하기
+      </button>
+    </div>
   )
 }
 

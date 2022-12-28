@@ -24,7 +24,6 @@ const Header = ({ page, text }: headerProps) => {
   const navigate = useNavigate()
   const handleLogout = async () => {
     const { data }: IResponse = await postLogout({})
-
     if (data) navigate('/Signin')
   }
   const handleModalOpen = (e: any) => {

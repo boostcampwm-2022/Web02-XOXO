@@ -9,6 +9,7 @@ const useInfiniteScroll = (postings: any, callback: () => void) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               callback()
+              observer.unobserve(entry.target)
             }
           })
         }, {
