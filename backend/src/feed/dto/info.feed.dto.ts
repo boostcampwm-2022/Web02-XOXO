@@ -7,6 +7,7 @@ export default class FeedInfoDto extends PickType(Feed, [
   'thumbnail',
   'description',
   'dueDate',
+  'isGroupFeed',
 ] as const) {
   postingCnt: number;
 
@@ -18,6 +19,7 @@ export default class FeedInfoDto extends PickType(Feed, [
     this.thumbnail = feed.thumbnail;
     this.description = feed.description;
     this.dueDate = feed.dueDate;
+    this.isGroupFeed = feed.isGroupFeed;
     this.getPostingCnt(feed.postings);
     this.checkIsOwner(feed.users, userId);
   }
