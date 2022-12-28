@@ -2,6 +2,10 @@
 .error-page{
   @include vhcenter;
   @include page;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
 }
 .text-container{
   @include vhcenter;
