@@ -40,9 +40,11 @@ const CreateFeedButton = ({ getFeedInfos }: ICreateFeedButton) => {
     }
   }
   return (
-    <button className="button-large" onClick={onFeedBtnClicked} disabled={isButtonDisabled}>
-      피드 생성하기
-    </button>
+    <div className="button-wrapper">
+      <button className="button-large" onClick={onFeedBtnClicked} disabled={isButtonDisabled}>
+        피드 생성하기
+      </button>
+    </div>
   )
 }
 

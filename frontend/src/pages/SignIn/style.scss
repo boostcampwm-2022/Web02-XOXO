@@ -1,7 +1,11 @@
 @import '@src/global';
 
 .signin-page {
-  @include page;
+  @include scroll;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
   .signin-body {
     @include vcenter;
     @include body;

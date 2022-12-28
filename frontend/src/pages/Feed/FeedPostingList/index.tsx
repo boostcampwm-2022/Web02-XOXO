@@ -16,7 +16,6 @@ import { isFutureRatherThanServer } from '@util/validation/bool'
 import { remainDueDate } from '@util/index'
 import fetcher from '@util/fetcher'
 import { getFeedThumbUrl } from '@util/imageQuery'
-import ObserverElement from './ObserverElement'
 import Loading from './Loading'
 import './style.scss'
 
@@ -58,12 +57,9 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
   const isReachingEnd = (isGroupFeed && isExistWriteButton) || (!isGroupFeed && !isOwner && isExistWriteButton) || (!isGroupFeed && isOwner && isNotExistWriteButton)
 
   const bottomElement = useInfiniteScroll(postings, () => {
+    console.log(isReachingEnd, 'observe!!')
     !isReachingEnd && setSize(size => size + 1)
   })
-
-  useEffect(() => {
-    if (isEmpty) toast('아직 작성된 포스팅이 없습니다')
-  }, [isEmpty])
 
   useEffect(() => {
     if (postingId) {
@@ -131,10 +127,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     </div>
       {isLoading
         ? <Loading />
-        : !isReachingEnd && <div className="bottom-element" ref={bottomElement}>
-            <ObserverElement />
-          </div>
-        }
+        : !isReachingEnd && <div className="bottom-element" ref={bottomElement}></div>}
       <Toast />
     </div>
   )

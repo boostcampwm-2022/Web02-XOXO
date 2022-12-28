@@ -54,7 +54,6 @@ $error: #fd4747;
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh;
   background-color: transparent;
   position: relative;
   @include not-mobile {
@@ -64,21 +63,29 @@ $error: #fd4747;
 
 @mixin header {
   @include vcenter;
-  @include bold(5vw, $black);
-  margin-top: 3vw;
+  @include bold(4.5vw, $black);
+  padding-top: 3vw;
   padding: 0 24px;
   justify-content: space-between;
   height: 16vw;
+  width: calc(100vw - 48px);
+  position: fixed;
+  top: 0;
+  background-color: $white;
   @include not-mobile {
-    @include bold(22px, $black);
+    width: 378px;
+    @include bold(18px, $black);
     height: 68px;
-    margin: 12px;
   }
+  z-index: 990;
 }
-
 @mixin body {
   flex: 1;
   padding: 16px;
+  margin-top: 19vw;
+  @include not-mobile {
+    margin-top: 68px;
+  }
 }
 
 @mixin scroll {
@@ -201,11 +208,11 @@ html,
 body {
   margin: 0;
   max-width: 100%;
-  // position: fixed;
   overflow-x: hidden;
-  // transform: translate3d(0, 0, 0);
-  // -webkit-transform: translateZ(0);
-  @include vhcenter;
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: fill-available;
+  @include hcenter;
   @include desktop {
     width: 100vw;
   }
@@ -215,13 +222,15 @@ body {
     display: none;
   }
   @include desktop {
-    @include vhcenter;
+    @include hcenter;
     width: 100%;
     display: flex;
     flex-direction: row;
+    padding-left: 288px;
     .image-wrapper {
+      position: fixed;
+      left: calc(100vw / 2 - 400px);
       display: block;
-      margin-right: 48px;
     }
   }
 }
