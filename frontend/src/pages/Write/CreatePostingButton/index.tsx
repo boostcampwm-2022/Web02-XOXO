@@ -20,14 +20,12 @@ const CreatePostingButton = ({ getPostingInfos }: ICreatePostingButton) => {
       setIsButtonDisabled(false)
       return
     }
-    console.log(formData)
 
-    const { success, data } = await postPosting(formData)
+    const { success } = await postPosting(formData)
     if (success === true) navigate(`/Feed/${feedId}`)
     else {
       toast('오류가 발생했습니다. 다시 클릭해주세요.')
       setIsButtonDisabled(false)
-      console.log(data)
     }
   }
   return (

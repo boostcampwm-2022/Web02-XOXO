@@ -67,7 +67,6 @@ const CreateFeed = () => {
       toast(getWarningName(nameRef.current.value))
       return undefined
     }
-    console.log(validDescription(descriptionRef.current.value))
 
     if (!validDescription(descriptionRef.current.value)) {
       toast(getWarningDescription(descriptionRef.current.value))
