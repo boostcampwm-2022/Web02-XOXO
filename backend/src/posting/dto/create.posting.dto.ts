@@ -38,7 +38,7 @@ export class CreatePostingDecoratorDto {
   createPostingDto: {
     letter: string;
     thumbnail: string;
-    sendeId: number;
+    senderId: number;
     feedId: number;
   };
 
