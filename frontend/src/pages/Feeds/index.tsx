@@ -6,6 +6,7 @@ import { Link, Navigate } from 'react-router-dom'
 import fetcher from '@src/util/fetcher'
 import { getFeedsThumbUrl } from '@util/imageQuery'
 import CreateFeedButton from './CreateFeedButton'
+import defaultUserImage from '@assets/defaultUserImage.svg'
 
 interface IFeed {
   encryptedId: string
@@ -22,7 +23,13 @@ const Feeds = () => {
   const feed = ({ encryptedId, name, thumbnail }: IFeed) => (
     <Link className="feeds-card" to={`/Feed/${encryptedId}`} key={encryptedId}>
       <div className="feeds-card-circle basic">
-        <img src={getFeedsThumbUrl(thumbnail)} alt="feedThumbnail" />
+        <img
+          src={getFeedsThumbUrl(thumbnail)}
+          alt="feedThumbnail"
+          onError={(e: any) => {
+            e.target.src = defaultUserImage
+          }}
+        />
       </div>
       <span className="feeds-card-text basic">{name}</span>
     </Link>

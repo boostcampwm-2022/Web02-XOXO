@@ -26,7 +26,6 @@ const CreateFeedButton = ({ getFeedInfos }: ICreateFeedButton) => {
       else {
         toast('오류가 발생했습니다. 다시 클릭해주세요.')
         setIsButtonDisabled(false)
-        console.log(data)
       }
     }
     if (path === 'group') {
@@ -35,14 +34,15 @@ const CreateFeedButton = ({ getFeedInfos }: ICreateFeedButton) => {
       else {
         toast('오류가 발생했습니다. 다시 클릭해주세요.')
         setIsButtonDisabled(false)
-        console.log(data)
       }
     }
   }
   return (
-    <button className="button-large" onClick={onFeedBtnClicked} disabled={isButtonDisabled}>
-      피드 생성하기
-    </button>
+    <div className="button-wrapper">
+      <button className="button-large" onClick={onFeedBtnClicked} disabled={isButtonDisabled}>
+        피드 생성하기
+      </button>
+    </div>
   )
 }
 

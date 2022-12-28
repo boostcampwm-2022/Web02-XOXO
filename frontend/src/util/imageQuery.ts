@@ -1,24 +1,23 @@
-
 const getThumbSize = (type: string, windowWidth: number) => {
   const level = Math.floor(windowWidth / 100)
   switch (type) {
-    case 'postingLQ' :
+    case 'postingLQ':
       if (level >= 5) return 50
       if (level >= 4) return 40
       return 30
-    case 'posting' :
-      if (level >= 5) return 500
-      if (level >= 4) return 400
-      return 300
-    case 'feed' :
+    case 'posting':
+      if (level >= 5) return 1000
+      if (level >= 4) return 800
+      return 600
+    case 'feed':
       if (level >= 4) return 240
       if (level >= 3) return 180
       return 120
-    case 'feeds' :
+    case 'feeds':
       if (level >= 4) return 120
       if (level >= 3) return 90
       return 40
-    default :
+    default:
       return 300
   }
 }

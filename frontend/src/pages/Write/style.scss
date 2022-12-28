@@ -2,6 +2,10 @@
 
 .write-page {
   @include page;
+  padding-bottom: 16vw;
+  @include not-mobile {
+    padding-bottom: 68px;
+  }
 }
 .write-body {
   @include body;
@@ -81,8 +85,20 @@
     }
   }
 }
-.write-button {
-  @include button-large;
+.button-wrapper {
+  background-color: $white;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  .write-button {
+    @include button-large;
+    width: calc(100% - 32px);
+    margin: 4vw 0;
+      @include not-mobile {
+        width: 393px;
+        margin: 16px 0;
+      }
+  }
 }
 .button-bar-wrapper {
   @include vcenter;

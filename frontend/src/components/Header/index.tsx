@@ -24,12 +24,7 @@ const Header = ({ page, text }: headerProps) => {
   const navigate = useNavigate()
   const handleLogout = async () => {
     const { data }: IResponse = await postLogout({})
-
     if (data) navigate('/Signin')
-  }
-  const handleModalOpen = (e: any) => {
-    e.stopPropagation()
-    setIsModalOpen(true)
   }
   const handleRenderHeader = () => {
     switch (page) {
@@ -52,11 +47,11 @@ const Header = ({ page, text }: headerProps) => {
       default:
         return (
           <div className="default-header">
-            <button onClick={handleModalOpen}>
+            <a href="https://stingy-justice-581.notion.site/xoxo-3a5abff4796445108dc3898b958d82c2">
               <div className="svg-wrapper">
                 <QuestionIcon />
               </div>
-            </button>
+            </a>
             <span>{text}</span>
             <button onClick={handleLogout}>
               <div className="svg-wrapper">

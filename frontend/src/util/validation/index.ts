@@ -8,6 +8,7 @@ export const getWarningName = (str: string): string => {
   return ''
 }
 export const getWarningDescription = (str: string): string => {
+  if (isEmpty(str)) return '피드 소개를 설정하지 않았습니다.'
   if (containsEmoji(str)) return '이모지를 포함할 수 없습니다.'
   if (longer(100)(str)) return '피드 설명은 100자 이하입니다.'
   return ''
@@ -42,6 +43,7 @@ export const validName = (str: string): boolean => {
   return true
 }
 export const validDescription = (str: string): boolean => {
+  if (isEmpty(str)) return false
   if (containsEmoji(str)) return false
   if (longer(100)(str)) return false
   return true

@@ -4,7 +4,7 @@ export const pixelateCanvas = async (canvas: HTMLCanvasElement): Promise<File> =
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
   const width = canvas.width
   const height = canvas.height
-  const pixelSize = Math.floor(width / 48)
+  const pixelSize = Math.floor(width / 20)
   const fillTransparencyColor = '#ffffff'
   for (let x = 0; x < width + pixelSize; x += pixelSize) {
     for (let y = 0; y < height + pixelSize; y += pixelSize) {

@@ -40,9 +40,11 @@ const EditFeedButton = ({ getFeedInfos }: IEditFeedButton) => {
   }
 
   return (
-    <button className="button-large" onClick={onFeedBtnClicked} disabled={isButtonDisabled}>
-      피드 수정하기
-    </button>
+    <div className="button-wrapper">
+      <button className="button-large" onClick={onFeedBtnClicked} disabled={isButtonDisabled}>
+        피드 수정하기
+      </button>
+    </div>
   )
 }
 

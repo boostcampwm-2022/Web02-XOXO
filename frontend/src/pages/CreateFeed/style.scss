@@ -1,6 +1,10 @@
 @import '@src/global';
 .createfeed-page {
   @include page;
+  padding-bottom: 16vw;
+  @include not-mobile {
+    padding-bottom: 68px;
+  }
 }
 .createfeed-header {
   @include header;
@@ -37,11 +41,19 @@
       display: none;
     }
   }
-  .button-large {
-    @include button-large;
-    margin: 8.75vw 0;
-    @include not-mobile {
-      margin: 37px 0;
+  .button-wrapper {
+    background-color: $white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    .button-large {
+      @include button-large;
+      width: calc(100% - 32px);
+      margin: 4vw 0;
+      @include not-mobile {
+        width: 393px;
+        margin: 16px 0;
+      }
     }
   }
   .add-group-people {

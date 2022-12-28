@@ -4,8 +4,8 @@
   @include header;
   .text-wrapper {
     @include vcenter;
-    .text {
-      margin-right: 4px;
+    .svg-wrapper{
+      margin-left: 4px;
     }
   }
 }
@@ -20,4 +20,7 @@
 }
 .default-header {
   @include header;
+  &-shadow {
+    @include header;
+  }
 }
