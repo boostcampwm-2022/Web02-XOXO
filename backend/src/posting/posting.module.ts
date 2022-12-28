@@ -8,12 +8,14 @@ import { JwtService } from '@nestjs/jwt';
 import { FeedModule } from '@root/feed/feed.module';
 import TypeOrmCustomModule from '@root/common/typeorm/typeorm.module';
 import { PostingRepository } from '@posting/posting.repository';
+import { ImageRepository } from '@root/image/image.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Posting]),
     FeedModule,
     TypeOrmCustomModule.forCustomRepository([PostingRepository]),
+    TypeOrmCustomModule.forCustomRepository([ImageRepository]),
   ],
   controllers: [PostingController],
   providers: [PostingService, AuthenticationService, JwtService],
