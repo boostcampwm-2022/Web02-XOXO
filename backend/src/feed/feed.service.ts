@@ -10,12 +10,11 @@ import {
 import User from '@root/entities/User.entity';
 import CreateFeedDto from '@feed/dto/create.feed.dto';
 import { decrypt } from '@feed/feed.utils';
-import Posting from '@root/entities/Posting.entity';
 import FindFeedDto from '@feed/dto/find.feed.dto';
-import FeedInfoDto from '@feed/dto/info.feed.dto';
 import { FeedRepository } from '@feed/feed.repository';
 import FeedResponseDto from './dto/response/feed.response.dto';
 import { UserFeedMappingRepository } from './user.feed.mapping.repository';
+import FeedInfoDto from './dto/info.feed.dto';
 
 @Injectable()
 export class FeedService {
@@ -27,33 +26,21 @@ export class FeedService {
 
   async getFeedInfo(encryptedFeedID: string, userId: number) {
     const id = Number(decrypt(encryptedFeedID));
-    let feedInfoDto;
+    let feedInfoDto: FeedInfoDto;
     await this.dataSource.transaction(async (manager) => {
       const feed = await manager.find(Feed, {
         where: { id },
+        relations: ['postings', 'users'],
         select: {
+          postings: { id: true },
+          users: { userId: true },
           name: true,
           description: true,
           thumbnail: true,
           dueDate: true,
-          isGroupFeed: true,
         },
       });
-      const user = await manager.find(UserFeedMapping, {
-        where: { feedId: id, userId },
-      });
-      const postingCnt = await manager
-        .getRepository(Posting)
-        .createQueryBuilder()
-        .select('count(*) as count')
-        .where('feedId = :id', { id })
-        .execute();
-
-      feedInfoDto = FeedInfoDto.createFeedInfoDto(
-        feed[0],
-        user[0],
-        postingCnt[0],
-      );
+      feedInfoDto = FeedInfoDto.createFeedInfoDto(feed[0], userId);
       if (feedInfoDto.isOwner) {
         await manager.update(User, userId, { lastVistedFeed: id });
       }
