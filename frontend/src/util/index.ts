@@ -9,7 +9,6 @@ export const yyyymmdd = (date: Date) =>
 export const remainDueDate = (dueDate: string, serverDate: string) => {
   const future = new Date(dueDate)
   const present = new Date(serverDate)
-  console.log(future, present)
   const diff = future.getTime() - present.getTime()
   const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24))
   const diffHour = Math.floor((diff / (1000 * 60 * 60)) % 24)

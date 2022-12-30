@@ -36,6 +36,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
   const { feedId } = useParams<{ feedId: string }>()
   const [postingId, setPostingId] = useState<string | null>(null)
   const [isWritabble, setIsWritabble] = useState<boolean>(false)
+  const [isClickPosting, setIsClickPosting] = useState<boolean>(false)
 
   const getKey = (pageIndex: number, previousPageData: Iposting[]) => {
     if (previousPageData && !previousPageData.length) return null
@@ -70,7 +71,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
     if (postingId) {
       checkReadable(postingId, result, remainTime)
     }
-  }, [serverTime])
+  }, [isClickPosting])
 
   const checkDate = () => {
     return { result: isFutureRatherThanServer(dueDate, serverTime), remainTime: remainDueDate(dueDate, serverTime) }
@@ -94,6 +95,7 @@ const FeedPostingList = ({ isOwner, dueDate, isGroupFeed }: IProps) => {
   const handleClickPosting = (postingId: string) => {
     mutateTime()
     setPostingId(postingId)
+    setIsClickPosting(!isClickPosting)
   }
 
   const postingList = postings?.flat().map((posting: Iposting) => {
